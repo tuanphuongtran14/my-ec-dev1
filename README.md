@@ -1,7 +1,43 @@
 # my-ec-dev1
 This is an e-commerce website
 
+# Checkout
+
+Follow instruction below to checkout the project:
+
+```bash
+git clone git@github.com:devera-class-1/my-ec-dev1.git
+
+npm i
+
+# npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+# npm WARN deprecated har-validator@5.1.5: this library is no longer supported
+# npm notice created a lockfile as package-lock.json. You should commit this file.
+# added 687 packages from 316 contributors and audited 687 packages in 26.012s
+
+# 63 packages are looking for funding
+#   run `npm fund` for details
+
+# found 0 vulnerabilities
+
+lerna bootstrap
+# lerna not found. Trying with npx...
+# lerna notice cli v4.0.0
+# lerna info Bootstrapping 2 packages
+# lerna info Installing external dependencies
+# lerna info Symlinking packages and binaries
+# lerna success Bootstrapped 2 packages
+
+## At this step, your development environment is ready
+
+```
+
+- Our back-end code will be located at: [./packages/ec-waa/api](./packages/ec-waa/api)
+- Our front-end code will be located at: [./packages/ec-web/pages](./packages/ec-web/pages)
+
 # Setup
+
+In case, you want to know how the project was initialized.
 
 ```bash
 node -v
@@ -158,5 +194,3 @@ Our project would look like below
 
 ![init-project](./docs/initialization.png)
 
-- Our back-end code will be located at: [./packages/ec-waa/api](./packages/ec-waa/api)
-- Our front-end code will be located at: [./packages/ec-web/pages](./packages/ec-web/pages)
