@@ -6,7 +6,7 @@ module.exports = {
     "../pages/**/*.stories.@(js|jsx|ts|tsx)"
   ],
   "addons": [
-    // "@storybook/preset-scss",
+    "@storybook/preset-scss",
     "@storybook/addon-links",
     "@storybook/addon-essentials"
   ]

@@ -23,8 +23,8 @@
     "@storybook/react": "^6.2.9",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
-    "sass": "^1.32.12",
-    "sass-loader": "^11.0.1",
+    "sass": "^1.32.13",
+    "sass-loader": "10.1.1",
     "style-loader": "^2.0.0"
   }
 }

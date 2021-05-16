@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './index.css';
 import ItemCard from '../ItemCard';
+
+import './index.scss';
 
 const ProductList = (props) => {
   const { items } = props;
