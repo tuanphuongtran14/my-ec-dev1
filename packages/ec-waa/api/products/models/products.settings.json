@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "name": "products"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 128,
+      "minLength": 2,
+      "unique": true
+    },
+    "price": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "max": 100000000
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 3000
+    },
+    "imgs": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": false
+    }
+  }
+}
