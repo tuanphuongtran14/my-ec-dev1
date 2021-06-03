@@ -1,0 +1,91 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "name": "Products",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "minLength": 10
+    },
+    "price": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0"
+    },
+    "category": {
+      "via": "products",
+      "model": "categories"
+    },
+    "colors": {
+      "type": "json",
+      "required": true
+    },
+    "versions": {
+      "type": "json",
+      "required": true
+    },
+    "promotions": {
+      "type": "richtext",
+      "required": true
+    },
+    "condition": {
+      "type": "richtext",
+      "required": true
+    },
+    "boxIncluded": {
+      "type": "richtext",
+      "required": true
+    },
+    "warranty": {
+      "type": "richtext",
+      "required": true
+    },
+    "description": {
+      "type": "richtext",
+      "required": true
+    },
+    "specification": {
+      "type": "json"
+    },
+    "rating": {
+      "type": "decimal",
+      "required": false,
+      "min": 0,
+      "max": 5
+    },
+    "votes": {
+      "type": "integer",
+      "min": 0
+    },
+    "thumbnail": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": true,
+      "pluginOptions": {}
+    },
+    "images": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": true,
+      "pluginOptions": {}
+    }
+  }
+}

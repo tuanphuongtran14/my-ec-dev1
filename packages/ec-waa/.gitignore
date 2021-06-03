@@ -32,60 +32,60 @@ $RECYCLE.BIN/
 *.msp
 
 
-############################
-# Packages
-############################
+# ############################
+# # Packages
+# ############################
 
-*.7z
-*.csv
-*.dat
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.seed
-*.so
-*.swo
-*.swp
-*.swn
-*.swm
-*.out
-*.pid
-
-
-############################
-# Logs and databases
-############################
-
-.tmp
-*.log
-*.sql
-*.sqlite
-*.sqlite3
+# *.7z
+# *.csv
+# *.dat
+# *.dmg
+# *.gz
+# *.iso
+# *.jar
+# *.rar
+# *.tar
+# *.zip
+# *.com
+# *.class
+# *.dll
+# *.exe
+# *.o
+# *.seed
+# *.so
+# *.swo
+# *.swp
+# *.swn
+# *.swm
+# *.out
+# *.pid
 
 
-############################
-# Misc.
-############################
+# ############################
+# # Logs and databases
+# ############################
 
-*#
-ssl
-.idea
-nbproject
-public/uploads/*
-!public/uploads/.gitkeep
+# .tmp
+# *.log
+# *.sql
+# *.sqlite
+# *.sqlite3
 
-############################
-# Node.js
-############################
+
+# ############################
+# # Misc.
+# ############################
+
+# *#
+# ssl
+# .idea
+# nbproject
+# public/uploads/*
+# !public/uploads/.gitkeep
+
+# ############################
+# # Node.js
+# ############################
 
 lib-cov
 lcov.info
@@ -102,12 +102,4 @@ node_modules
 testApp
 coverage
 
-############################
-# Strapi
-############################
-# .env
-license.txt
-exports
-*.cache
-build
-.strapi-updater.json
+
