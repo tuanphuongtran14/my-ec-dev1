@@ -1,7 +1,13 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "start": "concurrently \"cd packages/ec-waa && yarn start\" \"cd packages/ec-web && yarn dev\""
+  },
   "devDependencies": {
     "lerna": "^4.0.0"
+  },
+  "dependencies": {
+    "concurrently": "^6.2.0"
   }
 }
