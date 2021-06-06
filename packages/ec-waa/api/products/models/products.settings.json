@@ -54,9 +54,6 @@
       "type": "richtext",
       "required": true
     },
-    "specification": {
-      "type": "json"
-    },
     "rating": {
       "type": "decimal",
       "required": false,
@@ -86,6 +83,15 @@
       "plugin": "upload",
       "required": true,
       "pluginOptions": {}
+    },
+    "salespercentage": {
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "specification": {
+      "type": "richtext"
     }
   }
 }

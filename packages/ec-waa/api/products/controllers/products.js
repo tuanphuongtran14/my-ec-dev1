@@ -5,4 +5,9 @@
  * to customize this controller
  */
 
-module.exports = {};
+ module.exports = {
+    // GET /hello
+    async searchProductsByName(ctx) {
+        return await strapi.models.products.find(ctx.query);
+    },
+};
