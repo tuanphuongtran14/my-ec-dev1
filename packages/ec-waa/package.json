@@ -11,7 +11,13 @@
   },
   "devDependencies": {},
   "dependencies": {
+<<<<<<< HEAD
     "strapi": "^3.6.2",
+=======
+    "sendmail": "^1.6.1",
+    "slugify": "^1.5.3",
+    "strapi": "3.6.2",
+>>>>>>> 0a3d92d61d740058316747718d52194cb427bded
     "strapi-admin": "3.6.2",
     "strapi-connector-mongoose": "3.6.2",
     "strapi-plugin-content-manager": "3.6.2",
@@ -21,6 +27,7 @@
     "strapi-plugin-i18n": "3.6.2",
     "strapi-plugin-upload": "3.6.2",
     "strapi-plugin-users-permissions": "3.6.2",
+    "strapi-provider-email-sendgrid": "^3.6.3",
     "strapi-utils": "3.6.2"
   },
   "author": {

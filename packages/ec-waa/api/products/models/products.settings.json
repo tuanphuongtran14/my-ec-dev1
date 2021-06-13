@@ -15,7 +15,8 @@
     "name": {
       "type": "string",
       "required": true,
-      "minLength": 10
+      "minLength": 10,
+      "unique": true
     },
     "price": {
       "type": "biginteger",
@@ -92,6 +93,26 @@
     },
     "specification": {
       "type": "richtext"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "integer",
+      "default": 50,
+      "required": true,
+      "min": 0
+    },
+    "sold": {
+      "type": "integer",
+      "required": true,
+      "min": 0,
+      "default": 0
+    },
+    "color": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product-options.product-color"
     }
   }
 }
