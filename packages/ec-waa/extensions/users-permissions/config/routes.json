@@ -1,0 +1,28 @@
+{
+    "routes": [
+      {
+        "method": "GET",
+        "path": "/suggested-users",
+        "handler": "users.suggestedUsers",
+        "config": {
+          "policies": []
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/suggested-users/:id",
+        "handler": "users.suggestedUsers",
+        "config": {
+          "policies": []
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/get-cart",
+        "handler": "users.getCart",
+        "config": {
+          "policies": []
+        }
+      }
+    ]
+  }

@@ -41,6 +41,17 @@ type UserPermissionsPasswordPayload {
   ok: Boolean!
 }
 
+input CartDetail {
+  product: ID!
+  quantity: Int!
+  selectedColor: String!
+}
+
+type ResponseMessage {
+  statusCode: Int!
+  message: String!
+}
+
 type Categories {
   id: ID!
   _id: ID!
@@ -149,41 +160,6 @@ input deleteCategoryInput {
 
 type deleteCategoryPayload {
   category: Categories
-}
-
-type ProductOptions {
-  id: ID!
-  _id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String
-  published_at: DateTime
-}
-
-input ProductOptionInput {
-  name: String
-  published_at: DateTime
-  created_by: ID
-  updated_by: ID
-}
-
-input editProductOptionInput {
-  name: String
-  published_at: DateTime
-  created_by: ID
-  updated_by: ID
-}
-
-input updateProductOptionInput {
-  data: editProductOptionInput
-}
-
-type updateProductOptionPayload {
-  productOption: ProductOptions
-}
-
-type deleteProductOptionPayload {
-  productOption: ProductOptions
 }
 
 type Products {
@@ -843,6 +819,7 @@ type UsersPermissionsUser {
   confirmed: Boolean
   blocked: Boolean
   role: UsersPermissionsRole
+  cart: [ComponentCartUserCart]
 }
 
 type UsersPermissionsUserConnection {
@@ -929,6 +906,7 @@ input UserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
+  cart: [ComponentCartUserCartInput]
   created_by: ID
   updated_by: ID
 }
@@ -943,6 +921,7 @@ input editUserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
+  cart: [editComponentCartUserCartInput]
   created_by: ID
   updated_by: ID
 }
@@ -972,6 +951,27 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
+type ComponentCartUserCart {
+  id: ID!
+  _id: ID!
+  selectedColor: String
+  product: Products
+  quantity: Int
+}
+
+input ComponentCartUserCartInput {
+  selectedColor: String
+  product: ID
+  quantity: Int
+}
+
+input editComponentCartUserCartInput {
+  id: ID
+  selectedColor: String
+  product: ID
+  quantity: Int
+}
+
 type ComponentProductOptionsProductColor {
   id: ID!
   _id: ID!
@@ -990,7 +990,7 @@ input editComponentProductOptionsProductColorInput {
   price: Int
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | ProductOptions | updateProductOptionPayload | deleteProductOptionPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionColors | ProductsConnectionVersions | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionRating | ProductsConnectionVotes | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSpecification | ProductsConnectionSlug | ProductsConnectionQuantity | ProductsConnectionSold | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductOptionsProductColor
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ResponseMessage | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionColors | ProductsConnectionVersions | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionRating | ProductsConnectionVotes | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSpecification | ProductsConnectionSlug | ProductsConnectionQuantity | ProductsConnectionSold | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentCartUserCart | ComponentProductOptionsProductColor
 
 input InputID {
   id: ID!
@@ -1012,7 +1012,6 @@ type Query {
   category(id: ID!, publicationState: PublicationState): Categories
   categories(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Categories]
   categoriesConnection(sort: String, limit: Int, start: Int, where: JSON): CategoriesConnection
-  productOption(publicationState: PublicationState): ProductOptions
   product(id: ID!, publicationState: PublicationState): Products
   products(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Products]
   productsConnection(sort: String, limit: Int, start: Int, where: JSON): ProductsConnection
@@ -1029,6 +1028,7 @@ type Query {
   users(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [UsersPermissionsUser]
   usersConnection(sort: String, limit: Int, start: Int, where: JSON): UsersPermissionsUserConnection
   me: UsersPermissionsMe
+  cart: [ComponentCartUserCart]!
   productsByName(searchInput: String!): [Products]!
   newArrivalsProduct(limit: Int): [Products]!
   bestSellersProduct(limit: Int): [Products]!
@@ -1039,8 +1039,6 @@ type Mutation {
   createCategory(input: createCategoryInput): createCategoryPayload
   updateCategory(input: updateCategoryInput): updateCategoryPayload
   deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
-  updateProductOption(input: updateProductOptionInput): updateProductOptionPayload
-  deleteProductOption: deleteProductOptionPayload
   createProduct(input: createProductInput): createProductPayload
   updateProduct(input: updateProductInput): updateProductPayload
   deleteProduct(input: deleteProductInput): deleteProductPayload
@@ -1073,6 +1071,9 @@ type Mutation {
   forgotPassword(email: String!): UserPermissionsPasswordPayload
   resetPassword(password: String!, passwordConfirmation: String!, code: String!): UsersPermissionsLoginPayload
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
+  addItemsToCart(input: [CartDetail]!): ResponseMessage!
+  deleteAllCartItems: ResponseMessage!
+  deleteOneCartItem(id: ID!): ResponseMessage!
 }
 
 """
