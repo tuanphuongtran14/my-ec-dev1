@@ -52,6 +52,142 @@ type ResponseMessage {
   message: String!
 }
 
+type CartItem {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  order: Orders
+  product: Products
+  quantity: Int
+  published_at: DateTime
+}
+
+type CartItemConnection {
+  values: [CartItem]
+  groupBy: CartItemGroupBy
+  aggregate: CartItemAggregator
+}
+
+type CartItemAggregator {
+  count: Int
+  totalCount: Int
+  sum: CartItemAggregatorSum
+  avg: CartItemAggregatorAvg
+  min: CartItemAggregatorMin
+  max: CartItemAggregatorMax
+}
+
+type CartItemAggregatorSum {
+  quantity: Float
+}
+
+type CartItemAggregatorAvg {
+  quantity: Float
+}
+
+type CartItemAggregatorMin {
+  quantity: Float
+}
+
+type CartItemAggregatorMax {
+  quantity: Float
+}
+
+type CartItemGroupBy {
+  id: [CartItemConnectionId]
+  _id: [CartItemConnection_id]
+  createdAt: [CartItemConnectionCreatedAt]
+  updatedAt: [CartItemConnectionUpdatedAt]
+  order: [CartItemConnectionOrder]
+  product: [CartItemConnectionProduct]
+  quantity: [CartItemConnectionQuantity]
+  published_at: [CartItemConnectionPublished_at]
+}
+
+type CartItemConnectionId {
+  key: ID
+  connection: CartItemConnection
+}
+
+type CartItemConnection_id {
+  key: ID
+  connection: CartItemConnection
+}
+
+type CartItemConnectionCreatedAt {
+  key: DateTime
+  connection: CartItemConnection
+}
+
+type CartItemConnectionUpdatedAt {
+  key: DateTime
+  connection: CartItemConnection
+}
+
+type CartItemConnectionOrder {
+  key: ID
+  connection: CartItemConnection
+}
+
+type CartItemConnectionProduct {
+  key: ID
+  connection: CartItemConnection
+}
+
+type CartItemConnectionQuantity {
+  key: Int
+  connection: CartItemConnection
+}
+
+type CartItemConnectionPublished_at {
+  key: DateTime
+  connection: CartItemConnection
+}
+
+input CartItemInput {
+  order: ID
+  product: ID
+  quantity: Int
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editCartItemInput {
+  order: ID
+  product: ID
+  quantity: Int
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createCartItemInput {
+  data: CartItemInput
+}
+
+type createCartItemPayload {
+  cartItem: CartItem
+}
+
+input updateCartItemInput {
+  where: InputID
+  data: editCartItemInput
+}
+
+type updateCartItemPayload {
+  cartItem: CartItem
+}
+
+input deleteCartItemInput {
+  where: InputID
+}
+
+type deleteCartItemPayload {
+  cartItem: CartItem
+}
+
 type Categories {
   id: ID!
   _id: ID!
@@ -162,6 +298,134 @@ type deleteCategoryPayload {
   category: Categories
 }
 
+type Orders {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users_permissions_user: UsersPermissionsUser
+  status: String
+  total_price: Long
+  Create_at: DateTime
+  published_at: DateTime
+  cart_items(sort: String, limit: Int, start: Int, where: JSON): [CartItem]
+}
+
+type OrdersConnection {
+  values: [Orders]
+  groupBy: OrdersGroupBy
+  aggregate: OrdersAggregator
+}
+
+type OrdersAggregator {
+  count: Int
+  totalCount: Int
+}
+
+type OrdersGroupBy {
+  id: [OrdersConnectionId]
+  _id: [OrdersConnection_id]
+  createdAt: [OrdersConnectionCreatedAt]
+  updatedAt: [OrdersConnectionUpdatedAt]
+  users_permissions_user: [OrdersConnectionUsers_permissions_user]
+  status: [OrdersConnectionStatus]
+  total_price: [OrdersConnectionTotal_price]
+  Create_at: [OrdersConnectionCreate_at]
+  published_at: [OrdersConnectionPublished_at]
+}
+
+type OrdersConnectionId {
+  key: ID
+  connection: OrdersConnection
+}
+
+type OrdersConnection_id {
+  key: ID
+  connection: OrdersConnection
+}
+
+type OrdersConnectionCreatedAt {
+  key: DateTime
+  connection: OrdersConnection
+}
+
+type OrdersConnectionUpdatedAt {
+  key: DateTime
+  connection: OrdersConnection
+}
+
+type OrdersConnectionUsers_permissions_user {
+  key: ID
+  connection: OrdersConnection
+}
+
+type OrdersConnectionStatus {
+  key: String
+  connection: OrdersConnection
+}
+
+type OrdersConnectionTotal_price {
+  key: ID
+  connection: OrdersConnection
+}
+
+type OrdersConnectionCreate_at {
+  key: DateTime
+  connection: OrdersConnection
+}
+
+type OrdersConnectionPublished_at {
+  key: DateTime
+  connection: OrdersConnection
+}
+
+input OrderInput {
+  users_permissions_user: ID
+  status: String
+  total_price: Long
+  Create_at: DateTime
+  cart_items: [ID]
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editOrderInput {
+  users_permissions_user: ID
+  status: String
+  total_price: Long
+  Create_at: DateTime
+  cart_items: [ID]
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createOrderInput {
+  data: OrderInput
+}
+
+type createOrderPayload {
+  order: Orders
+}
+
+input updateOrderInput {
+  where: InputID
+  data: editOrderInput
+}
+
+type updateOrderPayload {
+  order: Orders
+}
+
+input deleteOrderInput {
+  where: InputID
+}
+
+type deleteOrderPayload {
+  order: Orders
+}
+
 type Products {
   id: ID!
   _id: ID!
@@ -188,6 +452,7 @@ type Products {
   color: [ComponentProductOptionsProductColor]
   published_at: DateTime
   images(sort: String, limit: Int, start: Int, where: JSON): [UploadFile]
+  cart_items(sort: String, limit: Int, start: Int, where: JSON): [CartItem]
 }
 
 type ProductsConnection {
@@ -399,6 +664,7 @@ input ProductInput {
   quantity: Int
   sold: Int
   color: [ComponentProductOptionsProductColorInput]
+  cart_items: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -425,6 +691,7 @@ input editProductInput {
   quantity: Int
   sold: Int
   color: [editComponentProductOptionsProductColorInput]
+  cart_items: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -820,6 +1087,7 @@ type UsersPermissionsUser {
   blocked: Boolean
   role: UsersPermissionsRole
   cart: [ComponentCartUserCart]
+  orders(sort: String, limit: Int, start: Int, where: JSON): [Orders]
 }
 
 type UsersPermissionsUserConnection {
@@ -907,6 +1175,7 @@ input UserInput {
   blocked: Boolean
   role: ID
   cart: [ComponentCartUserCartInput]
+  orders: [ID]
   created_by: ID
   updated_by: ID
 }
@@ -922,6 +1191,7 @@ input editUserInput {
   blocked: Boolean
   role: ID
   cart: [editComponentCartUserCartInput]
+  orders: [ID]
   created_by: ID
   updated_by: ID
 }
@@ -990,7 +1260,7 @@ input editComponentProductOptionsProductColorInput {
   price: Int
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ResponseMessage | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionColors | ProductsConnectionVersions | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionRating | ProductsConnectionVotes | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSpecification | ProductsConnectionSlug | ProductsConnectionQuantity | ProductsConnectionSold | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentCartUserCart | ComponentProductOptionsProductColor
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ResponseMessage | CartItem | CartItemConnection | CartItemAggregator | CartItemAggregatorSum | CartItemAggregatorAvg | CartItemAggregatorMin | CartItemAggregatorMax | CartItemGroupBy | CartItemConnectionId | CartItemConnection_id | CartItemConnectionCreatedAt | CartItemConnectionUpdatedAt | CartItemConnectionOrder | CartItemConnectionProduct | CartItemConnectionQuantity | CartItemConnectionPublished_at | createCartItemPayload | updateCartItemPayload | deleteCartItemPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Orders | OrdersConnection | OrdersAggregator | OrdersGroupBy | OrdersConnectionId | OrdersConnection_id | OrdersConnectionCreatedAt | OrdersConnectionUpdatedAt | OrdersConnectionUsers_permissions_user | OrdersConnectionStatus | OrdersConnectionTotal_price | OrdersConnectionCreate_at | OrdersConnectionPublished_at | createOrderPayload | updateOrderPayload | deleteOrderPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionColors | ProductsConnectionVersions | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionRating | ProductsConnectionVotes | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSpecification | ProductsConnectionSlug | ProductsConnectionQuantity | ProductsConnectionSold | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentCartUserCart | ComponentProductOptionsProductColor
 
 input InputID {
   id: ID!
@@ -1009,9 +1279,15 @@ type AdminUser {
 }
 
 type Query {
+  cartItem(id: ID!, publicationState: PublicationState): CartItem
+  cartItems(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [CartItem]
+  cartItemsConnection(sort: String, limit: Int, start: Int, where: JSON): CartItemConnection
   category(id: ID!, publicationState: PublicationState): Categories
   categories(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Categories]
   categoriesConnection(sort: String, limit: Int, start: Int, where: JSON): CategoriesConnection
+  order(id: ID!, publicationState: PublicationState): Orders
+  orders(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Orders]
+  ordersConnection(sort: String, limit: Int, start: Int, where: JSON): OrdersConnection
   product(id: ID!, publicationState: PublicationState): Products
   products(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Products]
   productsConnection(sort: String, limit: Int, start: Int, where: JSON): ProductsConnection
@@ -1036,9 +1312,15 @@ type Query {
 }
 
 type Mutation {
+  createCartItem(input: createCartItemInput): createCartItemPayload
+  updateCartItem(input: updateCartItemInput): updateCartItemPayload
+  deleteCartItem(input: deleteCartItemInput): deleteCartItemPayload
   createCategory(input: createCategoryInput): createCategoryPayload
   updateCategory(input: updateCategoryInput): updateCategoryPayload
   deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
+  createOrder(input: createOrderInput): createOrderPayload
+  updateOrder(input: updateOrderInput): updateOrderPayload
+  deleteOrder(input: deleteOrderInput): deleteOrderPayload
   createProduct(input: createProductInput): createProductPayload
   updateProduct(input: updateProductInput): updateProductPayload
   deleteProduct(input: deleteProductInput): deleteProductPayload
