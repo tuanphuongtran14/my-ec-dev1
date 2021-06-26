@@ -7,10 +7,10 @@ export default function Home() {
       <Head>
         <title>Devera Shop - Shop điện thoại uy tín TP.HCM</title>
       </Head>
-      <Head>
+      {/* <Head>
         <title>My page title</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
+      </Head> */}
       <Header></Header>
 
     </>
