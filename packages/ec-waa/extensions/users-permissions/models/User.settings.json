@@ -62,7 +62,7 @@
     "cart": {
       "type": "component",
       "repeatable": true,
-      "component": "cart.user-cart"
+      "component": "user.user-cart"
     },
     "orders": {
       "via": "users_permissions_user",

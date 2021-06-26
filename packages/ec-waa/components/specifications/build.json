@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_specifications_builds",
+  "info": {
+    "name": "build",
+    "icon": "align-center"
+  },
+  "options": {},
+  "attributes": {
+    "front": {
+      "type": "string"
+    },
+    "back": {
+      "type": "string"
+    },
+    "frame": {
+      "type": "string"
+    }
+  }
+}

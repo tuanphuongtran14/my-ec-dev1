@@ -11,7 +11,7 @@ module.exports = {
     }
   `,
   query: `
-    cart: [ComponentCartUserCart]!
+    cart: [ComponentUserUserCart]!
   `,
   mutation: `
     addItemsToCart(input: [CartDetail]!): ResponseMessage!,

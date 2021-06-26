@@ -16,8 +16,8 @@
       "via": "cart_items"
     },
     "product": {
-      "model": "products",
-      "via": "cart_items"
+      "via": "cart_items",
+      "model": "products"
     },
     "quantity": {
       "type": "integer"

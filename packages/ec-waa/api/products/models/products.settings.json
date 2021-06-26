@@ -27,14 +27,6 @@
       "via": "products",
       "model": "categories"
     },
-    "colors": {
-      "type": "json",
-      "required": true
-    },
-    "versions": {
-      "type": "json",
-      "required": true
-    },
     "promotions": {
       "type": "richtext",
       "required": true
@@ -55,28 +47,8 @@
       "type": "richtext",
       "required": true
     },
-    "rating": {
-      "type": "decimal",
-      "required": false,
-      "min": 0,
-      "max": 5
-    },
-    "votes": {
-      "type": "integer",
-      "min": 0
-    },
     "thumbnail": {
       "model": "file",
-      "via": "related",
-      "allowedTypes": [
-        "images"
-      ],
-      "plugin": "upload",
-      "required": true,
-      "pluginOptions": {}
-    },
-    "images": {
-      "collection": "file",
       "via": "related",
       "allowedTypes": [
         "images"
@@ -91,32 +63,77 @@
       "max": 100,
       "default": 0
     },
-    "specification": {
-      "type": "richtext"
-    },
     "slug": {
       "type": "string"
-    },
-    "quantity": {
-      "type": "integer",
-      "default": 50,
-      "required": true,
-      "min": 0
-    },
-    "sold": {
-      "type": "integer",
-      "required": true,
-      "min": 0,
-      "default": 0
-    },
-    "color": {
-      "type": "component",
-      "repeatable": true,
-      "component": "product-options.product-color"
     },
     "cart_items": {
       "via": "product",
       "collection": "cart-item"
+    },
+    "dimensions": {
+      "type": "component",
+      "repeatable": false,
+      "component": "specifications.dimensions",
+      "required": true
+    },
+    "build": {
+      "type": "component",
+      "repeatable": false,
+      "component": "specifications.build",
+      "required": true
+    },
+    "weight": {
+      "type": "decimal"
+    },
+    "screen": {
+      "type": "component",
+      "repeatable": false,
+      "component": "specifications.screen",
+      "required": true
+    },
+    "cpu": {
+      "type": "string"
+    },
+    "gpu": {
+      "type": "string"
+    },
+    "battery": {
+      "type": "component",
+      "repeatable": false,
+      "required": true,
+      "component": "specifications.battery"
+    },
+    "platform": {
+      "type": "component",
+      "repeatable": false,
+      "required": true,
+      "component": "specifications.platform"
+    },
+    "mainCamera": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.camera"
+    },
+    "selfieCamera": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.camera"
+    },
+    "othersFeatures": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.feature"
+    },
+    "colors": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.color"
+    },
+    "memory": {
+      "type": "component",
+      "repeatable": false,
+      "required": true,
+      "component": "specifications.memory"
     }
   }
 }

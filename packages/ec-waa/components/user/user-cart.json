@@ -1,7 +1,7 @@
 {
-  "collectionName": "components_cart_user_carts",
+  "collectionName": "components_user_user_carts",
   "info": {
-    "name": "userCart",
+    "name": "cart",
     "icon": "ad",
     "description": ""
   },
