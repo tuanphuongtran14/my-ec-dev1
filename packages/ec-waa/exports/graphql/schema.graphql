@@ -142,6 +142,116 @@ type deleteCategoryPayload {
   category: Categories
 }
 
+type Order {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  price: Long
+  description: String
+  published_at: DateTime
+  products(sort: String, limit: Int, start: Int, where: JSON): [Products]
+}
+
+type OrderConnection {
+  values: [Order]
+  groupBy: OrderGroupBy
+  aggregate: OrderAggregator
+}
+
+type OrderAggregator {
+  count: Int
+  totalCount: Int
+}
+
+type OrderGroupBy {
+  id: [OrderConnectionId]
+  _id: [OrderConnection_id]
+  createdAt: [OrderConnectionCreatedAt]
+  updatedAt: [OrderConnectionUpdatedAt]
+  price: [OrderConnectionPrice]
+  description: [OrderConnectionDescription]
+  published_at: [OrderConnectionPublished_at]
+}
+
+type OrderConnectionId {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnection_id {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnectionCreatedAt {
+  key: DateTime
+  connection: OrderConnection
+}
+
+type OrderConnectionUpdatedAt {
+  key: DateTime
+  connection: OrderConnection
+}
+
+type OrderConnectionPrice {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnectionDescription {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionPublished_at {
+  key: DateTime
+  connection: OrderConnection
+}
+
+input OrderInput {
+  products: [ID]
+  price: Long
+  description: String
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editOrderInput {
+  products: [ID]
+  price: Long
+  description: String
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createOrderInput {
+  data: OrderInput
+}
+
+type createOrderPayload {
+  order: Order
+}
+
+input updateOrderInput {
+  where: InputID
+  data: editOrderInput
+}
+
+type updateOrderPayload {
+  order: Order
+}
+
+input deleteOrderInput {
+  where: InputID
+}
+
+type deleteOrderPayload {
+  order: Order
+}
+
 type Products {
   id: ID!
   _id: ID!
@@ -877,7 +987,7 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionColors | ProductsConnectionVersions | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionSpecification | ProductsConnectionRating | ProductsConnectionVotes | ProductsConnectionThumbnail | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Order | OrderConnection | OrderAggregator | OrderGroupBy | OrderConnectionId | OrderConnection_id | OrderConnectionCreatedAt | OrderConnectionUpdatedAt | OrderConnectionPrice | OrderConnectionDescription | OrderConnectionPublished_at | createOrderPayload | updateOrderPayload | deleteOrderPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionColors | ProductsConnectionVersions | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionSpecification | ProductsConnectionRating | ProductsConnectionVotes | ProductsConnectionThumbnail | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload
 
 input InputID {
   id: ID!
@@ -899,6 +1009,9 @@ type Query {
   category(id: ID!, publicationState: PublicationState): Categories
   categories(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Categories]
   categoriesConnection(sort: String, limit: Int, start: Int, where: JSON): CategoriesConnection
+  order(id: ID!, publicationState: PublicationState): Order
+  orders(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Order]
+  ordersConnection(sort: String, limit: Int, start: Int, where: JSON): OrderConnection
   product(id: ID!, publicationState: PublicationState): Products
   products(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Products]
   productsConnection(sort: String, limit: Int, start: Int, where: JSON): ProductsConnection
@@ -921,6 +1034,9 @@ type Mutation {
   createCategory(input: createCategoryInput): createCategoryPayload
   updateCategory(input: updateCategoryInput): updateCategoryPayload
   deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
+  createOrder(input: createOrderInput): createOrderPayload
+  updateOrder(input: updateOrderInput): updateOrderPayload
+  deleteOrder(input: deleteOrderInput): deleteOrderPayload
   createProduct(input: createProductInput): createProductPayload
   updateProduct(input: updateProductInput): updateProductPayload
   deleteProduct(input: deleteProductInput): deleteProductPayload

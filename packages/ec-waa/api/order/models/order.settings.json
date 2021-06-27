@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "name": "Order",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "products": {
+      "collection": "products"
+    },
+    "price": {
+      "type": "biginteger",
+      "default": "0",
+      "min": "0"
+    },
+    "description": {
+      "type": "richtext"
+    }
+  }
+}
