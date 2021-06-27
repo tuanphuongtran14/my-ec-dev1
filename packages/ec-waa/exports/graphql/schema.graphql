@@ -52,6 +52,24 @@ type ResponseMessage {
   message: String!
 }
 
+input ProductFilter {
+  id: ID
+  name: String
+  minPrice: Int
+  maxPrice: Int
+  screenType: String
+  minScreenSize: Float
+  maxScreenSize: Float
+  minRam: Float
+  maxRam: Float
+  minInternalMem: Int
+  maxInternalMem: Int
+  platform: String
+  brand: String
+  color: String
+  isSales: Boolean
+}
+
 type CartItem {
   id: ID!
   _id: ID!
@@ -442,19 +460,30 @@ type Products {
   thumbnail: UploadFile
   salespercentage: Int
   slug: String
-  dimensions: ComponentSpecificationsDimensions
   build: ComponentSpecificationsBuild
   weight: Float
-  screen: ComponentSpecificationsScreen
   cpu: String
   gpu: String
-  battery: ComponentSpecificationsBattery
-  platform: ComponentSpecificationsPlatform
   mainCamera: [ComponentSpecificationsCamera]
   selfieCamera: [ComponentSpecificationsCamera]
   othersFeatures: [ComponentSpecificationsFeature]
   colors: [ComponentSpecificationsColor]
-  memory: ComponentSpecificationsMemory
+  internalMemory: Int
+  ram: Float
+  hasCardSlot: Boolean
+  platformName: String
+  platformVersion: String
+  height: Float
+  width: Float
+  depth: Float
+  charging: String
+  baterryCapacity: Int
+  baterryType: String
+  screenType: String
+  screenRatio: String
+  resolution: String
+  density: Int
+  screenSize: Float
   published_at: DateTime
   cart_items(sort: String, limit: Int, start: Int, where: JSON): [CartItem]
 }
@@ -477,21 +506,53 @@ type ProductsAggregator {
 type ProductsAggregatorSum {
   salespercentage: Float
   weight: Float
+  internalMemory: Float
+  ram: Float
+  height: Float
+  width: Float
+  depth: Float
+  baterryCapacity: Float
+  density: Float
+  screenSize: Float
 }
 
 type ProductsAggregatorAvg {
   salespercentage: Float
   weight: Float
+  internalMemory: Float
+  ram: Float
+  height: Float
+  width: Float
+  depth: Float
+  baterryCapacity: Float
+  density: Float
+  screenSize: Float
 }
 
 type ProductsAggregatorMin {
   salespercentage: Float
   weight: Float
+  internalMemory: Float
+  ram: Float
+  height: Float
+  width: Float
+  depth: Float
+  baterryCapacity: Float
+  density: Float
+  screenSize: Float
 }
 
 type ProductsAggregatorMax {
   salespercentage: Float
   weight: Float
+  internalMemory: Float
+  ram: Float
+  height: Float
+  width: Float
+  depth: Float
+  baterryCapacity: Float
+  density: Float
+  screenSize: Float
 }
 
 type ProductsGroupBy {
@@ -510,15 +571,26 @@ type ProductsGroupBy {
   thumbnail: [ProductsConnectionThumbnail]
   salespercentage: [ProductsConnectionSalespercentage]
   slug: [ProductsConnectionSlug]
-  dimensions: [ProductsConnectionDimensions]
   build: [ProductsConnectionBuild]
   weight: [ProductsConnectionWeight]
-  screen: [ProductsConnectionScreen]
   cpu: [ProductsConnectionCpu]
   gpu: [ProductsConnectionGpu]
-  battery: [ProductsConnectionBattery]
-  platform: [ProductsConnectionPlatform]
-  memory: [ProductsConnectionMemory]
+  internalMemory: [ProductsConnectionInternalMemory]
+  ram: [ProductsConnectionRam]
+  hasCardSlot: [ProductsConnectionHasCardSlot]
+  platformName: [ProductsConnectionPlatformName]
+  platformVersion: [ProductsConnectionPlatformVersion]
+  height: [ProductsConnectionHeight]
+  width: [ProductsConnectionWidth]
+  depth: [ProductsConnectionDepth]
+  charging: [ProductsConnectionCharging]
+  baterryCapacity: [ProductsConnectionBaterryCapacity]
+  baterryType: [ProductsConnectionBaterryType]
+  screenType: [ProductsConnectionScreenType]
+  screenRatio: [ProductsConnectionScreenRatio]
+  resolution: [ProductsConnectionResolution]
+  density: [ProductsConnectionDensity]
+  screenSize: [ProductsConnectionScreenSize]
   published_at: [ProductsConnectionPublished_at]
 }
 
@@ -597,11 +669,6 @@ type ProductsConnectionSlug {
   connection: ProductsConnection
 }
 
-type ProductsConnectionDimensions {
-  key: ID
-  connection: ProductsConnection
-}
-
 type ProductsConnectionBuild {
   key: ID
   connection: ProductsConnection
@@ -609,11 +676,6 @@ type ProductsConnectionBuild {
 
 type ProductsConnectionWeight {
   key: Float
-  connection: ProductsConnection
-}
-
-type ProductsConnectionScreen {
-  key: ID
   connection: ProductsConnection
 }
 
@@ -627,18 +689,83 @@ type ProductsConnectionGpu {
   connection: ProductsConnection
 }
 
-type ProductsConnectionBattery {
-  key: ID
+type ProductsConnectionInternalMemory {
+  key: Int
   connection: ProductsConnection
 }
 
-type ProductsConnectionPlatform {
-  key: ID
+type ProductsConnectionRam {
+  key: Float
   connection: ProductsConnection
 }
 
-type ProductsConnectionMemory {
-  key: ID
+type ProductsConnectionHasCardSlot {
+  key: Boolean
+  connection: ProductsConnection
+}
+
+type ProductsConnectionPlatformName {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionPlatformVersion {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionHeight {
+  key: Float
+  connection: ProductsConnection
+}
+
+type ProductsConnectionWidth {
+  key: Float
+  connection: ProductsConnection
+}
+
+type ProductsConnectionDepth {
+  key: Float
+  connection: ProductsConnection
+}
+
+type ProductsConnectionCharging {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionBaterryCapacity {
+  key: Int
+  connection: ProductsConnection
+}
+
+type ProductsConnectionBaterryType {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionScreenType {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionScreenRatio {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionResolution {
+  key: String
+  connection: ProductsConnection
+}
+
+type ProductsConnectionDensity {
+  key: Int
+  connection: ProductsConnection
+}
+
+type ProductsConnectionScreenSize {
+  key: Float
   connection: ProductsConnection
 }
 
@@ -660,19 +787,30 @@ input ProductInput {
   salespercentage: Int
   slug: String
   cart_items: [ID]
-  dimensions: ComponentSpecificationsDimensionInput!
   build: ComponentSpecificationsBuildInput!
   weight: Float
-  screen: ComponentSpecificationsScreenInput!
   cpu: String
   gpu: String
-  battery: ComponentSpecificationsBatteryInput!
-  platform: ComponentSpecificationsPlatformInput!
   mainCamera: [ComponentSpecificationsCameraInput]
   selfieCamera: [ComponentSpecificationsCameraInput]
   othersFeatures: [ComponentSpecificationsFeatureInput]
   colors: [ComponentSpecificationsColorInput]
-  memory: ComponentSpecificationsMemoryInput!
+  internalMemory: Int
+  ram: Float
+  hasCardSlot: Boolean
+  platformName: String
+  platformVersion: String
+  height: Float
+  width: Float
+  depth: Float
+  charging: String
+  baterryCapacity: Int
+  baterryType: String
+  screenType: String
+  screenRatio: String
+  resolution: String
+  density: Int
+  screenSize: Float
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -691,19 +829,30 @@ input editProductInput {
   salespercentage: Int
   slug: String
   cart_items: [ID]
-  dimensions: editComponentSpecificationsDimensionInput
   build: editComponentSpecificationsBuildInput
   weight: Float
-  screen: editComponentSpecificationsScreenInput
   cpu: String
   gpu: String
-  battery: editComponentSpecificationsBatteryInput
-  platform: editComponentSpecificationsPlatformInput
   mainCamera: [editComponentSpecificationsCameraInput]
   selfieCamera: [editComponentSpecificationsCameraInput]
   othersFeatures: [editComponentSpecificationsFeatureInput]
   colors: [editComponentSpecificationsColorInput]
-  memory: editComponentSpecificationsMemoryInput
+  internalMemory: Int
+  ram: Float
+  hasCardSlot: Boolean
+  platformName: String
+  platformVersion: String
+  height: Float
+  width: Float
+  depth: Float
+  charging: String
+  baterryCapacity: Int
+  baterryType: String
+  screenType: String
+  screenRatio: String
+  resolution: String
+  density: Int
+  screenSize: Float
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -1479,7 +1628,7 @@ input editComponentUserUserCartInput {
   quantity: Int
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ResponseMessage | CartItem | CartItemConnection | CartItemAggregator | CartItemAggregatorSum | CartItemAggregatorAvg | CartItemAggregatorMin | CartItemAggregatorMax | CartItemGroupBy | CartItemConnectionId | CartItemConnection_id | CartItemConnectionCreatedAt | CartItemConnectionUpdatedAt | CartItemConnectionOrder | CartItemConnectionProduct | CartItemConnectionQuantity | CartItemConnectionPublished_at | createCartItemPayload | updateCartItemPayload | deleteCartItemPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Orders | OrdersConnection | OrdersAggregator | OrdersGroupBy | OrdersConnectionId | OrdersConnection_id | OrdersConnectionCreatedAt | OrdersConnectionUpdatedAt | OrdersConnectionUsers_permissions_user | OrdersConnectionStatus | OrdersConnectionTotal_price | OrdersConnectionCreate_at | OrdersConnectionPublished_at | createOrderPayload | updateOrderPayload | deleteOrderPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSlug | ProductsConnectionDimensions | ProductsConnectionBuild | ProductsConnectionWeight | ProductsConnectionScreen | ProductsConnectionCpu | ProductsConnectionGpu | ProductsConnectionBattery | ProductsConnectionPlatform | ProductsConnectionMemory | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductRating | ComponentSpecificationsBattery | ComponentSpecificationsBuild | ComponentSpecificationsCamera | ComponentSpecificationsColor | ComponentSpecificationsDimensions | ComponentSpecificationsFeature | ComponentSpecificationsMemory | ComponentSpecificationsNetwork | ComponentSpecificationsPlatform | ComponentSpecificationsScreen | ComponentUserUserCart
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ResponseMessage | CartItem | CartItemConnection | CartItemAggregator | CartItemAggregatorSum | CartItemAggregatorAvg | CartItemAggregatorMin | CartItemAggregatorMax | CartItemGroupBy | CartItemConnectionId | CartItemConnection_id | CartItemConnectionCreatedAt | CartItemConnectionUpdatedAt | CartItemConnectionOrder | CartItemConnectionProduct | CartItemConnectionQuantity | CartItemConnectionPublished_at | createCartItemPayload | updateCartItemPayload | deleteCartItemPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Orders | OrdersConnection | OrdersAggregator | OrdersGroupBy | OrdersConnectionId | OrdersConnection_id | OrdersConnectionCreatedAt | OrdersConnectionUpdatedAt | OrdersConnectionUsers_permissions_user | OrdersConnectionStatus | OrdersConnectionTotal_price | OrdersConnectionCreate_at | OrdersConnectionPublished_at | createOrderPayload | updateOrderPayload | deleteOrderPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSlug | ProductsConnectionBuild | ProductsConnectionWeight | ProductsConnectionCpu | ProductsConnectionGpu | ProductsConnectionInternalMemory | ProductsConnectionRam | ProductsConnectionHasCardSlot | ProductsConnectionPlatformName | ProductsConnectionPlatformVersion | ProductsConnectionHeight | ProductsConnectionWidth | ProductsConnectionDepth | ProductsConnectionCharging | ProductsConnectionBaterryCapacity | ProductsConnectionBaterryType | ProductsConnectionScreenType | ProductsConnectionScreenRatio | ProductsConnectionResolution | ProductsConnectionDensity | ProductsConnectionScreenSize | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductRating | ComponentSpecificationsBattery | ComponentSpecificationsBuild | ComponentSpecificationsCamera | ComponentSpecificationsColor | ComponentSpecificationsDimensions | ComponentSpecificationsFeature | ComponentSpecificationsMemory | ComponentSpecificationsNetwork | ComponentSpecificationsPlatform | ComponentSpecificationsScreen | ComponentUserUserCart
 
 input InputID {
   id: ID!
@@ -1528,6 +1677,7 @@ type Query {
   newArrivalsProduct(limit: Int): [Products]!
   bestSellersProduct(limit: Int): [Products]!
   hotSalesProduct(limit: Int): [Products]!
+  searchProduct(filter: ProductFilter, skip: Int, limit: Int): [Products]!
 }
 
 type Mutation {

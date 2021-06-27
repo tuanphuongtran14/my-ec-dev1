@@ -16,7 +16,8 @@
       "type": "string",
       "required": true,
       "minLength": 10,
-      "unique": true
+      "unique": true,
+      "index": "text"
     },
     "price": {
       "type": "biginteger",
@@ -70,12 +71,6 @@
       "via": "product",
       "collection": "cart-item"
     },
-    "dimensions": {
-      "type": "component",
-      "repeatable": false,
-      "component": "specifications.dimensions",
-      "required": true
-    },
     "build": {
       "type": "component",
       "repeatable": false,
@@ -85,29 +80,11 @@
     "weight": {
       "type": "decimal"
     },
-    "screen": {
-      "type": "component",
-      "repeatable": false,
-      "component": "specifications.screen",
-      "required": true
-    },
     "cpu": {
       "type": "string"
     },
     "gpu": {
       "type": "string"
-    },
-    "battery": {
-      "type": "component",
-      "repeatable": false,
-      "required": true,
-      "component": "specifications.battery"
-    },
-    "platform": {
-      "type": "component",
-      "repeatable": false,
-      "required": true,
-      "component": "specifications.platform"
     },
     "mainCamera": {
       "type": "component",
@@ -129,11 +106,53 @@
       "repeatable": true,
       "component": "specifications.color"
     },
-    "memory": {
-      "type": "component",
-      "repeatable": false,
-      "required": true,
-      "component": "specifications.memory"
+    "internalMemory": {
+      "type": "integer"
+    },
+    "ram": {
+      "type": "decimal"
+    },
+    "hasCardSlot": {
+      "type": "boolean"
+    },
+    "platformName": {
+      "type": "string"
+    },
+    "platformVersion": {
+      "type": "string"
+    },
+    "height": {
+      "type": "decimal"
+    },
+    "width": {
+      "type": "decimal"
+    },
+    "depth": {
+      "type": "decimal"
+    },
+    "charging": {
+      "type": "string"
+    },
+    "baterryCapacity": {
+      "type": "integer"
+    },
+    "baterryType": {
+      "type": "string"
+    },
+    "screenType": {
+      "type": "string"
+    },
+    "screenRatio": {
+      "type": "string"
+    },
+    "resolution": {
+      "type": "string"
+    },
+    "density": {
+      "type": "integer"
+    },
+    "screenSize": {
+      "type": "decimal"
     }
   }
 }

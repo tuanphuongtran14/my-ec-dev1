@@ -1,9 +1,29 @@
 module.exports = {
+  definition: `
+    input ProductFilter {
+      id: ID,
+      name: String,
+      minPrice: Int,
+      maxPrice: Int,
+      screenType: String,
+      minScreenSize: Float,
+      maxScreenSize: Float,
+      minRam: Float,
+      maxRam: Float,
+      minInternalMem: Int,
+      maxInternalMem: Int,
+      platform: String,
+      brand: String,
+      color: String,
+      isSales: Boolean
+    }
+  `,
   query: `
-    productsByName(searchInput: String!): [Products]!
+    productsByName(searchInput: String!): [Products]!,
     newArrivalsProduct(limit: Int): [Products]!
     bestSellersProduct(limit: Int): [Products]!
     hotSalesProduct(limit: Int): [Products]!
+    searchProduct(filter: ProductFilter, skip: Int, limit: Int): [Products]!
   `,
   resolver: {
     Query: {
@@ -44,6 +64,10 @@ module.exports = {
           return products;
         }
       },
+      searchProduct: {
+        description: 'Return products by filter',
+        resolver: 'application::products.products.searchProduct'
+      }
     },
   },
 };
