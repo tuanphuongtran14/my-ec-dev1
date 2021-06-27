@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_user_user_carts",
+  "info": {
+    "name": "cart",
+    "icon": "ad",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "selectedColor": {
+      "type": "string"
+    },
+    "product": {
+      "model": "products"
+    },
+    "quantity": {
+      "type": "integer"
+    }
+  }
+}

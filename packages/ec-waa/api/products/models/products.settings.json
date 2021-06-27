@@ -15,7 +15,9 @@
     "name": {
       "type": "string",
       "required": true,
-      "minLength": 10
+      "minLength": 10,
+      "unique": true,
+      "index": "text"
     },
     "price": {
       "type": "biginteger",
@@ -25,14 +27,6 @@
     "category": {
       "via": "products",
       "model": "categories"
-    },
-    "colors": {
-      "type": "json",
-      "required": true
-    },
-    "versions": {
-      "type": "json",
-      "required": true
     },
     "promotions": {
       "type": "richtext",
@@ -54,19 +48,6 @@
       "type": "richtext",
       "required": true
     },
-    "specification": {
-      "type": "json"
-    },
-    "rating": {
-      "type": "decimal",
-      "required": false,
-      "min": 0,
-      "max": 5
-    },
-    "votes": {
-      "type": "integer",
-      "min": 0
-    },
     "thumbnail": {
       "model": "file",
       "via": "related",
@@ -77,15 +58,101 @@
       "required": true,
       "pluginOptions": {}
     },
-    "images": {
-      "collection": "file",
-      "via": "related",
-      "allowedTypes": [
-        "images"
-      ],
-      "plugin": "upload",
-      "required": true,
-      "pluginOptions": {}
+    "salespercentage": {
+      "type": "integer",
+      "min": 0,
+      "max": 100,
+      "default": 0
+    },
+    "slug": {
+      "type": "string"
+    },
+    "cart_items": {
+      "via": "product",
+      "collection": "cart-item"
+    },
+    "build": {
+      "type": "component",
+      "repeatable": false,
+      "component": "specifications.build",
+      "required": true
+    },
+    "weight": {
+      "type": "decimal"
+    },
+    "cpu": {
+      "type": "string"
+    },
+    "gpu": {
+      "type": "string"
+    },
+    "mainCamera": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.camera"
+    },
+    "selfieCamera": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.camera"
+    },
+    "othersFeatures": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.feature"
+    },
+    "colors": {
+      "type": "component",
+      "repeatable": true,
+      "component": "specifications.color"
+    },
+    "internalMemory": {
+      "type": "integer"
+    },
+    "ram": {
+      "type": "decimal"
+    },
+    "hasCardSlot": {
+      "type": "boolean"
+    },
+    "platformName": {
+      "type": "string"
+    },
+    "platformVersion": {
+      "type": "string"
+    },
+    "height": {
+      "type": "decimal"
+    },
+    "width": {
+      "type": "decimal"
+    },
+    "depth": {
+      "type": "decimal"
+    },
+    "charging": {
+      "type": "string"
+    },
+    "baterryCapacity": {
+      "type": "integer"
+    },
+    "baterryType": {
+      "type": "string"
+    },
+    "screenType": {
+      "type": "string"
+    },
+    "screenRatio": {
+      "type": "string"
+    },
+    "resolution": {
+      "type": "string"
+    },
+    "density": {
+      "type": "integer"
+    },
+    "screenSize": {
+      "type": "decimal"
     }
   }
 }

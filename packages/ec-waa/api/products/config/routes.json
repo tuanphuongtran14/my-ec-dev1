@@ -25,6 +25,14 @@
       }
     },
     {
+      "method": "GET",
+      "path": "/product/search-by-name",
+      "handler": "Products.searchProductsByName",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "POST",
       "path": "/products",
       "handler": "products.create",

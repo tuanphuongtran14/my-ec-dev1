@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_specifications_cameras",
+  "info": {
+    "name": "camera",
+    "icon": "allergies",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "megapixels": {
+      "type": "integer"
+    },
+    "lense": {
+      "type": "string"
+    },
+    "focalLength": {
+      "type": "decimal"
+    },
+    "aperture": {
+      "type": "decimal"
+    }
+  }
+}

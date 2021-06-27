@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_product_ratings",
+  "info": {
+    "name": "rating",
+    "icon": "align-left"
+  },
+  "options": {},
+  "attributes": {
+    "grade": {
+      "type": "decimal"
+    },
+    "votes": {
+      "type": "integer"
+    }
+  }
+}
