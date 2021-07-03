@@ -12,6 +12,8 @@ export default function App({ Component, pageProps }) {
                 <link rel="stylesheet" href="/vendors/flickity.min.css" />
                 {/* Optional CSS */}
                 <link rel="stylesheet" href="/css/style.css" />
+                
+
             </Head>
             <Component {...pageProps} />
 
