@@ -68,9 +68,9 @@ export default function({products}) {
                             <div className="col-12 col-lg-8 px-0">
                                 <div className="gallery js-flickity " data-flickity-options='{ "freeScroll": true, "wrapAround": true }'>
                                     <img className="gallery-cell" src="./img/banner/ROG_Phone_Sliding_desk.webp" alt="" />
-                                    <img className="gallery-cell" src="./img/banner/690x300_Buds_.webp" alt="" />
+                                    {/* <img className="gallery-cell" src="./img/banner/690x300_Buds_.webp" alt="" />
                                     <img className="gallery-cell" src="./img/banner/mg-6690x300.webp" alt="" />
-                                    <img className="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" />
+                                    <img className="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" /> */}
                                 </div>
                             </div>
                             <div className="sub-banner col-12 col-lg-4 px-0">
