@@ -1,6 +1,7 @@
 {
   "name": "learn-starter",
   "version": "0.1.0",
+  "proxy": "http://localhost:1337",
   "private": true,
   "scripts": {
     "dev": "next dev",

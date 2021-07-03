@@ -1,0 +1,35 @@
+*{
+    padding:0;
+    margin:0;
+    box-sizing: border-box;
+}
+
+.wishlist h1{
+    text-align:center;
+}
+
+.wishlist-item_img{
+    width:80px;
+    height:80px;
+}
+
+.wishlist-item{
+    display:flex;
+    align-items:center;
+}
+
+.wishlist-item_text{
+    font-size: 14px;
+    color: #333;
+    font-weight: 700;
+}
+
+.item{
+    margin-top: 16px;
+    font-size: 40px;
+    color: #fff;
+    text-align: center;
+    min-height: 380px;
+    line-height: 380px;
+    background-color: orange;
+}

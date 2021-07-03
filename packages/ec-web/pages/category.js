@@ -13,11 +13,22 @@ export async function getServerSideProps(){
 
 export default function({products}) {
     var product = products.map((product,index)=>{
-        var regularPrice = parseInt(product.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.').slice(0,-3);
-        var salePrice = (product.price - (product.price * product.salespercentage / 100)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.').slice(0,-3);
+        const regularPrice = parseInt(product.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.').slice(0,-3);
+        const salePrice = (product.price - (product.price * product.salespercentage / 100)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&.').slice(0,-3);
+        
+        // const displayImg = [...product.colors.map(color => {
+        //     const imagesOfColor = color.images.map((image, index) => {
+        //         return (
+        //             <img src={process.env.NEXT_PUBLIC_API_URL + image.url} />
+        //         )
+        //     })
+        //     return imagesOfColor;
+        // })]
+            // console.log(displayImg)
+
         return (
             <a href="/product.html" className="product">
-                <img src="./img/products/thumb_IP12Pro_VN_1-300x300.jpg" alt="" className="product__img mb-4" />
+                <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" />
                 <span className="product__title">{product.name}</span>
                 <div className="product__price">
                 { product.salespercentage == 0 ? 
@@ -68,9 +79,9 @@ export default function({products}) {
                             <div className="col-12 col-lg-8 px-0">
                                 <div className="gallery js-flickity " data-flickity-options='{ "freeScroll": true, "wrapAround": true }'>
                                     <img className="gallery-cell" src="./img/banner/ROG_Phone_Sliding_desk.webp" alt="" />
-                                    {/* <img className="gallery-cell" src="./img/banner/690x300_Buds_.webp" alt="" />
+                                    <img className="gallery-cell" src="./img/banner/690x300_Buds_.webp" alt="" />
                                     <img className="gallery-cell" src="./img/banner/mg-6690x300.webp" alt="" />
-                                    <img className="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" /> */}
+                                    <img className="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" />
                                 </div>
                             </div>
                             <div className="sub-banner col-12 col-lg-4 px-0">
