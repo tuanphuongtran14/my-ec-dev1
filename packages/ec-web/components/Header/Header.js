@@ -9,12 +9,16 @@ export default function Header() {
                 <button type="button" className="text-white ml-3 mr-4 bars-btn btn btn--no-outline" id="bars-btn">
                     <i className="fa fa-bars fa--md" aria-hidden="true" />
                 </button>
-                <Link href="/" ><a><img src="/img/logo.png" className="logo" alt="" /></a></Link>
+                <Link href="/" >
+                    <a><img src="/img/logo.png" className="logo" alt="" /></a>
+                </Link>
             </div>
             <div className="navbar__menu" id="navbar-menu">
                 <ul className="menu menu--nav" id="menu--nav">
                     <li className="menu__item">
-                        <a href="true" className="text-white">Sản phẩm</a>
+                        <Link href="/category">
+                            <a className="text-white">Sản phẩm</a> 
+                        </Link>
                     </li>
                     <li className="menu__item">
                         <a href="true" className="text-white">Về chúng tôi</a>
@@ -52,7 +56,6 @@ export default function Header() {
                 </ul>
             </div>
         </div>
-        
         <form className="search-bar" id="search-bar">
             <input type="text" name="searchInput" className="search-input" placeholder="Nhập sản phẩm bạn cần tìm" />
             <button type="submit" className="btn btn--search">
@@ -61,6 +64,5 @@ export default function Header() {
         </form>
         <div id="overlaybody"></div>
     </div>
-    
-)
+  )
 }
