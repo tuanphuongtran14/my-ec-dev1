@@ -102,5 +102,5 @@ node_modules
 testApp
 coverage
 
-.env
+*.env
 
