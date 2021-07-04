@@ -25,10 +25,6 @@
     },
     "Create_at": {
       "type": "datetime"
-    },
-    "cart_items": {
-      "via": "order",
-      "collection": "cart-item"
     }
   }
 }

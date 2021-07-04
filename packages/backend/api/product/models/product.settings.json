@@ -1,8 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "cart_items",
+  "collectionName": "products",
   "info": {
-    "name": "cart_item"
+    "name": "Product"
   },
   "options": {
     "increments": true,
@@ -11,12 +11,8 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "product": {
-      "via": "cart_items",
-      "model": "products"
-    },
-    "quantity": {
-      "type": "integer"
+    "fullDesc": {
+      "type": "richtext"
     }
   }
 }
