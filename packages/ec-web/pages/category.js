@@ -23,7 +23,6 @@ export default function({products}) {
                 <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" />
                 <span className="product__title">
                     <Link href="/product/[idProduct]" as={`/product/${product.id}`}>
-                    {/* <Link href={{pathname: '/product/[slug]', query:{ slug: product.id}}} > */}
                         {product.name}
                     </Link>
                 </span>

@@ -78,7 +78,7 @@ export default function ({ product, products}) {
 
     return (
         <>
-            <Head> 
+            <Head> <title>{product.name}</title>
                 {/* <!-- CSS --> */}
                 <link
                     rel="stylesheet"
@@ -89,11 +89,7 @@ export default function ({ product, products}) {
             </Head>
             <Header />
 
-            <div id="root">
-                
-            <Head>
-                        <title>{product.name}</title>
-                    </Head>
+            <div id="root"> 
                     <nav className="breadcrumb breadcrumb--custom my-1">
                         <div className="container px-0">
                             <a className="breadcrumb-item" href="/">
@@ -147,18 +143,6 @@ export default function ({ product, products}) {
                                         {product.ram}G
                                         <span className="version__price">{salePrice} ₫</span>
                                     </div>
-                                    {/* <div className="version active">
-                                        512G
-                                        <span className="version__price">38,590,000 ₫</span>
-                                    </div>
-                                    <div className="version">
-                                        256G
-                                        <span className="version__price">38,590,000 ₫</span>
-                                    </div>
-                                    <div className="version">
-                                        128G
-                                        <span className="version__price">38,590,000 ₫</span>
-                                    </div> */}
                                 </div>
                                 <p className="my-2">
                                     <b>Chọn màu phù hợp</b>
