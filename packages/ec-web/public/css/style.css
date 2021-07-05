@@ -99,23 +99,46 @@ body {
 /*-------------------------*/
 /* 2.4. Button
 /*-------------------------*/
+.btn.btn--searchGo {
+  position: absolute;
+  top: 0px;
+  right: 125px;
+  font-size: 1rem;
+  padding: 0.5rem 0.5rem;
+  background-color: #FFFFFF;
+  border: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  outline: none;
+  height: 2.3rem; }
+  .searchGo_text{
+    margin-top: -0.2rem;
+    border: 1px solid black;
+    padding: 0.05rem 0.5rem;
+  }
+
 .btn.btn--no-outline {
   outline: none; }
   .btn.btn--no-outline:focus {
     box-shadow: none; }
 
 .btn.btn--search {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 100000000000000000000000000000000;
   font-size: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #fff;
+  background-color: #FFFFFF;
   border: none;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   outline: none;
-  height: 2.3rem;
-  line-height: 1rem; }
+  height: 2.3rem; }
 
 .btn.btn--buy-now {
   font-size: 1rem;
@@ -169,6 +192,10 @@ body {
     display: inline-block;
     padding-left: 0rem;
     padding-right: 0rem; }
+    @media only screen and (min-width: 400px) {
+      .menu.menu--horizontal .menu__item {
+        padding-left: 1rem;
+        padding-right: 1rem; } }
     .menu.menu--horizontal .menu__item a {
       text-decoration: none;
       cursor: pointer; }
@@ -306,6 +333,8 @@ body {
     border: none;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     background-color: #fff; }
