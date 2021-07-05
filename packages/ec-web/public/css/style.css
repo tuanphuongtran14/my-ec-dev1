@@ -534,7 +534,7 @@ ul.product-details__bonus {
       margin-left: 0.25rem; }
     .related-products .product .product__box-sticker {
       width: 100%;
-      height: 100%;
+      /* height: 100%; */
       position: absolute;
       left: 0;
       top: 0; }
@@ -645,7 +645,7 @@ ul.product-details__bonus {
     margin-left: 0.25rem; }
   .product-list .product .product__box-sticker {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     position: absolute;
     left: 0;
     top: 0; }

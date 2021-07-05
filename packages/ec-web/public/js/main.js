@@ -1,27 +1,27 @@
 window.onload = function() {
     toggleMenuAndSearch();
 
-    // var homeCarousel = new Flickity( '.gallery', {
-    //     freeScroll: true, 
-    //     wrapAround: true 
-    // });
+    var homeCarousel = new Flickity( '.gallery', {
+        freeScroll: true, 
+        wrapAround: true 
+    });
 
-    // playSlider();
+    playSlider();
 
-    // if(document.getElementsByClassName('thumbnail'))
-    //     selectByThumbnail();
+    if(document.getElementsByClassName('thumbnail'))
+        selectByThumbnail();
 
-    // if(document.getElementById('versions'))
-    //     selectVersions('versions');
+    if(document.getElementById('versions'))
+        selectVersions('versions');
 
-    // if(document.getElementById('colors'))
-    //     selectVersions('colors');
+    if(document.getElementById('colors'))
+        selectVersions('colors');
 }
 
 function playSlider() {
     if(document.querySelector('.gallery')) {
         var carousel = new Flickity( '.gallery', {
-            autoPlay: 5000
+            autoPlay: 2500
         });
         carousel.playPlayer();
     }
