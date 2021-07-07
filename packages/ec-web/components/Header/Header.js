@@ -65,8 +65,10 @@ export default function Header() {
                         </div>
                     </button>
                     <button type="submit" className="btn btn--search" id="search-advanced">
-                        <div className="searchGo_text" href="./advancedSearch.html">
-                            Advanced
+                        <div className="searchGo_text">
+                            <Link href="/advancedSearch">Advanced
+                            </Link>
+                            
                         </div>
                     </button>
                     <button type="submit" className="btn btn--search" id="search-icon">
