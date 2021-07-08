@@ -13,13 +13,18 @@ export default function () {
 
     useEffect(() => {
         const fetchProduct = async () => {
-            fetch(`http://localhost:1337/products`)
-                .then(res => res.json())
-                .then(data => setProducts(data))
+            try {
+                fetch(`http://localhost:1337/products`)
+                    .then(res => res.json())
+                    .then(data => setProducts(data))
+            } catch (error) {
+                console.log("Failed to fetch products: ", error.message);
+            }
+
         }
 
         fetchProduct()
-    }, [])
+    }, [currentPage])
 
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -116,10 +121,15 @@ export default function () {
                             </select>
                         </div>
                         <div className="product-list product-list--non-slide border-0">
-                            <Product currentProducts={currentProducts}/>
+                            <Product currentProducts={currentProducts} />
                         </div>
-                        <Pagination productsPerPage={productsPerPage} totalProducts={products.length} paginate={paginate} />
-                        
+                        <Pagination
+                            productsPerPage={productsPerPage}
+                            totalProducts={products.length}
+                            paginate={paginate}
+                            currentPage={currentPage}
+                        />
+
 
                     </div>
                     <Footer />
