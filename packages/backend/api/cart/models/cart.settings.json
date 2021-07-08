@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "carts",
+  "info": {
+    "name": "Cart",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "autoPopulate": false,
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "total_price": {
+      "type": "biginteger"
+    },
+    "items": {
+      "collection": "ordered-item"
+    }
+  }
+}

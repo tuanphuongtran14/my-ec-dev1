@@ -11,10 +11,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "order": {
-      "model": "orders",
-      "via": "cart_items"
-    },
     "product": {
       "via": "cart_items",
       "model": "products"

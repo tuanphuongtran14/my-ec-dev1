@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ordered_items",
+  "info": {
+    "name": "Ordered Item"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "product": {
+      "model": "product"
+    },
+    "color": {
+      "type": "string"
+    },
+    "qty": {
+      "type": "integer"
+    },
+    "price": {
+      "type": "biginteger"
+    }
+  }
+}
