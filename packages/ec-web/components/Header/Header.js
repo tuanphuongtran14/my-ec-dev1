@@ -40,12 +40,16 @@ export default function Header() {
                     </li>
                     <li className="menu__item">
                         <button type="button" className="text-white btn btn--no-outline">
-                            <i className="fa fa-heart fa--md" aria-hidden="true" data-amount={0} />
+                            <Link href="/wishlist">
+                                <i className="fa fa-heart fa--md" aria-hidden="true" data-amount={0} />
+                            </Link>
                         </button>
                     </li>
                     <li className="menu__item">
                         <button type="button" className="text-white btn btn--no-outline">
-                            <i className="fa fa-shopping-bag fa--md" data-amount={0} aria-hidden="true" />
+                            <Link href="/cart">
+                                <i className="fa fa-shopping-bag fa--md" data-amount={0} aria-hidden="true" />
+                            </Link>
                         </button>
                     </li>
                     <li className="menu__item">

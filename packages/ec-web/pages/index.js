@@ -41,7 +41,6 @@ export default function Home() {
     regularPrice: '9.490.000',
     numberReview: 472,
     salesPercent: -12,
-    
   }
 
   const ProductList = (props) => {

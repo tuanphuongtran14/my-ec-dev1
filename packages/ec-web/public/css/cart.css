@@ -5,7 +5,7 @@
 } 
 
 .cart{
-    background-color: #b8b8b8;
+    background-color: #e9ecef;
 }
 
 .cart h1{
@@ -26,6 +26,12 @@
 
 .delete-all{
     margin-right: 5px;
+    cursor: pointer;
+}
+
+.delete-all span:hover,
+.delete-all i:hover{
+ color: red;
 }
 
 .select-all{
@@ -54,6 +60,14 @@
 .item-right-icon{
     display:flex;
     justify-content: center;
+}
+
+.item-right-icon i{
+    cursor: pointer;
+}
+
+.item-right-icon i:hover{
+    color: red;
 }
 
 .check-item-right span{
