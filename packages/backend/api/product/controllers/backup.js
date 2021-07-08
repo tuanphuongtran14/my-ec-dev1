@@ -7,20 +7,13 @@
 
 module.exports = {
     async search(ctx) {
-        let startTime2 = Date.now();
-        
         const filter = ctx.query._filter;
         const sort = ctx.query._sort;
         const skip = Number(ctx.query._skip);
         const limit = Number(ctx.query._limit);
 
         // Search and return products which match filter
-        const products = await strapi.services.product.search(filter, limit, skip, sort);
-        
-        let endTime2 = Date.now();
-        console.log(endTime2 - startTime2);
-
-        return products;
+        return await strapi.services.product.search(filter, limit, skip, sort);
     },
 
     async findSimilar(ctx) {
