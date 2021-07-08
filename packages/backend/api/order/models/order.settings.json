@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "name": "Order",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "items": {
+      "collection": "ordered-item"
+    },
+    "consignee_name": {
+      "type": "string",
+      "required": true
+    },
+    "consignee_phone": {
+      "type": "string",
+      "regex": "[0-9]",
+      "required": true
+    },
+    "email": {
+      "type": "email"
+    },
+    "address_line_1": {
+      "type": "string"
+    },
+    "district": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Pending",
+        "Confirmed",
+        "Delivery",
+        "Delivered",
+        "Cancelled"
+      ]
+    },
+    "is_paid": {
+      "type": "boolean"
+    },
+    "payment_method": {
+      "type": "enumeration",
+      "enum": [
+        "COD",
+        "ZaloPay",
+        "VnPay",
+        "MasterCard"
+      ]
+    },
+    "total_price": {
+      "type": "biginteger"
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user"
+    }
+  }
+}
