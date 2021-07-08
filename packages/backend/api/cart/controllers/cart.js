@@ -7,7 +7,7 @@
 
 module.exports = {
     async getCart(ctx) {
-        // If user has already logged in, add item to user's cart
+        // If user has already logged in, return user's cart
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
                 // Get user's id from request header
