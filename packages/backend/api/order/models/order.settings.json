@@ -8,7 +8,7 @@
   "options": {
     "increments": true,
     "timestamps": true,
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -42,10 +42,11 @@
         "Pending",
         "Confirmed",
         "Delivery",
-        "Delivered"
+        "Delivered",
+        "Cancelled"
       ]
     },
-    "isPaid": {
+    "is_paid": {
       "type": "boolean"
     },
     "payment_method": {
@@ -59,6 +60,10 @@
     },
     "total_price": {
       "type": "biginteger"
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user"
     }
   }
 }
