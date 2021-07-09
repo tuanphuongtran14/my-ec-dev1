@@ -4,27 +4,39 @@ import Footer from '../../components/Footer/Footer'
 import { useState, useEffect } from 'react';
 import Pagination from './pagination';
 import Product from './product';
-
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 export default function () {
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(5)
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                fetch(`http://localhost:1337/products`)
-                    .then(res => res.json())
-                    .then(data => setProducts(data))
-            } catch (error) {
-                console.log("Failed to fetch products: ", error.message);
+    const client = new ApolloClient({
+        uri: `http://localhost:1337/graphql`,
+        cache: new InMemoryCache(),
+    });
+
+    const graphql = gql`
+        query GetProducts{
+            products{
+                name,
+                salespercentage,
+                price,
+                id,
+                thumbnail{
+                    url
+                }
             }
-
         }
+    `
 
-        fetchProduct()
-    }, [currentPage])
+    useEffect(() => {
+        client
+            .query({
+                query: graphql
+            })
+            .then(res => setProducts(res.data.products))
+    }, [])
 
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
