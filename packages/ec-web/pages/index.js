@@ -54,18 +54,9 @@ export default function Home() {
               : null
           }
 
-<<<<<<< HEAD
-  const product = {
-    productTitle: 'Apple iPhone 12 Pro 128GB Chính hãng VN/A',
-    salesPrice: '8.990.000',
-    regularPrice: '9.490.000',
-    numberReview: 472,
-    salesPercent: -12,
-=======
         </a>
       </Link>
     )
->>>>>>> 3101a8492c01945a2bf4d8975e1e16e792442438
   }
   )
 
