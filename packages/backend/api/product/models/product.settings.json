@@ -146,6 +146,20 @@
     "brand": {
       "via": "products",
       "model": "brand"
+    },
+    "stars": {
+      "type": "decimal",
+      "required": true,
+      "default": 0,
+      "unique": false,
+      "max": 5,
+      "min": 0
+    },
+    "votes": {
+      "type": "integer",
+      "default": 0,
+      "required": true,
+      "min": 0
     }
   }
 }

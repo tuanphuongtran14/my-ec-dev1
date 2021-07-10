@@ -7,8 +7,6 @@
 
 module.exports = {
     async search(ctx) {
-        let startTime2 = Date.now();
-        
         const filter = ctx.query._filter;
         const sort = ctx.query._sort;
         const skip = Number(ctx.query._skip);
@@ -16,10 +14,8 @@ module.exports = {
 
         // Search and return products which match filter
         const products = await strapi.services.product.search(filter, limit, skip, sort);
-        
-        let endTime2 = Date.now();
-        console.log(endTime2 - startTime2);
 
+        
         return products;
     },
 
@@ -39,7 +35,9 @@ module.exports = {
             maxRam: product.ram + 2,
             minScreenSize: product.screen_size - 0.5,
             maxScreenSize: product.screen_size + 0.5,
-            id_ne: product.id
+            minBatteryCapacity: product.battery_capacity - 1000,
+            maxBatteryCapacity: product.battery_capacity + 1000,
+            id_ne: product.id,
         }
 
         // Search and return products which match filter

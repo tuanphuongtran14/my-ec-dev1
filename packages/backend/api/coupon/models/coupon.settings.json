@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coupons",
+  "info": {
+    "name": "Coupon",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "code": {
+      "type": "string",
+      "regex": "^[0-9A-Z]+$",
+      "required": true,
+      "unique": true
+    },
+    "expiry_date": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}
