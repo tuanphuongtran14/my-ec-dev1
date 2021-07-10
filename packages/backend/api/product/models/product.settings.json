@@ -22,11 +22,6 @@
       "required": true,
       "unique": true
     },
-    "price": {
-      "type": "integer",
-      "required": true,
-      "min": 0
-    },
     "cpu": {
       "type": "string",
       "required": true
@@ -160,6 +155,12 @@
       "default": 0,
       "required": true,
       "min": 0
+    },
+    "regular_price": {
+      "type": "biginteger"
+    },
+    "final_price": {
+      "type": "biginteger"
     }
   }
 }

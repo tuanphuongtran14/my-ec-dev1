@@ -8,18 +8,26 @@ const slugify = require('slugify');
 module.exports = {
     lifecycles: {
       beforeCreate: async (data) => {
-        if (data.name) {
+        if (data.name) 
           data.slug = slugify(data.name, {
               lower: true
           });
-        }
+
+        if (data.sales_percentage > 0) 
+          data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
+        else
+          data.final_price = data.regular_price;
       },
       beforeUpdate: async (params, data) => {
-        if (data.name) {
+        if (data.name) 
           data.slug = slugify(data.name, {
             lower: true
         });
-        }
+          
+        if (data.sales_percentage > 0) 
+          data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
+        else
+          data.final_price = data.regular_price;
       },
     },
 };

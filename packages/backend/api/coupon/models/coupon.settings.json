@@ -14,13 +14,24 @@
   "attributes": {
     "code": {
       "type": "string",
-      "regex": "^[0-9A-Z]+$",
+      "regex": "[0-9A-Z]",
       "required": true,
       "unique": true
     },
     "expiry_date": {
       "type": "datetime",
       "required": true
+    },
+    "discount_percentage": {
+      "type": "decimal",
+      "default": 0,
+      "required": false,
+      "max": 60,
+      "min": 1
+    },
+    "discount_amount": {
+      "type": "biginteger",
+      "min": "50000"
     }
   }
 }

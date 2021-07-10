@@ -46,14 +46,14 @@ module.exports = {
 
         // If user query min price, add it to query conditions
         if(filter.minPrice)
-            query['price'] = {
+            query['final_price'] = {
                 $gte: Number(filter.minPrice)
             };
 
         // If user query max price, add it to query conditions
         if(filter.maxPrice)
-            query['price'] = {
-                ...query['price'],
+            query['final_price'] = {
+                ...query['final_price'],
                 $lte: Number(filter.maxPrice)
             };
 
@@ -185,7 +185,8 @@ module.exports = {
                 { "$group": {
                     "_id": "$_id",
                     "name" : { "$first": '$name' },
-                    "price" : { "$first": '$price' },
+                    "regular_price" : { "$first": '$regular_price' },
+                    "final_price" : { "$first": '$final_price' },
                     "slug" : { "$first": '$slug' },
                     "sales_percentage" : { "$first": '$sales_percentage' },
                     "cpu" : { "$first": '$cpu' },
