@@ -1,4 +1,4 @@
-// 'use strict';
+'use strict';
 
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
@@ -18,29 +18,14 @@ module.exports = {
 
                 // If user's cart is not exist, create a new cart for user
                 if(!userCart) 
-                    return await strapi.query('cart').create({
+                    userCart = await strapi.query('cart').create({
                         user: user_id,
                         items: [],
-                        total_price: 0,
-                        final_price: 0
+                        coupon_is_valid: true,
                     });
-
-                // If user's cart has applied a coupon before, check its validation
-                if(userCart.coupon) {
-                    // Find coupon of user's cart in database
-                    const coupon = await strapi.query('coupon').model.findById(userCart.coupon).lean();
-    
-                    // If coupon is expiry, update coupon status and return user's cart
-                    if(Number(coupon.expiry_date) < Date.now())
-                        return await strapi.query('cart').update({ _id: userCart._id }, {
-                            coupon_is_valid: false,
-                            total_price: userCart.total_price,
-                            final_price: userCart.total_price
-                        });
-                }
                 
-                // Else only return user's cart
-                return await strapi.query('cart').findOne({id: userCart._id});
+                // Return user's cart
+                return await strapi.services.cart.displayCart(userCart._id);
 
             } catch (error) {
                 console.log(error);
@@ -77,54 +62,25 @@ module.exports = {
                 let userCart = await strapi.query('cart').model.findOne({ user: user_id });
 
                 // If user's cart is not exist, create a new cart for user
-                if(!userCart) {
-                    return await strapi.query('cart').model.create({
+                if(!userCart) 
+                    userCart = strapi.query('cart').model.create({
                         user: user_id,
                         items: [ newItem._id ],
-                        total_price: itemPrice,
-                        final_price: itemPrice
+                        coupon_is_valid: true,
                     });
-                } else {
+                else {
                     // Get old items in user's cart
                     const oldItems = userCart.items;
 
-                    // Add new item to user's cart & modify total price
+                    // Add new item to user's cart
                     userCart.items = [ newItem._id, ...oldItems ];
-                    userCart.total_price = Number(itemPrice) + Number(userCart.total_price);
                     
-                    // If user's cart has applied a coupon before
-                    if(userCart.coupon) {
-                        // Find coupon of user's cart in database
-                        const coupon = await strapi.query('coupon').model.findById(userCart.coupon).lean();
-        
-                        // Calc final price of user's cart
-                        userCart.final_price = userCart.total_price;
-
-                        if(coupon.discount_percentage) 
-                            userCart.final_price *= 1 - coupon.discount_percentage / 100;
-
-                        if(coupon.discount_amount) 
-                            userCart.final_price -= coupon.discount_amount;
-                        
-                        if(userCart.final_price < 0)
-                            userCart.final_price = 0;
-
-                        // If coupon is expiry, update coupon status and return user's cart
-                        if(Number(coupon.expiry_date) < Date.now()) 
-                            return await strapi.query('cart').update({ _id: userCart._id }, {
-                                coupon_is_valid: false,
-                                total_price: userCart.total_price,
-                                final_price: userCart.total_price
-                            });
-                    }
-
                     // Save user's cart to db
                     await userCart.save();
-                    
-                    // Return new user's cart
-                    return await strapi.query('cart').findOne({id: userCart._id});
-
                 }
+                
+                // Return user's cart
+                return await strapi.services.cart.displayCart(userCart._id);
 
             } catch (error) {
                 console.log(error);
@@ -159,8 +115,7 @@ module.exports = {
                     return await strapi.query('cart').model.create({
                         user: user_id,
                         items: [],
-                        total_price: 0,
-                        final_price: 0
+                        coupon_is_valid: true,
                     });
 
                 // Declare new items array && boolean variable to check item is in user's cart or not
@@ -184,39 +139,12 @@ module.exports = {
 
                 // Remove that item from user's cart & modify total price
                 userCart.items = newItems;
-                userCart.total_price =  Number(userCart.total_price) - Number(itemNeedBeRemoved.price);
-   
-                // If user's cart has applied a coupon before
-                if(userCart.coupon) {
-                    // Find coupon of user's cart in database
-                    const coupon = await strapi.query('coupon').model.findById(userCart.coupon).lean();
-    
-                    // Calc final price of user's cart
-                    userCart.final_price = userCart.total_price;
-
-                    if(coupon.discount_percentage) 
-                        userCart.final_price *= 1 - coupon.discount_percentage / 100;
-
-                    if(coupon.discount_amount) 
-                        userCart.final_price -= coupon.discount_amount;
-
-                    if(userCart.final_price < 0)
-                        userCart.final_price = 0;
-
-                    // If coupon is expiry, update coupon status and return user's cart
-                    if(Number(coupon.expiry_date) < Date.now()) 
-                        return await strapi.query('cart').update({ _id: userCart._id }, {
-                            coupon_is_valid: false,
-                            total_price: userCart.total_price,
-                            final_price: userCart.total_price
-                        });
-                }
 
                 // Save user's cart to db
                 await userCart.save();
                 
-                // Return new user's cart
-                return await strapi.query('cart').findOne({id: userCart._id});
+                // Return user's cart
+                return await strapi.services.cart.displayCart(userCart._id);
 
             } catch (error) {
                 console.log(error);
@@ -253,32 +181,53 @@ module.exports = {
 
                 // If user's cart is not exist, create a new cart for user
                 if(!userCart) 
-                    return await strapi.query('cart').create({
+                    userCart = await strapi.query('cart').model.create({
                         user: user_id,
-                        items: [],
-                        total_price: 0,
-                        final_price: 0,
-                        coupon: coupon._id,
-                        coupon_is_valid: couponIsValid
+                        items: []
                     });
 
-                // If user's cart is exist, add coupon and return user's cart
-                let finalPrice = userCart.total_price;
+                userCart.coupon = coupon._id;
+                userCart.coupon_is_valid = couponIsValid
 
-                if(coupon.discount_percentage) 
-                    finalPrice *= 1 - coupon.discount_percentage / 100;
+                await userCart.save();
+                
+                // Return user's cart
+                return await strapi.services.cart.displayCart(userCart._id);
 
-                if(coupon.discount_amount) 
-                    finalPrice -= coupon.discount_amount;
-                    
-                if(finalPrice < 0)
-                    finalPrice = 0;
+            } catch (error) {
+                console.log(error);
+                throw error;
+            }
+        }
+        throw new Error('You must login before removing item from your cart');
+    },
 
-                return await strapi.query('cart').update({ _id: userCart._id }, {
-                    coupon: coupon._id,
-                    coupon_is_valid: couponIsValid,
-                    final_price: finalPrice
-                })
+    async removeCoupon(ctx) {
+        // If user has already logged in, remove item from user's cart
+        if(ctx.request.header && ctx.request.header.authorization) {
+            try {
+                // Get user's id from request header
+                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);  
+                
+                // Find user's cart in database
+                let userCart = await strapi.query('cart').model.findOne({ user: user_id });
+
+                // If user's cart is not exist, create a new cart without coupon for user
+                if(!userCart) 
+                    userCart = await strapi.query('cart').model.create({
+                        user: user_id,
+                        items: []
+                    });
+                else {
+                // Else remove coupon
+                    userCart.coupon = undefined;
+                    userCart.coupon_is_valid = true;
+    
+                    await userCart.save();
+                }
+                
+                // Return user's cart
+                return await strapi.services.cart.displayCart(userCart._id);
 
             } catch (error) {
                 console.log(error);

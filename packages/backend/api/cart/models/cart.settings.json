@@ -17,9 +17,6 @@
       "plugin": "users-permissions",
       "model": "user"
     },
-    "total_price": {
-      "type": "biginteger"
-    },
     "items": {
       "collection": "ordered-item"
     },
@@ -28,9 +25,6 @@
     },
     "coupon_is_valid": {
       "type": "boolean"
-    },
-    "final_price": {
-      "type": "biginteger"
     }
   }
 }
