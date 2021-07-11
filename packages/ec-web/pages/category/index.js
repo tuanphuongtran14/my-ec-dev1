@@ -1,33 +1,15 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer'
-import { useState, useEffect } from 'react';
-import Pagination from './pagination';
-import Product from './product';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { useState } from 'react';
+import Pagination from '../../components/Category/pagination';
+import Product from '../../components/Category/product';
+import client from '../../components/Category/apolloClient'
+import getProductsQuery from '../../components/Category/getProductsQuery'
 
 export async function getServerSideProps() {
-    const client = new ApolloClient({
-        uri: `http://localhost:1337/graphql`,
-        cache: new InMemoryCache(),
-    });
-
     const { data } = await client.query({
-        query: gql`  
-        query{
-            products: searchProducts {
-                name,
-                slug,
-                sales_percentage,
-                regular_price,
-                final_price,
-                id,
-                thumbnail{
-                    url
-                }
-            }
-        }
-  `
+        query: getProductsQuery()
     });
 
     return {
@@ -37,7 +19,7 @@ export async function getServerSideProps() {
     };
 }
 
-export default function ({products}) {
+export default function ({ products }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(5)
 
