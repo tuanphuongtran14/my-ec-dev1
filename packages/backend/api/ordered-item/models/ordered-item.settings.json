@@ -20,6 +20,12 @@
     },
     "qty": {
       "type": "integer"
+    },
+    "unit_price": {
+      "type": "biginteger"
+    },
+    "total_price": {
+      "type": "biginteger"
     }
   }
 }

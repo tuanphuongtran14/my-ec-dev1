@@ -1,4 +1,5 @@
 'use strict';
+const { ObjectID } = require('mongodb');
 
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
@@ -43,20 +44,40 @@ module.exports = {
                 const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
                 // Get item input from request
-                let newItem = ctx.request.body.item;
+                let newItemInput = ctx.request.body.item;
         
                 // Find item's product in database
-                const product = await strapi.query('product').model.findById(newItem.product, 'final_price').lean();
-        
-                // Calc item price
-                const itemPrice = newItem.qty * product.final_price;
+                const [ product ] = await strapi.query('product').model
+                    .aggregate([
+                        { "$match": { "_id": new ObjectID(newItemInput.product) } },
+                        {
+                            "$lookup": {
+                                "from": "components_product_options",
+                                "localField": "options.ref",
+                                "foreignField": "_id",
+                                "as": "options"
+                            }
+                        },
+                        {
+                          "$project": {
+                            "options": 1
+                          }
+                        },
+                    ]);
 
-                newItem = await strapi.query('ordered-item').model.create({
-                    product: newItem.product,
-                    color: newItem.color,
-                    qty: newItem.qty,
-                    price: itemPrice
-                })
+                const checkColorValid = product.options.filter(option => {
+                    return (option.color === newItemInput.color) ? true : false;
+                });
+
+                if(checkColorValid.length === 0)
+                    throw new Error('Color which you choose is not valid');
+        
+                // Create cart's item record
+                let newItem = await strapi.query('ordered-item').model.create({
+                    product: newItemInput.product,
+                    color: newItemInput.color,
+                    qty: newItemInput.qty,
+                });
 
                 // Find user's cart in database
                 let userCart = await strapi.query('cart').model.findOne({ user: user_id });

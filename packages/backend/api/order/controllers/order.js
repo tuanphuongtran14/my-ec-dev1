@@ -1,4 +1,5 @@
 'use strict';
+const { ObjectID } = require('mongodb');
 
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
@@ -43,17 +44,118 @@ module.exports = {
                 } = ctx.request.body.info;
 
                 // Get user's cart
-                const userCart = await strapi.query('cart').model.findOne({ user: user_id });
+                const [ userCart ] = await strapi.query('cart').model
+                    .aggregate([
+                        { "$match": { "user": new ObjectID(user_id) }},
+                        { "$lookup": {
+                          "from": "coupons",
+                          "localField": "coupon",
+                          "foreignField": "_id",
+                          "as": "coupon"
+                        }},
+                        {
+                          "$unwind": {
+                            "path": "$coupon",
+                            "preserveNullAndEmptyArrays": true
+                          }
+                        },
+                        {
+                          "$unwind": {
+                            "path": "$items",
+                            "preserveNullAndEmptyArrays": true
+                          }
+                        },
+                        { "$lookup": {
+                          "from": "ordered_items",
+                          "localField": "items",
+                          "foreignField": "_id",
+                          "as": "items_details"
+                        }},
+                        {
+                          "$unwind": {
+                            "path": "$items_details",
+                            "preserveNullAndEmptyArrays": true
+                          }
+                        },
+                        { "$lookup": {
+                          "from": "products",
+                          "localField": "items_details.product",
+                          "foreignField": "_id",
+                          "as": "items_details.product"
+                        }},
+                        {
+                          "$unwind": {
+                            "path": "$items_details.product",
+                            "preserveNullAndEmptyArrays": true
+                          }
+                        },
+                        {
+                          "$addFields": { 
+                              "items_details.price": { "$multiply": [ "$items_details.product.final_price", "$items_details.qty" ] }
+                        }},
+                        { "$group": {
+                            "_id": "$_id",
+                            "user": { "$first": '$user' },
+                            "coupon": { "$first": '$coupon' },
+                            "coupon_is_valid": { "$first": '$coupon_is_valid' },
+                            "items": { "$push": "$items" },
+                            "items_details": { "$push": "$items_details" },
+                        }},
+                        {
+                          "$addFields": { 
+                              "total_price": { "$sum": "$items_details.price" }
+                        }},
+                    ]);
+
+                console.log(userCart);
+                
+                // If user's cart is not exist or has no items, throw an error
+                if(!userCart && userCart.items.length === 0) 
+                    throw new Error('Cannot checkout because your cart is empty');
+
+                // Calc final price of user's cart
+                userCart.final_price = userCart.total_price;
+
+                if(userCart.coupon) {
+                    // If coupon is expiry, update coupon status and return user's cart
+                    if(Number(userCart.coupon.expiry_date) < Date.now())
+                        await strapi.query('cart').model.findByIdAndUpdate(cart._id, {
+                            coupon_is_valid: false
+                        });
+                    else {
+                        // Else, calculate final price with coupon discount
+                        if(userCart.coupon.discount_percentage) 
+                            userCart.final_price *= 1 - userCart.coupon.discount_percentage / 100;
+            
+                        if(userCart.coupon.discount_amount) 
+                            userCart.final_price -= userCart.coupon.discount_amount;
+            
+                        if(userCart.final_price < 0)
+                                userCart.final_price = 0;  
+                    }
+                }
+
+                console.log(1)
 
                 // Get items && total price from user's cart
-                const { items, total_price, user } = userCart;
+                const { items, total_price, final_price, user } = userCart;
+                
+                // After creating order, set user's cart to empty
+                await strapi.query('cart').model.findByIdAndUpdate(userCart._id, {
+                    items: [],
+                    coupon: undefined,
+                    coupon_is_valid: undefined
+                });
 
-                // If user's is empty, stop and throw error
-                if(items.length === 0) 
-                    throw new Error('You cannot checkout an empty order');
+                // Add price information to order items
+                await Promise.all(userCart.items_details.map(async item => {
+                    return await strapi.query('cart').model.findByIdAndUpdate(item._id, {
+                        price: item.price
+                    });
+                }));
                 
                 // Create new order based on input
-                const newOrder = await strapi.query('order').create({
+                return await strapi.query('order').create({
                     consignee_name,
                     consignee_phone,
                     email,
@@ -62,18 +164,12 @@ module.exports = {
                     city,
                     items,
                     total_price,
+                    final_price,
                     status: 'Pending',
                     is_paid: false,
                     payment_method,
                     user
                 });
-
-                // After creating order, set user's cart to empty
-                userCart.items = [];
-                userCart.total_price = 0;
-                await userCart.save();
-
-                return newOrder;
 
             } catch (error) {
                 console.log(error);

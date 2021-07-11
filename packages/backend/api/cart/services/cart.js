@@ -8,11 +8,8 @@ const { ObjectID } = require('mongodb');
 
 module.exports = {
     async displayCart(cartId) {
-    
-        const startTime = Date.now();
-    
         // Get cart information from database by id
-        let cart = await strapi.query('cart').model
+        let [ cart ] = await strapi.query('cart').model
             .aggregate([
                 { "$match": { "_id": new ObjectID(cartId) }},
                 { "$lookup": {
@@ -102,8 +99,6 @@ module.exports = {
                     "_id": "$_id",
                     "user": { "$first": '$user' },
                     "coupon": { "$first": '$coupon' },
-                    "total_price": { "$first": '$total_price' },
-                    "final_price": { "$first": '$final_price' },
                     "coupon_is_valid": { "$first": '$coupon_is_valid' },
                     "items": { "$push": "$items" },
                 }},
@@ -114,35 +109,31 @@ module.exports = {
             ]);
 
         // Handle to avoid errors when cart's items is empty
-        if(cart[0].items[0].price === null) 
-            cart[0].items = [];
+        if(cart.items[0].price === null) 
+            cart.items = [];
         
         // Calc final price of user's cart
-        cart[0].final_price = cart[0].total_price;
+        cart.final_price = cart.total_price;
 
-        if(cart[0].coupon) {
+        if(cart.coupon) {
             // If coupon is expiry, update coupon status and return user's cart
-            if(Number(cart[0].coupon.expiry_date) < Date.now())
+            if(Number(cart.coupon.expiry_date) < Date.now())
                 await strapi.query('cart').model.findByIdAndUpdate(cart._id, {
                     coupon_is_valid: false
                 });
             else {
                 // Else, calculate final price with coupon discount
-                if(cart[0].coupon.discount_percentage) 
-                    cart[0].final_price *= 1 - cart[0].coupon.discount_percentage / 100;
+                if(cart.coupon.discount_percentage) 
+                    cart.final_price *= 1 - cart.coupon.discount_percentage / 100;
     
-                if(cart[0].coupon.discount_amount) 
-                    cart[0].final_price -= cart[0].coupon.discount_amount;
+                if(cart.coupon.discount_amount) 
+                    cart.final_price -= cart.coupon.discount_amount;
     
-                if(cart[0].final_price < 0)
-                        cart[0].final_price = 0;  
+                if(cart.final_price < 0)
+                        cart.final_price = 0;  
             }
         }
-    
-        console.log(cart[0]);
 
-        const endTime = Date.now();
-        console.log(endTime - startTime);
-        return cart[0];
+        return cart;
     }    
 };

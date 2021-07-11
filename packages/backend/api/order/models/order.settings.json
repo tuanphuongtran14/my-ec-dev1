@@ -64,6 +64,9 @@
     "user": {
       "plugin": "users-permissions",
       "model": "user"
+    },
+    "final_price": {
+      "type": "biginteger"
     }
   }
 }
