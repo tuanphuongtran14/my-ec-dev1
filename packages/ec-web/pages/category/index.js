@@ -6,37 +6,40 @@ import Pagination from './pagination';
 import Product from './product';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
-export default function () {
-    const [products, setProducts] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(5)
-
+export async function getServerSideProps() {
     const client = new ApolloClient({
         uri: `http://localhost:1337/graphql`,
         cache: new InMemoryCache(),
     });
 
-    const graphql = gql`
-        query GetProducts{
-            products{
+    const { data } = await client.query({
+        query: gql`  
+        query{
+            products: searchProducts {
                 name,
-                salespercentage,
-                price,
+                slug,
+                sales_percentage,
+                regular_price,
+                final_price,
                 id,
                 thumbnail{
                     url
                 }
             }
         }
-    `
+  `
+    });
 
-    useEffect(() => {
-        client
-            .query({
-                query: graphql
-            })
-            .then(res => setProducts(res.data.products))
-    }, [])
+    return {
+        props: {
+            products: data.products,
+        },
+    };
+}
+
+export default function ({products}) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(5)
 
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
