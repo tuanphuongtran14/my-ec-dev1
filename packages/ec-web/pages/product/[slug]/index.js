@@ -3,60 +3,59 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import Link from "next/link";
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-// import React, { useEffect, useState } from 'react';
-// import { useRouter } from 'next/router';
 
 export async function getServerSideProps({ params }) {
     const client = new ApolloClient({
         uri: `http://localhost:1337/graphql`,
         cache: new InMemoryCache(),
     });
-    // console.log(params.slug)
 
     const { data } = await client.query({
         query: gql`  
-      query($filter: ProductFilter!) {
-        products: searchProducts {
-              name,
-              slug,
-              sales_percentage,
-              price,
-              id,
-              thumbnail{
-                  url
-              }
-          }
-          product: searchProducts(filter: $filter){
-            name,
-            sales_percentage,
-            slug,
-            price,
-            id,
-            ram,
-            thumbnail{
-                url
-            },
-            full_desc,
-            product_condition,
-            warranty,
-            inclusion_box,
-            height,
-            width,
-            depth,
-            platform_name,
-            platform_version,
-            screen_size,
-            screen_panel,
-            screen_resolution,
-            cpu,
-            gpu,
-            options{
-            images{
-                url
+        query($filter: ProductFilter!) {
+            products: searchProducts {
+                name,
+                slug,
+                sales_percentage,
+                regular_price,
+                final_price,
+                id,
+                thumbnail{
+                    url
+                }
             }
+            product: searchProducts(filter: $filter){
+                name,
+                sales_percentage,
+                slug,
+                regular_price,
+                final_price,
+                id,
+                ram,
+                thumbnail{
+                    url
+                },
+                full_desc,
+                product_condition,
+                warranty,
+                inclusion_box,
+                height,
+                width,
+                depth,
+                platform_name,
+                platform_version,
+                screen_size,
+                screen_panel,
+                screen_resolution,
+                cpu,
+                gpu,
+                options{
+                    images{
+                        url
+                    }
+                }
             }
-          }
-      }
+        }
   `,
         variables: {
             "filter": {
@@ -76,23 +75,23 @@ export async function getServerSideProps({ params }) {
 export default function product({ product, products }) {
     // console.log(product.options);
 
-    const regularPrice = product.price.toLocaleString("DE-de");
-    const salePrice = (product.price - (product.price * product.sales_percentage) / 100).toLocaleString("DE-de");
+    const regularPrice = product.regular_price.toLocaleString("DE-de");
+    const finalPrice = product.final_price.toLocaleString("DE-de");
 
     // Sản phẩm liên quan
     const relatedProduct = products.slice(1, 5).map((product, index) => {
-        const regularPrice = product.price.toLocaleString("DE-de");
-        const salePrice = (product.price - (product.price * product.sales_percentage) / 100).toLocaleString("DE-de");
+        const regularPrice = product.regular_price.toLocaleString("DE-de");
+        const finalPrice = product.final_price.toLocaleString("DE-de");
         return (
             <div className="product col-6 col-md-3 col-lg-10 col-xl-9 my-3">
                 <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" />
                 <Link href="/product/[slugProduct]" as={`/product/${product.slug}`}>
-                    <span className="product__title" style = {{ cursor: "pointer"}}>
+                    <span className="product__title" style={{ cursor: "pointer" }}>
                         {product.name}
                     </span>
                 </Link>
                 <div className="product__price">
-                    <span className="sales-price">{salePrice}₫</span>
+                    <span className="sales-price">{finalPrice}₫</span>
                     <span className="regular-price">{regularPrice}₫</span>
                 </div>
                 <div className="product__rating">
@@ -146,7 +145,7 @@ export default function product({ product, products }) {
             return product.options.map((option, index) => {
                 return <div className={index === 0 ? "version active" : "version"}>
                     {option.color}
-                    <span className="version__price">{index >= 2 ? regularPrice : salePrice}</span>
+                    <span className="version__price">{index >= 2 ? regularPrice : finalPrice}</span>
                 </div>
             })
         }
@@ -211,8 +210,8 @@ export default function product({ product, products }) {
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
                             <div className="product-details__price">
                                 {product.sales_percentage === 0 ?
-                                null :
-                                <span className="sales-price">{salePrice} ₫ </span>
+                                    null :
+                                    <span className="sales-price">{finalPrice} ₫ </span>
                                 }
                                 <span className="regular-price">{regularPrice} ₫</span>
                             </div>
@@ -222,7 +221,7 @@ export default function product({ product, products }) {
                             <div className="product-details__versions" id="versions">
                                 <div className="version active">
                                     {product.ram}G
-                                    <span className="version__price">{salePrice} ₫</span>
+                                    <span className="version__price">{finalPrice} ₫</span>
                                 </div>
                             </div>
                             <p className="my-2">
@@ -278,7 +277,7 @@ export default function product({ product, products }) {
                             <div className="mt-2">
                                 <b>Bảo hành</b>
                                 <br />
-                                <ul className="text-justify" dangerouslySetInnerHTML={{ __html: product.warranty }} style={{ listStyleType: "none"}}></ul>
+                                <ul className="text-justify" dangerouslySetInnerHTML={{ __html: product.warranty }} style={{ listStyleType: "none" }}></ul>
                             </div>
                         </div>
                     </section>
