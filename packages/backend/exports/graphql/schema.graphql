@@ -47,6 +47,12 @@ input CartItemInput {
   qty: Int!
 }
 
+type ProductOption {
+  color: String!
+  quantity_in_stock: Int!
+  sold_quantity: Int!
+}
+
 type ProductItem {
   _id: ID!
   name: String!
@@ -55,6 +61,7 @@ type ProductItem {
   final_price: Long!
   thumbnail: UploadFile!
   brand: Brand!
+  options: [ProductOption]!
 }
 
 type CartItem {
@@ -67,7 +74,6 @@ type CartItem {
 
 type UserCart {
   _id: ID!
-  user: UsersPermissionsUser!
   coupon: Coupon
   items: [CartItem]!
   coupon_is_valid: Boolean!
@@ -230,9 +236,7 @@ type Cart {
   _id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  user: UsersPermissionsUser
   coupon: Coupon
-  coupon_is_valid: Boolean
   items(sort: String, limit: Int, start: Int, where: JSON): [OrderedItem]
 }
 
@@ -252,9 +256,7 @@ type CartGroupBy {
   _id: [CartConnection_id]
   createdAt: [CartConnectionCreatedAt]
   updatedAt: [CartConnectionUpdatedAt]
-  user: [CartConnectionUser]
   coupon: [CartConnectionCoupon]
-  coupon_is_valid: [CartConnectionCoupon_is_valid]
 }
 
 type CartConnectionId {
@@ -277,35 +279,21 @@ type CartConnectionUpdatedAt {
   connection: CartConnection
 }
 
-type CartConnectionUser {
-  key: ID
-  connection: CartConnection
-}
-
 type CartConnectionCoupon {
   key: ID
   connection: CartConnection
 }
 
-type CartConnectionCoupon_is_valid {
-  key: Boolean
-  connection: CartConnection
-}
-
 input CartInput {
-  user: ID
   items: [ID]
   coupon: ID
-  coupon_is_valid: Boolean
   created_by: ID
   updated_by: ID
 }
 
 input editCartInput {
-  user: ID
   items: [ID]
   coupon: ID
-  coupon_is_valid: Boolean
   created_by: ID
   updated_by: ID
 }
@@ -1916,7 +1904,7 @@ input editComponentProductOptionInput {
   sold_quantity: Int
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ProductItem | CartItem | UserCart | Brand | BrandConnection | BrandAggregator | BrandGroupBy | BrandConnectionId | BrandConnection_id | BrandConnectionCreatedAt | BrandConnectionUpdatedAt | BrandConnectionName | BrandConnectionSlug | BrandConnectionPublished_at | createBrandPayload | updateBrandPayload | deleteBrandPayload | Cart | CartConnection | CartAggregator | CartGroupBy | CartConnectionId | CartConnection_id | CartConnectionCreatedAt | CartConnectionUpdatedAt | CartConnectionUser | CartConnectionCoupon | CartConnectionCoupon_is_valid | createCartPayload | updateCartPayload | deleteCartPayload | Coupon | CouponConnection | CouponAggregator | CouponAggregatorSum | CouponAggregatorAvg | CouponAggregatorMin | CouponAggregatorMax | CouponGroupBy | CouponConnectionId | CouponConnection_id | CouponConnectionCreatedAt | CouponConnectionUpdatedAt | CouponConnectionCode | CouponConnectionExpiry_date | CouponConnectionDiscount_percentage | CouponConnectionDiscount_amount | CouponConnectionPublished_at | createCouponPayload | updateCouponPayload | deleteCouponPayload | Order | OrderConnection | OrderAggregator | OrderGroupBy | OrderConnectionId | OrderConnection_id | OrderConnectionCreatedAt | OrderConnectionUpdatedAt | OrderConnectionConsignee_name | OrderConnectionConsignee_phone | OrderConnectionEmail | OrderConnectionAddress_line_1 | OrderConnectionDistrict | OrderConnectionCity | OrderConnectionStatus | OrderConnectionIs_paid | OrderConnectionPayment_method | OrderConnectionTotal_price | OrderConnectionUser | OrderConnectionFinal_price | createOrderPayload | updateOrderPayload | deleteOrderPayload | OrderedItem | OrderedItemConnection | OrderedItemAggregator | OrderedItemAggregatorSum | OrderedItemAggregatorAvg | OrderedItemAggregatorMin | OrderedItemAggregatorMax | OrderedItemGroupBy | OrderedItemConnectionId | OrderedItemConnection_id | OrderedItemConnectionCreatedAt | OrderedItemConnectionUpdatedAt | OrderedItemConnectionProduct | OrderedItemConnectionColor | OrderedItemConnectionQty | OrderedItemConnectionUnit_price | OrderedItemConnectionTotal_price | createOrderedItemPayload | updateOrderedItemPayload | deleteOrderedItemPayload | Product | ProductConnection | ProductAggregator | ProductAggregatorSum | ProductAggregatorAvg | ProductAggregatorMin | ProductAggregatorMax | ProductGroupBy | ProductConnectionId | ProductConnection_id | ProductConnectionCreatedAt | ProductConnectionUpdatedAt | ProductConnectionName | ProductConnectionSlug | ProductConnectionCpu | ProductConnectionGpu | ProductConnectionScreen_size | ProductConnectionScreen_panel | ProductConnectionScreen_resolution | ProductConnectionHeight | ProductConnectionWidth | ProductConnectionDepth | ProductConnectionWeight | ProductConnectionRam | ProductConnectionRom | ProductConnectionPlatform_version | ProductConnectionFull_desc | ProductConnectionShort_desc | ProductConnectionPlatform_name | ProductConnectionSales_percentage | ProductConnectionInclusion_box | ProductConnectionWarranty | ProductConnectionProduct_condition | ProductConnectionBattery_capacity | ProductConnectionBattery_type | ProductConnectionThumbnail | ProductConnectionBrand | ProductConnectionStars | ProductConnectionVotes | ProductConnectionRegular_price | ProductConnectionFinal_price | ProductConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | Review | ReviewConnection | ReviewAggregator | ReviewAggregatorSum | ReviewAggregatorAvg | ReviewAggregatorMin | ReviewAggregatorMax | ReviewGroupBy | ReviewConnectionId | ReviewConnection_id | ReviewConnectionCreatedAt | ReviewConnectionUpdatedAt | ReviewConnectionUser | ReviewConnectionProduct | ReviewConnectionComment | ReviewConnectionStars | ReviewConnectionPublished_at | createReviewPayload | updateReviewPayload | deleteReviewPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductOption
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ProductOption | ProductItem | CartItem | UserCart | Brand | BrandConnection | BrandAggregator | BrandGroupBy | BrandConnectionId | BrandConnection_id | BrandConnectionCreatedAt | BrandConnectionUpdatedAt | BrandConnectionName | BrandConnectionSlug | BrandConnectionPublished_at | createBrandPayload | updateBrandPayload | deleteBrandPayload | Cart | CartConnection | CartAggregator | CartGroupBy | CartConnectionId | CartConnection_id | CartConnectionCreatedAt | CartConnectionUpdatedAt | CartConnectionCoupon | createCartPayload | updateCartPayload | deleteCartPayload | Coupon | CouponConnection | CouponAggregator | CouponAggregatorSum | CouponAggregatorAvg | CouponAggregatorMin | CouponAggregatorMax | CouponGroupBy | CouponConnectionId | CouponConnection_id | CouponConnectionCreatedAt | CouponConnectionUpdatedAt | CouponConnectionCode | CouponConnectionExpiry_date | CouponConnectionDiscount_percentage | CouponConnectionDiscount_amount | CouponConnectionPublished_at | createCouponPayload | updateCouponPayload | deleteCouponPayload | Order | OrderConnection | OrderAggregator | OrderGroupBy | OrderConnectionId | OrderConnection_id | OrderConnectionCreatedAt | OrderConnectionUpdatedAt | OrderConnectionConsignee_name | OrderConnectionConsignee_phone | OrderConnectionEmail | OrderConnectionAddress_line_1 | OrderConnectionDistrict | OrderConnectionCity | OrderConnectionStatus | OrderConnectionIs_paid | OrderConnectionPayment_method | OrderConnectionTotal_price | OrderConnectionUser | OrderConnectionFinal_price | createOrderPayload | updateOrderPayload | deleteOrderPayload | OrderedItem | OrderedItemConnection | OrderedItemAggregator | OrderedItemAggregatorSum | OrderedItemAggregatorAvg | OrderedItemAggregatorMin | OrderedItemAggregatorMax | OrderedItemGroupBy | OrderedItemConnectionId | OrderedItemConnection_id | OrderedItemConnectionCreatedAt | OrderedItemConnectionUpdatedAt | OrderedItemConnectionProduct | OrderedItemConnectionColor | OrderedItemConnectionQty | OrderedItemConnectionUnit_price | OrderedItemConnectionTotal_price | createOrderedItemPayload | updateOrderedItemPayload | deleteOrderedItemPayload | Product | ProductConnection | ProductAggregator | ProductAggregatorSum | ProductAggregatorAvg | ProductAggregatorMin | ProductAggregatorMax | ProductGroupBy | ProductConnectionId | ProductConnection_id | ProductConnectionCreatedAt | ProductConnectionUpdatedAt | ProductConnectionName | ProductConnectionSlug | ProductConnectionCpu | ProductConnectionGpu | ProductConnectionScreen_size | ProductConnectionScreen_panel | ProductConnectionScreen_resolution | ProductConnectionHeight | ProductConnectionWidth | ProductConnectionDepth | ProductConnectionWeight | ProductConnectionRam | ProductConnectionRom | ProductConnectionPlatform_version | ProductConnectionFull_desc | ProductConnectionShort_desc | ProductConnectionPlatform_name | ProductConnectionSales_percentage | ProductConnectionInclusion_box | ProductConnectionWarranty | ProductConnectionProduct_condition | ProductConnectionBattery_capacity | ProductConnectionBattery_type | ProductConnectionThumbnail | ProductConnectionBrand | ProductConnectionStars | ProductConnectionVotes | ProductConnectionRegular_price | ProductConnectionFinal_price | ProductConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | Review | ReviewConnection | ReviewAggregator | ReviewAggregatorSum | ReviewAggregatorAvg | ReviewAggregatorMin | ReviewAggregatorMax | ReviewGroupBy | ReviewConnectionId | ReviewConnection_id | ReviewConnectionCreatedAt | ReviewConnectionUpdatedAt | ReviewConnectionUser | ReviewConnectionProduct | ReviewConnectionComment | ReviewConnectionStars | ReviewConnectionPublished_at | createReviewPayload | updateReviewPayload | deleteReviewPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductOption
 
 input InputID {
   id: ID!
@@ -1969,7 +1957,7 @@ type Query {
   users(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [UsersPermissionsUser]
   usersConnection(sort: String, limit: Int, start: Int, where: JSON): UsersPermissionsUserConnection
   me: UsersPermissionsMe
-  getCart: UserCart!
+  getCart(cartId: ID): UserCart!
   getOrders: [Order]!
   searchProducts(filter: ProductFilter, limit: Int, skip: Int, sort: [String]): [Product]!
   findSimilarProducts(id: ID!, limit: Int, skip: Int, sort: [String]): [Product]!
@@ -2027,10 +2015,12 @@ type Mutation {
   forgotPassword(email: String!): UserPermissionsPasswordPayload
   resetPassword(password: String!, passwordConfirmation: String!, code: String!): UsersPermissionsLoginPayload
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
-  addItemToCart(item: CartItemInput!): UserCart!
-  removeItemFromCart(itemId: ID!): UserCart!
-  applyCoupon(couponCode: String!): UserCart!
-  removeCoupon: UserCart!
+  addItemToCart(cartId: ID!, newItem: CartItemInput!): UserCart!
+  removeItemFromCart(cartId: ID!, itemId: ID!): UserCart!
+  incrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!
+  decrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!
+  applyCoupon(cartId: ID!, couponCode: String!): UserCart!
+  removeCoupon(cartId: ID!): UserCart!
   checkout(info: OrderInfo!): Order!
   cancelOrderById(orderId: ID!): Order!
   addProductReview(addReviewInput: addReviewInput!): Review!

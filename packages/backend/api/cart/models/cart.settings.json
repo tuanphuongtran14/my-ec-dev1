@@ -12,19 +12,11 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "user": {
-      "autoPopulate": false,
-      "plugin": "users-permissions",
-      "model": "user"
-    },
     "items": {
       "collection": "ordered-item"
     },
     "coupon": {
       "model": "coupon"
-    },
-    "coupon_is_valid": {
-      "type": "boolean"
     }
   }
 }

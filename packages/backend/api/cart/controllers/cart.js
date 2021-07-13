@@ -1,5 +1,6 @@
 'use strict';
 const { ObjectID } = require('mongodb');
+const cart = require('../services/cart');
 
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
@@ -8,253 +9,299 @@ const { ObjectID } = require('mongodb');
 
 module.exports = {
     async getCart(ctx) {
-        // If user has already logged in, return user's cart
-        if(ctx.request.header && ctx.request.header.authorization) {
-            try {
-                // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+        try {
+            // Get cart id from request
+            const { _cartId: cartId} = ctx.request.query;
 
-                // Find user's cart in database
-                let userCart = await strapi.query('cart').model.findOne({ user: user_id });
+            // Find cart in database
+            let cart = await strapi.query('cart').model.findById(cartId);
 
-                // If user's cart is not exist, create a new cart for user
-                if(!userCart) 
-                    userCart = await strapi.query('cart').create({
-                        user: user_id,
-                        items: [],
-                        coupon_is_valid: true,
-                    });
-                
-                // Return user's cart
-                return await strapi.services.cart.displayCart(userCart._id);
+            // If user's cart is not exist, create a new cart for user
+            if(!cart) 
+                cart = await strapi.query('cart').create({
+                    items: []
+                });
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cart._id);
 
-            } catch (error) {
-                console.log(error);
-                throw error;
-            }
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        throw new Error('You must login before getting your cart');
     },
 
     async addItemToCart(ctx) {
-        // If user has already logged in, add item to user's cart
-        if(ctx.request.header && ctx.request.header.authorization) {
-            try {
-                // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+        try {
+            // Get cart id from request
+            const { cartId, newItem: newItemInput } = ctx.request.body;
+    
+            // Find item's product in database
+            const [ product ] = await strapi.query('product').model
+                .aggregate([
+                    { "$match": { "_id": new ObjectID(newItemInput.product) } },
+                    {
+                        "$lookup": {
+                            "from": "components_product_options",
+                            "localField": "options.ref",
+                            "foreignField": "_id",
+                            "as": "options"
+                        }
+                    },
+                    {
+                      "$project": {
+                        "options": 1
+                      }
+                    },
+                ]);
 
-                // Get item input from request
-                let newItemInput = ctx.request.body.item;
-        
-                // Find item's product in database
-                const [ product ] = await strapi.query('product').model
-                    .aggregate([
-                        { "$match": { "_id": new ObjectID(newItemInput.product) } },
-                        {
-                            "$lookup": {
-                                "from": "components_product_options",
-                                "localField": "options.ref",
-                                "foreignField": "_id",
-                                "as": "options"
-                            }
-                        },
-                        {
-                          "$project": {
-                            "options": 1
-                          }
-                        },
-                    ]);
+            // Check color & quantity input is valid or not
+            let checkColorValid = false;
+            let checkQuantityValid = false;
 
-                const checkColorValid = product.options.filter(option => {
-                    return (option.color === newItemInput.color) ? true : false;
-                });
+            product.options.forEach(option => {
+                if(option.color === newItemInput.color) {
+                    checkColorValid = true;
 
-                if(checkColorValid.length === 0)
-                    throw new Error('Color which you choose is not valid');
-        
-                // Create cart's item record
-                let newItem = await strapi.query('ordered-item').model.create({
-                    product: newItemInput.product,
-                    color: newItemInput.color,
-                    qty: newItemInput.qty,
-                });
-
-                // Find user's cart in database
-                let userCart = await strapi.query('cart').model.findOne({ user: user_id });
-
-                // If user's cart is not exist, create a new cart for user
-                if(!userCart) 
-                    userCart = strapi.query('cart').model.create({
-                        user: user_id,
-                        items: [ newItem._id ],
-                        coupon_is_valid: true,
-                    });
-                else {
-                    // Get old items in user's cart
-                    const oldItems = userCart.items;
-
-                    // Add new item to user's cart
-                    userCart.items = [ newItem._id, ...oldItems ];
-                    
-                    // Save user's cart to db
-                    await userCart.save();
+                    if(option.quantity_in_stock >= newItemInput.qty && newItemInput.qty > 0)
+                        checkQuantityValid = true;
                 }
                 
-                // Return user's cart
-                return await strapi.services.cart.displayCart(userCart._id);
+            });
 
-            } catch (error) {
-                console.log(error);
-                throw error;
+            if(!checkColorValid)
+                throw new Error('Color which you choose is not valid');
+
+            if(!checkQuantityValid)
+                throw new Error('Quantity which you provide is great than stock quantity');
+            
+    
+            // Create cart's item record
+            let newItem = await strapi.query('ordered-item').model.create({
+                product: newItemInput.product,
+                color: newItemInput.color,
+                qty: newItemInput.qty,
+            });
+
+            // Find cart in database
+            let cart = await strapi.query('cart').model.findById(cartId);
+
+            // If cart is not exist, create a new cart 
+            if(!cart) 
+                cart = strapi.query('cart').model.create({
+                    items: [ newItem._id ]
+                });
+            else {
+                // Get old items in user's cart
+                const oldItems = cart.items;
+
+                // Add new item to user's cart
+                cart.items = [ newItem._id, ...oldItems ];
+                
+                // Save user's cart to db
+                await cart.save();
             }
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cart._id);
+
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        throw new Error('You must login before adding item to your cart');
     },
 
     async removeItemFromCart(ctx) {
-        // If user has already logged in, remove item from user's cart
-        if(ctx.request.header && ctx.request.header.authorization) {
-            try {
-                // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+        try {
+            // Get id of item need to be removed in database
+            const { cartId, itemId } = ctx.request.body;
+    
+            // Find item need to be removed in database
+            const itemNeedBeRemoved = await strapi.query('ordered-item').model.findById(itemId);
+    
+            // If no exist that item, throw an error
+            if(!itemNeedBeRemoved)
+                throw new Error(`Cannot remove item with id ${itemId} because that item is not exist`);
 
-                // Get id of item need to be removed in database
-                const { itemId } = ctx.request.body;
-        
-                // Find item need to be removed in database
-                const itemNeedBeRemoved = await strapi.query('ordered-item').model.findById(itemId);
-        
-                // If no exist that item, throw an error
-                if(!itemNeedBeRemoved)
-                    throw new Error(`Cannot remove item with id ${itemId} because that item is not exist`);
-
-                // Find user's cart in database
-                let userCart = await strapi.query('cart').model.findOne({ user: user_id });
-                
-                // If user's cart is not exist, create a new cart for user
-                if(!userCart) 
-                    return await strapi.query('cart').model.create({
-                        user: user_id,
-                        items: [],
-                        coupon_is_valid: true,
-                    });
-
-                // Declare new items array && boolean variable to check item is in user's cart or not
-                let newItems = [];
-                let itemNeedToBeRemoveIsInCart = false;
-
-                // Delete item need be removed by creating new item array without that item
-                userCart.items.forEach(item => {
-                    if(item.toString() !== itemId) 
-                        newItems.push(item);
-                    else
-                        itemNeedToBeRemoveIsInCart = true
+            // Find cart in database
+            let cart = await strapi.query('cart').model.findById(cartId);
+            
+            // If user's cart is not exist, create a new cart for user
+            if(!cart) {
+                cart = await strapi.query('cart').model.create({
+                    items: []
                 });
 
-                // If item need to be remove is not in user's cart, throw new error
-                if(!itemNeedToBeRemoveIsInCart) 
-                    throw new Error(`Cannot remove item with id ${itemId} because that item is not in your cart`)
-
-                // If item is in user's cart, it can be to delete in database
-                await strapi.query('ordered-item').model.findByIdAndDelete(itemId);
-
-                // Remove that item from user's cart & modify total price
-                userCart.items = newItems;
-
-                // Save user's cart to db
-                await userCart.save();
-                
                 // Return user's cart
-                return await strapi.services.cart.displayCart(userCart._id);
-
-            } catch (error) {
-                console.log(error);
-                throw error;
+                return await strapi.services.cart.displayCart(cart._id);
             }
+
+            // Declare new items array && boolean variable to check item is in user's cart or not
+            let newItems = [];
+            let itemNeedToBeRemoveIsInCart = false;
+
+            // Delete item need be removed by creating new item array without that item
+            cart.items.forEach(item => {
+                if(item.toString() !== itemId) 
+                    newItems.push(item);
+                else
+                    itemNeedToBeRemoveIsInCart = true
+            });
+
+            // If item need to be remove is not in user's cart, throw new error
+            if(!itemNeedToBeRemoveIsInCart) 
+                throw new Error(`Cannot remove item with id ${itemId} because that item is not in your cart`)
+
+            // If item is in user's cart, it can be to delete in database
+            await strapi.query('ordered-item').model.findByIdAndDelete(itemId);
+
+            // Remove that item from user's cart & modify total price
+            cart.items = newItems;
+
+            // Save user's cart to db
+            await cart.save();
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cart._id);
+
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        throw new Error('You must login before removing item from your cart');
+    },
+
+    async incrementItemQuantity(ctx) {
+        try {
+            // Get id of item need to be removed in database
+            const { cartId, itemId, by } = ctx.request.body;
+
+            // If increment quantity is not valid, throw an error
+            if(by < 1)
+                throw new Error(`Increment quantity is not valid`);
+    
+            // Get cart based on cart id and item id
+            const cart = await strapi.services.cart.getCartToChangeItemQuantity(cartId, itemId);
+
+            // If cart is not exist, throw an error
+            if(!cart) 
+                throw new Error(`Cannot increase item quantity because the cart with ID ${cartId} or the item with ID ${itemId} is not exist`);
+
+            // If increment quantity is greater than product's stock quantity, throw an error
+            const { product } = cart.item;
+
+            if (product.option.quantity_in_stock < cart.item.qty + by) 
+                throw new Error(`Increment quantity is greater than product's stock quantity`);
+
+            // Increase item quantity
+            const item = await strapi.query('ordered-item').model.findById(itemId);
+            item.qty += by;
+            await item.save();
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cartId);
+
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+    async decrementItemQuantity(ctx) {
+        try {
+            // Get id of item need to be removed in database
+            const { cartId, itemId, by } = ctx.request.body;
+
+            // If increment quantity is not valid, throw an error
+            if(by < 1)
+                throw new Error(`Cannot decrease item quantity because decrement quantity is not valid`);
+    
+            // Get cart based on cart id and item id
+            const cart = await strapi.services.cart.getCartToChangeItemQuantity(cartId, itemId);
+
+            // If cart is not exist, throw an error
+            if(!cart) 
+                throw new Error(`Cannot decrease item quantity because the cart with ID ${cartId} or the item with ID ${itemId} is not exist`);
+
+            // If decrement quantity is greater than item quantity, throw an error
+
+            if (cart.item.qty <= by) 
+                throw new Error(`Cannot decrease item quantity because decrement quantity is equal or greater than item quantity`);
+
+            // Decrease item quantity
+            const item = await strapi.query('ordered-item').model.findById(itemId);
+            item.qty -= by;
+            await item.save();
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cartId);
+
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     },
 
     async applyCoupon(ctx) {
-        // If user has already logged in, remove item from user's cart
-        if(ctx.request.header && ctx.request.header.authorization) {
-            try {
-                // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+        try {
+            // Get cart id, coupon code from  request header
+            const { cartId, couponCode } = ctx.request.body;
 
-                // Get coupon code from  request header
-                const { couponCode } = ctx.request.body;
+            // Find coupon in database
+            const coupon = await strapi.query('coupon').model.findOne({ code: couponCode }).lean();
 
-                // Find coupon in database
-                const coupon = await strapi.query('coupon').model.findOne({ code: couponCode }).lean();
+            // If coupon is not exist, throw an error
+            if(!coupon)
+                throw new Error(`Coupon with code ${couponCode} is not valid`);     
+            
+            // Find cart in database
+            let cart = await strapi.query('cart').model.findById(cartId);
 
-                // If coupon is not exist, throw an error
-                if(!coupon)
-                    throw new Error(`Coupon with code ${couponCode} is not valid`);     
+            // If cart is not exist, create a new cart
+            if(!cart) 
+                cart = await strapi.query('cart').model.create({
+                    items: []
+                });
 
-                // Check coupon is valid or not
-                let couponIsValid = true;
-                if(Number(coupon.expiry_date) < Date.now())
-                    couponIsValid = false;
-                
-                // Find user's cart in database
-                let userCart = await strapi.query('cart').model.findOne({ user: user_id });
+            cart.coupon = coupon._id;
 
-                // If user's cart is not exist, create a new cart for user
-                if(!userCart) 
-                    userCart = await strapi.query('cart').model.create({
-                        user: user_id,
-                        items: []
-                    });
+            await cart.save();
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cart._id);
 
-                userCart.coupon = coupon._id;
-                userCart.coupon_is_valid = couponIsValid
-
-                await userCart.save();
-                
-                // Return user's cart
-                return await strapi.services.cart.displayCart(userCart._id);
-
-            } catch (error) {
-                console.log(error);
-                throw error;
-            }
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        throw new Error('You must login before removing item from your cart');
     },
 
     async removeCoupon(ctx) {
-        // If user has already logged in, remove item from user's cart
-        if(ctx.request.header && ctx.request.header.authorization) {
-            try {
-                // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);  
-                
-                // Find user's cart in database
-                let userCart = await strapi.query('cart').model.findOne({ user: user_id });
+        try {
+            // Get cart id from  request header
+            const { cartId } = ctx.request.body;
 
-                // If user's cart is not exist, create a new cart without coupon for user
-                if(!userCart) 
-                    userCart = await strapi.query('cart').model.create({
-                        user: user_id,
-                        items: []
-                    });
-                else {
-                // Else remove coupon
-                    userCart.coupon = undefined;
-                    userCart.coupon_is_valid = true;
-    
-                    await userCart.save();
-                }
-                
-                // Return user's cart
-                return await strapi.services.cart.displayCart(userCart._id);
+            // Find cart in database
+            let cart = await strapi.query('cart').model.findById(cartId);
 
-            } catch (error) {
-                console.log(error);
-                throw error;
+            // If user's cart is not exist, create a new cart without coupon for user
+            if(!cart) 
+                cart = await strapi.query('cart').model.create({
+                    items: []
+                });
+            else {
+            // Else remove coupon
+                cart.coupon = undefined;
+                cart.coupon_is_valid = true;
+
+                await cart.save();
             }
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cart._id);
+
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        throw new Error('You must login before removing item from your cart');
     },
 };

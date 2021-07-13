@@ -27,7 +27,7 @@
       "default": 0,
       "required": false,
       "max": 60,
-      "min": 1
+      "min": 0
     },
     "discount_amount": {
       "type": "biginteger",
