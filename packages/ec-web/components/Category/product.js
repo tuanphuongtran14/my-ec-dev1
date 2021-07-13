@@ -14,7 +14,7 @@ export default ({ currentProducts }) => {
                     </Link>
                 </span>
                 <div className="product__price">
-                    {product.sales_percentage == 0 ?
+                    {product.sales_percentage === 0 ?
                         null :
                         <span className="sales-price">
                             {finalPrice}₫
@@ -31,7 +31,7 @@ export default ({ currentProducts }) => {
                     <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
                     <span>(442 đánh giá)</span>
                 </div>
-                {product.sales_percentage == 0 ?
+                {product.sales_percentage === 0 ?
                     "" :
                     <div className="product__box-sticker">
                         <p className="sticker-percent">

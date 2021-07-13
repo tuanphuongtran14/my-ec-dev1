@@ -5,37 +5,42 @@ import Banner from '../components/Banner/Banner';
 import './_app'
 import './_document'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'; 
+import { useEffect, useState } from 'react';
+import client from '../components/Category/apolloClient';
+import getProductsQuery from '../components/Category/getProductsQuery';
 
-export default function Home() {
+export async function getServerSideProps() {
+  const { data } = await client.query({
+    query: getProductsQuery()
+  });
 
-  const [products, setProducts] = useState([]);
+  return {
+    props: {
+      products: data.products,
+    },
+  };
+}
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      fetch(`http://localhost:1337/products`)
-        .then(res => res.json())
-        .then(data => setProducts(data))
-    }
-
-    fetchProduct()
-  }, [])
+export default function Home({ products }) {
 
   const ProductItem = products.slice(0, 5).map((product) => {
-    const regularPrice = parseInt(product.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&.").slice(0, -3);
-    const salePrice = (product.price - (product.price * product.salespercentage) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&.").slice(0, -3);
+    const regularPrice = product.regular_price.toLocaleString("DE-de");
+    const finalPrice = product.final_price.toLocaleString("DE-de");
 
     return (
-      <Link href="/product/[idProduct]" as={`/product/${product.id}`} className="text-dark">
-        <a href="/html" className="product">
+      <Link href="/product/[slug]" as={`/product/${product.slug}`}>
+        <div className="product">
           <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" />
           <span className="product__title">
-            <Link href="/product/[idProduct]" as={`/product/${product.id}`} className="text-dark">
+            <Link href="/product/[slug]" as={`/product/${product.slug}`} className="text-dark">
               {product.name}
             </Link>
           </span>
           <div className="product__price">
-            <span className="sales-price">{salePrice}₫</span>
+            {product.sales_percentage === 0 ?
+              null :
+              <span className="sales-price">{finalPrice}₫</span>
+            }
             <span className="regular-price">{regularPrice}₫</span>
           </div>
           <div className="product__rating">
@@ -47,14 +52,14 @@ export default function Home() {
             <span>(472 đánh giá)</span>
           </div>
           {
-            product.salespercentage != 0 ?
+            product.sales_percentage != 0 ?
               <div className="product__box-sticker">
-                <p className="sticker-percent">{product.salespercentage}%</p>
+                <p className="sticker-percent">{product.sales_percentage}%</p>
               </div>
               : null
           }
 
-        </a>
+        </div>
       </Link>
     )
   }
@@ -73,9 +78,10 @@ export default function Home() {
           </div>
         </div>
         <div className="box-body">
-          <div className="product-list js-flickity " data-flickity-options='{ "freeScroll": true, "prevNextButtons": false,
-          "pageDots": false, "contain": true }'>
-            {ProductItem}
+          <div className="js-flickity " data-flickity-options='{ "freeScroll": true, "prevNextButtons": false, "pageDots": false, "contain": true }'>
+            <div className="product-list product-list--non-slide border-0">
+              {ProductItem}
+            </div>
           </div>
         </div>
       </div>
