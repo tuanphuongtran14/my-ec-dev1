@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reviews",
+  "info": {
+    "name": "Review",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "product": {
+      "model": "product"
+    },
+    "comment": {
+      "type": "text",
+      "required": true
+    },
+    "stars": {
+      "type": "decimal",
+      "default": 0,
+      "required": true,
+      "max": 5,
+      "min": 0
+    }
+  }
+}

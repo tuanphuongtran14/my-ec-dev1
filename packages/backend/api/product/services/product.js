@@ -1,4 +1,5 @@
 'use strict';
+const { ObjectID } = require('mongodb');
 
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-services)
@@ -28,23 +29,31 @@ module.exports = {
         // If id_ne exist, find products whose id is not equal id_ne
         if(filter.id_ne)
             query['_id'] = {
-                $ne: filter.id_ne
+                $nin: [ new ObjectID(filter.id_ne) ]
             }
+
+        // If user query product id, add it to query conditions
+        if(filter.id)
+            query['_id'] = new ObjectID(filter.id);
 
         // If user query name, add it to query conditions
         if(filter.name)
             query['$text'] = {$search: filter.name};
 
+        // If user query slug, add it to query conditions
+        if(filter.slug)
+            query['slug'] = filter.slug;
+
         // If user query min price, add it to query conditions
         if(filter.minPrice)
-            query['price'] = {
+            query['final_price'] = {
                 $gte: Number(filter.minPrice)
             };
 
         // If user query max price, add it to query conditions
         if(filter.maxPrice)
-            query['price'] = {
-                ...query['price'],
+            query['final_price'] = {
+                ...query['final_price'],
                 $lte: Number(filter.maxPrice)
             };
 
@@ -118,7 +127,7 @@ module.exports = {
                 ...option,
                 skip: Number(skip)
             };
-        // ============ Start handle skip & limit ===============
+        // ============ End handle skip & limit ===============
 
 
         // ================ Start handle sort ===================
@@ -176,7 +185,8 @@ module.exports = {
                 { "$group": {
                     "_id": "$_id",
                     "name" : { "$first": '$name' },
-                    "price" : { "$first": '$price' },
+                    "regular_price" : { "$first": '$regular_price' },
+                    "final_price" : { "$first": '$final_price' },
                     "slug" : { "$first": '$slug' },
                     "sales_percentage" : { "$first": '$sales_percentage' },
                     "cpu" : { "$first": '$cpu' },
@@ -203,6 +213,8 @@ module.exports = {
                     "thumbnail" : { "$first": '$thumbnail' },
                     "updatedAt" : { "$first": '$updatedAt' },
                     "createdAt" : { "$first": '$createdAt' },
+                    "stars" : { "$first": '$stars' },
+                    "votes" : { "$first": '$votes' },
                     "options": { "$push": "$options" }
                 }},
                 {

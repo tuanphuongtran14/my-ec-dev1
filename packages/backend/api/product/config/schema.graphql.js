@@ -1,7 +1,10 @@
 module.exports = {
     definition: `
         input ProductFilter {
+            id: ID,
+            id_ne: ID,
             name: String,
+            slug: String,
             minPrice: Int,
             maxPrice: Int,
             minRam: Int,

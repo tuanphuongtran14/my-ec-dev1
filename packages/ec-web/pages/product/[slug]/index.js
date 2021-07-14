@@ -2,33 +2,96 @@ import Head from "next/head";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import Link from "next/link";
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 export async function getServerSideProps({ params }) {
-    const res = await fetch(`http://localhost:1337/products/${params.id}`); // REST API
-    const product = await res.json();
-    const res2 = await fetch(`http://localhost:1337/products`); // REST API
-    const products = await res2.json();
-    return { props: { product, products } };
+    const client = new ApolloClient({
+        uri: `http://localhost:1337/graphql`,
+        cache: new InMemoryCache(),
+    });
+
+    const { data } = await client.query({
+        query: gql`  
+        query($filter: ProductFilter!) {
+            products: searchProducts {
+                name,
+                slug,
+                sales_percentage,
+                regular_price,
+                final_price,
+                id,
+                thumbnail{
+                    url
+                }
+            }
+            product: searchProducts(filter: $filter){
+                name,
+                sales_percentage,
+                slug,
+                regular_price,
+                final_price,
+                id,
+                ram,
+                thumbnail{
+                    url
+                },
+                full_desc,
+                product_condition,
+                warranty,
+                inclusion_box,
+                height,
+                width,
+                depth,
+                platform_name,
+                platform_version,
+                screen_size,
+                screen_panel,
+                screen_resolution,
+                cpu,
+                gpu,
+                options{
+                    images{
+                        url
+                    }
+                }
+            }
+        }
+  `,
+        variables: {
+            "filter": {
+                "slug": `${params.slug}`
+            }
+        }
+    });
+
+    return {
+        props: {
+            product: data.product[0],
+            products: data.products,
+        },
+    };
 }
 
 export default function product({ product, products }) {
+    // console.log(product.options);
 
-    const regularPrice = parseInt(product.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&.").slice(0, -3);
-    const salePrice = (product.price - (product.price * product.salespercentage) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&.").slice(0, -3);
+    const regularPrice = product.regular_price.toLocaleString("DE-de");
+    const finalPrice = product.final_price.toLocaleString("DE-de");
 
-    const relatedProduct = products.slice(0, 4).map((product, index) => {
-        const regularPrice = parseInt(product.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&.").slice(0, -3);
-        const salePrice = (product.price - (product.price * product.salespercentage) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&.").slice(0, -3);
+    // Sản phẩm liên quan
+    const relatedProduct = products.slice(1, 5).map((product, index) => {
+        const regularPrice = product.regular_price.toLocaleString("DE-de");
+        const finalPrice = product.final_price.toLocaleString("DE-de");
         return (
-            <a href="/product.html" className="product col-6 col-md-3 col-lg-10 col-xl-9 my-3" >
+            <div className="product col-6 col-md-3 col-lg-10 col-xl-9 my-3">
                 <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" />
-                <Link href="/product/[idProduct]" as={`/product/${product.id}`}>
-                    <span className="product__title">
+                <Link href="/product/[slugProduct]" as={`/product/${product.slug}`}>
+                    <span className="product__title" style={{ cursor: "pointer" }}>
                         {product.name}
                     </span>
                 </Link>
                 <div className="product__price">
-                    <span className="sales-price">{salePrice}₫</span>
+                    <span className="sales-price">{finalPrice}₫</span>
                     <span className="regular-price">{regularPrice}₫</span>
                 </div>
                 <div className="product__rating">
@@ -45,39 +108,50 @@ export default function product({ product, products }) {
                     </div>
                     : ""
                 }
-            </a>
+            </div>
         )
     })
 
+
     // Hình ảnh lớn của sản phẩm
-    const color = product.colors.map((color, index) => {
-        const image = color.images.map((image, index) => {
-            return process.env.NEXT_PUBLIC_API_URL + image.url;
-        });
-        return (
-            <>
-                <img className="product-image" src={image} alt="" />
-            </>
-        );
-    });
+    const color = () => {
+        if (product.options) {
+            return product.options.map((option, index) => {
+                return option.images.map((image, index) => {
+                    return (
+                        <>
+                            <img className="product-image" src={process.env.NEXT_PUBLIC_API_URL + image.url} alt="" />
+                        </>
+                    );
+                });
+            });
+        }
+    }
 
     // Hình ảnh nhỏ của sản phẩm
-    const thumbs = product.colors.map((color, index) => {
-        const image = color.images.map((image, index) => {
-            return process.env.NEXT_PUBLIC_API_URL + image.url;
-        });
-        return (
-            <img className={index === 0 ? "thumbnail active" : "thumbnail"} src={image} alt={index} />
-        );
-    });
+    const thumbs = () => {
+        if (product.options) {
+            return product.options.map((option, index) => {
+                return option.images.map((image, index) => (
+                    <img className={index === 0 ? "thumbnail active" : "thumbnail"} src={process.env.NEXT_PUBLIC_API_URL + image.url} alt={index} />
+                ));
+            });
+        }
+    }
 
     // Các lựa chọn màu sắc
-    const colorOption = product.colors.map((colorItem, index) => {
-        return <div className={index === 0 ? "version active" : "version"}>
-            {colorItem.color}
-            <span className="version__price">{index >= 2 ? regularPrice : salePrice}</span>
-        </div>
-    })
+    const colorOption = () => {
+        if (product.options) {
+            return product.options.map((option, index) => {
+                return <div className={index === 0 ? "version active" : "version"}>
+                    {option.color}
+                    <span className="version__price">{index >= 2 ? regularPrice : finalPrice}</span>
+                </div>
+            })
+        }
+    }
+
+
 
     return (
         <>
@@ -128,14 +202,17 @@ export default function product({ product, products }) {
                                 className="product-images__slide js-flickity mb-2"
                                 data-flickity-options='{ "freeScroll": true, "wrapAround": true, "prevNextButtons": false, &apos;pageDots&apos;: false }'
                             >
-                                {color}
+                                {color()}
                             </div>
 
-                            <div className="product-images__thumbnails px-4">{thumbs}</div>
+                            <div className="product-images__thumbnails px-4">{thumbs()}</div>
                         </div>
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
                             <div className="product-details__price">
-                                <span className="sales-price">{salePrice} ₫ </span>
+                                {product.sales_percentage === 0 ?
+                                    null :
+                                    <span className="sales-price">{finalPrice} ₫ </span>
+                                }
                                 <span className="regular-price">{regularPrice} ₫</span>
                             </div>
                             <p className="my-2">
@@ -144,7 +221,7 @@ export default function product({ product, products }) {
                             <div className="product-details__versions" id="versions">
                                 <div className="version active">
                                     {product.ram}G
-                                    <span className="version__price">{salePrice} ₫</span>
+                                    <span className="version__price">{finalPrice} ₫</span>
                                 </div>
                             </div>
                             <p className="my-2">
@@ -177,21 +254,30 @@ export default function product({ product, products }) {
                         </div>
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
                             <b>Khuyến mãi: </b>
-                            <ul className="product-details__bonus" dangerouslySetInnerHTML={{ __html: product.promotions }}></ul>
+                            <ul class="product-details__bonus">
+                                <li>Tặng voucher mua hàng trị giá 2000.000đ</li>
+                                <li>Tặng voucher sửa chữa trị giá 500.000</li>
+                                <li>Tặng sạc chính hãng 18W trị giá 550.000đ</li>
+                                <li>Tặng sim ghép Fix full lỗi trị giá 120.000đ</li>
+                                <li>Tặng nón bảo hiểm cao cấp</li>
+                            </ul>
                             <div className="mt-2">
                                 <b>Tình trạng</b>
                                 <br />
-                                <div className="text-justify" dangerouslySetInnerHTML={{ __html: product.condition }}></div>
+                                {product.product_condition === null ?
+                                    <span className="text-justify">Máy mới 100%, nguyên hộp, đầy đủ phụ kiện từ nhà sản xuất.</span> :
+                                    <div className="text-justify" dangerouslySetInnerHTML={{ __html: product.product_condition }}></div>
+                                }
                             </div>
                             <div className="mt-2">
                                 <b>Hộp bao gồm</b>
                                 <br />
-                                <div className="text-justify pl-3" dangerouslySetInnerHTML={{ __html: product.boxIncluded }}></div>
+                                <ul className="text-justify list-unstyled" dangerouslySetInnerHTML={{ __html: product.inclusion_box }}></ul>
                             </div>
                             <div className="mt-2">
                                 <b>Bảo hành</b>
                                 <br />
-                                <div className="text-justify pl-3" dangerouslySetInnerHTML={{ __html: product.warranty }} ></div>
+                                <ul className="text-justify" dangerouslySetInnerHTML={{ __html: product.warranty }} style={{ listStyleType: "none" }}></ul>
                             </div>
                         </div>
                     </section>
@@ -216,7 +302,7 @@ export default function product({ product, products }) {
                             </li>
                         </ul>
                         <div className="tab-content container" id="pills-tabContent">
-                            <div className="tablist_content tab-pane fade show active" id="pills-desc" role="tabpanel" aria-labelledby="pills-desc-tab" dangerouslySetInnerHTML={{ __html: product.description }}>
+                            <div className="tablist_content tab-pane fade show active" id="pills-desc" role="tabpanel" aria-labelledby="pills-desc-tab" dangerouslySetInnerHTML={{ __html: product.full_desc }}>
                             </div>
 
                             <div className="tablist_content tab-pane fade" id="pills-specification" role="tabpanel" aria-labelledby="pills-specification-tab" >
@@ -249,12 +335,16 @@ export default function product({ product, products }) {
                                     </thead>
                                     <tbody>
                                         <tr>
+                                            <td scope="row">Kích thước màn hình</td>
+                                            <td>{product.screen_size}</td>
+                                        </tr>
+                                        <tr>
                                             <td scope="row">Công nghệ màn hình</td>
-                                            <td>{product.screenType}</td>
+                                            <td>{product.screen_panel}</td>
                                         </tr>
                                         <tr>
                                             <td scope="row">Độ phân giải</td>
-                                            <td>{product.resolution}</td>
+                                            <td>{product.screen_resolution}</td>
                                         </tr>
                                     </tbody>
                                     <thead>
@@ -265,11 +355,26 @@ export default function product({ product, products }) {
                                     <tbody>
                                         <tr>
                                             <td scope="row">Hệ điều hành</td>
-                                            <td>{product.platformName}</td>
+                                            <td>{product.platform_name}</td>
                                         </tr>
                                         <tr>
                                             <td scope="row">Phiên bản</td>
-                                            <td>{product.platformVersion}</td>
+                                            <td>{product.platform_version}</td>
+                                        </tr>
+                                    </tbody>
+                                    <thead>
+                                        <tr>
+                                            <th colSpan={2}>Cấu hình</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td scope="row">CPU</td>
+                                            <td>{product.cpu}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row">GPU</td>
+                                            <td>{product.gpu}</td>
                                         </tr>
                                     </tbody>
                                 </table>

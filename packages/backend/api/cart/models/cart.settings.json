@@ -12,16 +12,11 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "user": {
-      "autoPopulate": false,
-      "plugin": "users-permissions",
-      "model": "user"
-    },
-    "total_price": {
-      "type": "biginteger"
-    },
     "items": {
       "collection": "ordered-item"
+    },
+    "coupon": {
+      "model": "coupon"
     }
   }
 }

@@ -1,42 +1,27 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer'
-import { useState, useEffect } from 'react';
-import Pagination from './pagination';
-import Product from './product';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { useState } from 'react';
+import Pagination from '../../components/Category/pagination';
+import Product from '../../components/Category/product';
+import client from '../../components/Category/apolloClient'
+import getProductsQuery from '../../components/Category/getProductsQuery'
 
-export default function () {
-    const [products, setProducts] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(5)
-
-    const client = new ApolloClient({
-        uri: `http://localhost:1337/graphql`,
-        cache: new InMemoryCache(),
+export async function getServerSideProps() {
+    const { data } = await client.query({
+        query: getProductsQuery()
     });
 
-    const graphql = gql`
-        query GetProducts{
-            products{
-                name,
-                salespercentage,
-                price,
-                id,
-                thumbnail{
-                    url
-                }
-            }
-        }
-    `
+    return {
+        props: {
+            products: data.products,
+        },
+    };
+}
 
-    useEffect(() => {
-        client
-            .query({
-                query: graphql
-            })
-            .then(res => setProducts(res.data.products))
-    }, [])
+export default function ({ products }) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(5)
 
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
