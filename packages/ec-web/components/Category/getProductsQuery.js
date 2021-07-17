@@ -12,6 +12,12 @@ export default function query() {
                 id,
                 thumbnail{
                     url
+                },
+                ram,
+                rom,
+                brand{
+                    name,
+                    slug
                 }
             }
         }

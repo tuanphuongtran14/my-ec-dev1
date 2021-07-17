@@ -3,7 +3,8 @@ window.onload = function() {
 
     var homeCarousel = new Flickity( '.gallery', {
         freeScroll: true, 
-        wrapAround: true 
+        wrapAround: true,
+        imagesLoaded: true
     });
 
     playSlider();
@@ -18,10 +19,16 @@ window.onload = function() {
         selectVersions('colors');
 }
 
+var homeCarousel2 = new Flickity( '.gallery', {
+    freeScroll: true, 
+    wrapAround: true,
+    imagesLoaded: true
+});
+
 function playSlider() {
     if(document.querySelector('.gallery')) {
         var carousel = new Flickity( '.gallery', {
-            autoPlay: 2500
+            autoPlay: 100
         });
         carousel.playPlayer();
     }
