@@ -13,8 +13,10 @@ module.exports = {
               lower: true
           });
 
-        if (data.sales_percentage > 0) 
+        if (data.sales_percentage > 0) {
           data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
+          data.final_price -= data.final_price % 1000;
+        }
         else
           data.final_price = data.regular_price;
       },
@@ -24,8 +26,10 @@ module.exports = {
             lower: true
         });
           
-        if (data.sales_percentage > 0) 
+        if (data.sales_percentage > 0) {
           data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
+          data.final_price -= data.final_price % 1000;
+        }
         else
           data.final_price = data.regular_price;
       },

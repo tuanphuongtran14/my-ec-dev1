@@ -2,15 +2,12 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "start": "concurrently \"cd packages/ec-waa && yarn start\" \"cd packages/ec-web && yarn dev\""
+    "start": "concurrently \"cd packages/ec-waa && yarn develop\" \"cd packages/ec-web && yarn dev\""
   },
   "devDependencies": {
     "lerna": "^4.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.21",
-    "concurrently": "^6.2.0",
-    "graphql": "^15.5.1",
-    "react": "^17.0.2"
+    "concurrently": "^6.2.0"
   }
 }
