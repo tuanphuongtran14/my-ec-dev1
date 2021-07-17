@@ -14,11 +14,7 @@ module.exports = {
             filter = {};
 
         // Initial filter variable in order to execute query to db
-        let query = {
-            published_at: {
-                $ne: null
-            }
-        };
+        let query = {};
 
         let queryMore = {};
 
@@ -109,25 +105,6 @@ module.exports = {
             };
 
         // =============== End handle filter ====================
-        
-
-        // ============ Start handle skip & limit ===============
-        // Initial option variable for query
-        let option = {}
-
-        // If limit is passed into, add it to option variable
-        if(limit)
-            option = {
-                limit: Number(limit)
-            };
-        
-        // If skip is passed into, add it to option variable
-        if(skip)
-            option = {
-                ...option,
-                skip: Number(skip)
-            };
-        // ============ End handle skip & limit ===============
 
 
         // ================ Start handle sort ===================
@@ -154,6 +131,8 @@ module.exports = {
         let products = await strapi.query('product').model
             .aggregate([
                 { "$match": query },
+                { "$skip": skip || 0 },
+                { "$limit": limit || 100 },
                 { "$lookup": {
                   "from": "brands",
                   "localField": "brand",
@@ -219,7 +198,7 @@ module.exports = {
                 }},
                 {
                   "$addFields": { 
-                      "totalSold": { "$sum": "$options.sold_quantity" }
+                      "total_sold": { "$sum": "$options.sold_quantity" }
                 }},
                 { "$sort": sortContent }
             ])

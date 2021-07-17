@@ -4,39 +4,39 @@ module.exports = {
             comment: String,
             stars: Int
         }
-        input addReviewInput {
+        input createProductReviewInput {
             productId: ID!, 
             comment: String!, 
             stars: Int!
         }
     `,
     query: `
-        getProductReviews(productId: ID!): [Review]!
+        getReviewsByProduct(productId: ID!): [Review]!
     `,
     mutation: `
-        addProductReview(addReviewInput: addReviewInput!): Review!
-        editProductReview(reviewId: ID!, editReviewInput: editReviewInput!): Review!
-        deleteProductReview(reviewId: ID!): Review!
+        createReviewForProduct(createReviewInput: createProductReviewInput!): Review!
+        editReviewById(reviewId: ID!, editReviewInput: editReviewInput!): Review!
+        deleteReviewById(reviewId: ID!): Review!
     `,
     resolver: {
       Query: {
-        getProductReviews: {
+        getReviewsByProduct: {
             description: `Retrieve product's reviews by product id`,
-            resolver: 'application::review.review.getProductReviews',
+            resolver: 'application::review.review.getReviewsByProduct',
         },
       },
       Mutation: {
-        addProductReview: {
+        createReviewForProduct: {
             description: 'Add review for product by id',
-            resolver: 'application::review.review.addProductReview',
+            resolver: 'application::review.review.createReviewForProduct',
         },
-        editProductReview: {
+        editReviewById: {
             description: 'Edit review by id',
-            resolver: 'application::review.review.editProductReview',
+            resolver: 'application::review.review.editReviewById',
         },
-        deleteProductReview: {
+        deleteReviewById: {
             description: 'Delete review by id',
-            resolver: 'application::review.review.deleteProductReview',
+            resolver: 'application::review.review.deleteReviewById',
         },
       },
     },

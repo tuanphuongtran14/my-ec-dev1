@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-    async getProductReviews(ctx) {
+    async getReviewsByProduct(ctx) {
         try {
             // Get product's id from request
             const { _productId: productId } = ctx.request.query;
@@ -27,7 +27,7 @@ module.exports = {
         }
     },
 
-    async addProductReview(ctx) {
+    async createReviewForProduct(ctx) {
         // If user has already logged in, add item to user's cart
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
@@ -35,7 +35,7 @@ module.exports = {
                 const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
                 // Get product's id, comment, stars from request
-                const { productId, stars, comment } = ctx.request.body.addReviewInput;
+                const { productId, stars, comment } = ctx.request.body.createReviewInput;
 
                 // Find product need to be added review in database by id
                 const productNeedToBeAddedReviewed = await strapi.query('product').model.findById(productId, '_id stars votes');
@@ -75,24 +75,24 @@ module.exports = {
         throw new Error('You must login before adding review for this product');
     },
 
-    async editProductReview(ctx) {
+    async editReviewById(ctx) {
         // If user has already logged in, add item to user's cart
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
                 // Get user's id from request header
                 const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
-                // Get review id from request
+                // Get review id, update content from request
                 const { reviewId, editReviewInput } = ctx.request.body;
 
-                // Find review need to be edited in database by id
+                // Retrieve review need to be edited in database
                 const reviewNeedToBeEdited = await strapi.query('review').model.findById(reviewId);
 
                 // If review need to be edited is not exist, throw an error
                 if(!reviewNeedToBeEdited) 
                     throw new Error(`Cannot edit review with id ${reviewId} because this review is not exist`);
 
-                // If user is not owner' review, stop and throw an error
+                // If user is not owner's review, stop and throw an error
                 if(reviewNeedToBeEdited.user != user_id)
                     throw new Error(`Cannot edit review with id ${reviewId} because you is not its owner`);
 
@@ -122,7 +122,7 @@ module.exports = {
         throw new Error('You must login before adding review for this product');
     },
 
-    async deleteProductReview(ctx) {
+    async deleteReviewById(ctx) {
         // If user has already logged in, add item to user's cart
         if(ctx.request.header && ctx.request.header.authorization) {
             try {

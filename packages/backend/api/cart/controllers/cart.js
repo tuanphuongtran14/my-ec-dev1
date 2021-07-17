@@ -9,22 +9,51 @@ const cart = require('../services/cart');
 
 module.exports = {
     async getCart(ctx) {
+        // Get cart id from request
+        const { _cartId: cartId} = ctx.request.query;
+
+        // Retrieve cart in database
+        let cart = await strapi.query('cart').model.findById(cartId);
+
         try {
-            // Get cart id from request
-            const { _cartId: cartId} = ctx.request.query;
+            // If user has already logged in, return both cart and user's cart
+            if(ctx.request.header && ctx.request.header.authorization) {
+                // Get user's id from request header
+                const { id: userId } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
-            // Find cart in database
-            let cart = await strapi.query('cart').model.findById(cartId);
+                // Retrieve user's cart
+                let userCart = await strapi.query('cart').model.findOne({user: userId});
 
-            // If user's cart is not exist, create a new cart for user
-            if(!cart) 
-                cart = await strapi.query('cart').create({
-                    items: []
-                });
+                // If user's cart is not exist, create a new user's cart
+                if(!userCart)
+                    userCart = await strapi.query('cart').model.create({
+                        user: userId,
+                        items: []
+                    });
+
+                // If cart is exist, merge it to user's cart then delete it
+                if(cart) {
+                    userCart.items = [...userCart.items, ...cart.items];
+                    userCart.coupon = cart.coupon;
+
+                    // Save user's cart and delete cart
+                    await Promise.all([userCart.save(), strapi.query('cart').model.findByIdAndDelete(cart._id)]);
+                }
+
+                // Return user's cart
+                return await strapi.services.cart.displayCart(userCart._id);
+
+            } else { // If user has not logged in, only return the cart 
+                // If cart is not exist, create a new cart
+                if(!cart) 
+                    cart = await strapi.query('cart').create({
+                        items: []
+                    });
+                
+                // Return cart
+                return await strapi.services.cart.displayCart(cart._id);
+            }
             
-            // Return user's cart
-            return await strapi.services.cart.displayCart(cart._id);
-
         } catch (error) {
             console.log(error);
             throw error;

@@ -111,7 +111,7 @@ module.exports = {
                       },
                       {
                         "$addFields": { 
-                            "price": { "$multiply": [ "$product.final_price", "$qty" ] }
+                            "amount": { "$multiply": [ "$product.final_price", "$qty" ] }
                       }},
                     ],
                     "as": "items"
@@ -119,13 +119,13 @@ module.exports = {
                 },
                 {
                   "$addFields": { 
-                      "total_price": { "$sum": "$items.price" }
+                      "total_amount": { "$sum": "$items.amount" }
                 }},
             ]);
         
         // Calc final price of user's cart
         cart.coupon_is_valid = true;
-        cart.final_price = cart.total_price;
+        cart.final_amount = cart.total_amount;
 
         if(cart.coupon) {
             // If coupon is expiry, update coupon status and return user's cart
@@ -136,13 +136,13 @@ module.exports = {
 
                 // Else, calculate final price with coupon discount
                 if(cart.coupon.discount_percentage) 
-                    cart.final_price *= 1 - cart.coupon.discount_percentage / 100;
+                    cart.final_amount *= 1 - cart.coupon.discount_percentage / 100;
     
                 if(cart.coupon.discount_amount) 
-                    cart.final_price -= cart.coupon.discount_amount;
+                    cart.final_amount -= cart.coupon.discount_amount;
     
-                if(cart.final_price < 0)
-                        cart.final_price = 0;  
+                if(cart.final_amount < 0)
+                        cart.final_amount = 0;  
             }
         }
 

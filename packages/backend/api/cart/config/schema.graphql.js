@@ -28,7 +28,7 @@ module.exports = {
             product: ProductItem!,
             color: String!,
             qty: Int!,
-            price: Long!
+            amount: Long!
         },
 
         type UserCart {
@@ -36,8 +36,8 @@ module.exports = {
             coupon: Coupon,
             items: [CartItem]!,
             coupon_is_valid: Boolean!,
-            total_price: Long!,
-            final_price: Long!,
+            total_amount: Long!,
+            final_amount: Long!,
         }
     `,
     query: `

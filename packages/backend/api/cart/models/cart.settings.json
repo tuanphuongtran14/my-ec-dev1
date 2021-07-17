@@ -17,6 +17,10 @@
     },
     "coupon": {
       "model": "coupon"
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user"
     }
   }
 }
