@@ -58,15 +58,6 @@
       "via": "users",
       "plugin": "users-permissions",
       "configurable": false
-    },
-    "cart": {
-      "type": "component",
-      "repeatable": true,
-      "component": "user.user-cart"
-    },
-    "orders": {
-      "via": "users_permissions_user",
-      "collection": "orders"
     }
   }
 }

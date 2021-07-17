@@ -41,163 +41,87 @@ type UserPermissionsPasswordPayload {
   ok: Boolean!
 }
 
-input CartDetail {
+input CartItemInput {
   product: ID!
-  quantity: Int!
-  selectedColor: String!
+  color: String!
+  qty: Int!
 }
 
-type ResponseMessage {
-  statusCode: Int!
-  message: String!
+type ProductOption {
+  color: String!
+  quantity_in_stock: Int!
+  sold_quantity: Int!
+}
+
+type ProductItem {
+  _id: ID!
+  name: String!
+  slug: String!
+  regular_price: Long!
+  final_price: Long!
+  thumbnail: UploadFile!
+  brand: Brand!
+  options: [ProductOption]!
+}
+
+type CartItem {
+  _id: ID!
+  product: ProductItem!
+  color: String!
+  qty: Int!
+  amount: Long!
+}
+
+type UserCart {
+  _id: ID!
+  coupon: Coupon
+  items: [CartItem]!
+  coupon_is_valid: Boolean!
+  total_amount: Long!
+  final_amount: Long!
+}
+
+input OrderInfo {
+  consignee_name: String!
+  consignee_phone: String!
+  email: String!
+  address_line_1: String!
+  district: String!
+  city: String!
+  payment_method: String!
 }
 
 input ProductFilter {
   id: ID
+  id_ne: ID
   name: String
+  slug: String
   minPrice: Int
   maxPrice: Int
-  screenType: String
+  minRam: Int
+  maxRam: Int
+  screenPanel: String
+  screenResolution: String
   minScreenSize: Float
   maxScreenSize: Float
-  minRam: Float
-  maxRam: Float
-  minInternalMem: Int
-  maxInternalMem: Int
+  minBatteryCapacity: Int
+  maxBatteryCapacity: Int
   platform: String
   brand: String
-  color: String
-  isSales: Boolean
 }
 
-type CartItem {
-  id: ID!
-  _id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  product: Products
-  quantity: Int
-  published_at: DateTime
+input editReviewByIdInput {
+  comment: String
+  stars: Int
 }
 
-type CartItemConnection {
-  values: [CartItem]
-  groupBy: CartItemGroupBy
-  aggregate: CartItemAggregator
+input createProductReviewInput {
+  productId: ID!
+  comment: String!
+  stars: Int!
 }
 
-type CartItemAggregator {
-  count: Int
-  totalCount: Int
-  sum: CartItemAggregatorSum
-  avg: CartItemAggregatorAvg
-  min: CartItemAggregatorMin
-  max: CartItemAggregatorMax
-}
-
-type CartItemAggregatorSum {
-  quantity: Float
-}
-
-type CartItemAggregatorAvg {
-  quantity: Float
-}
-
-type CartItemAggregatorMin {
-  quantity: Float
-}
-
-type CartItemAggregatorMax {
-  quantity: Float
-}
-
-type CartItemGroupBy {
-  id: [CartItemConnectionId]
-  _id: [CartItemConnection_id]
-  createdAt: [CartItemConnectionCreatedAt]
-  updatedAt: [CartItemConnectionUpdatedAt]
-  product: [CartItemConnectionProduct]
-  quantity: [CartItemConnectionQuantity]
-  published_at: [CartItemConnectionPublished_at]
-}
-
-type CartItemConnectionId {
-  key: ID
-  connection: CartItemConnection
-}
-
-type CartItemConnection_id {
-  key: ID
-  connection: CartItemConnection
-}
-
-type CartItemConnectionCreatedAt {
-  key: DateTime
-  connection: CartItemConnection
-}
-
-type CartItemConnectionUpdatedAt {
-  key: DateTime
-  connection: CartItemConnection
-}
-
-type CartItemConnectionProduct {
-  key: ID
-  connection: CartItemConnection
-}
-
-type CartItemConnectionQuantity {
-  key: Int
-  connection: CartItemConnection
-}
-
-type CartItemConnectionPublished_at {
-  key: DateTime
-  connection: CartItemConnection
-}
-
-input CartItemInput {
-  product: ID
-  quantity: Int
-  published_at: DateTime
-  created_by: ID
-  updated_by: ID
-}
-
-input editCartItemInput {
-  product: ID
-  quantity: Int
-  published_at: DateTime
-  created_by: ID
-  updated_by: ID
-}
-
-input createCartItemInput {
-  data: CartItemInput
-}
-
-type createCartItemPayload {
-  cartItem: CartItem
-}
-
-input updateCartItemInput {
-  where: InputID
-  data: editCartItemInput
-}
-
-type updateCartItemPayload {
-  cartItem: CartItem
-}
-
-input deleteCartItemInput {
-  where: InputID
-}
-
-type deleteCartItemPayload {
-  cartItem: CartItem
-}
-
-type Categories {
+type Brand {
   id: ID!
   _id: ID!
   createdAt: DateTime!
@@ -205,204 +129,531 @@ type Categories {
   name: String!
   slug: String
   published_at: DateTime
-  products(sort: String, limit: Int, start: Int, where: JSON): [Products]
+  products(sort: String, limit: Int, start: Int, where: JSON): [Product]
 }
 
-type CategoriesConnection {
-  values: [Categories]
-  groupBy: CategoriesGroupBy
-  aggregate: CategoriesAggregator
+type BrandConnection {
+  values: [Brand]
+  groupBy: BrandGroupBy
+  aggregate: BrandAggregator
 }
 
-type CategoriesAggregator {
+type BrandAggregator {
   count: Int
   totalCount: Int
 }
 
-type CategoriesGroupBy {
-  id: [CategoriesConnectionId]
-  _id: [CategoriesConnection_id]
-  createdAt: [CategoriesConnectionCreatedAt]
-  updatedAt: [CategoriesConnectionUpdatedAt]
-  name: [CategoriesConnectionName]
-  slug: [CategoriesConnectionSlug]
-  published_at: [CategoriesConnectionPublished_at]
+type BrandGroupBy {
+  id: [BrandConnectionId]
+  _id: [BrandConnection_id]
+  createdAt: [BrandConnectionCreatedAt]
+  updatedAt: [BrandConnectionUpdatedAt]
+  name: [BrandConnectionName]
+  slug: [BrandConnectionSlug]
+  published_at: [BrandConnectionPublished_at]
 }
 
-type CategoriesConnectionId {
+type BrandConnectionId {
   key: ID
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-type CategoriesConnection_id {
+type BrandConnection_id {
   key: ID
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-type CategoriesConnectionCreatedAt {
+type BrandConnectionCreatedAt {
   key: DateTime
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-type CategoriesConnectionUpdatedAt {
+type BrandConnectionUpdatedAt {
   key: DateTime
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-type CategoriesConnectionName {
+type BrandConnectionName {
   key: String
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-type CategoriesConnectionSlug {
+type BrandConnectionSlug {
   key: String
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-type CategoriesConnectionPublished_at {
+type BrandConnectionPublished_at {
   key: DateTime
-  connection: CategoriesConnection
+  connection: BrandConnection
 }
 
-input CategoryInput {
-  products: [ID]
+input BrandInput {
   name: String!
   slug: String
+  products: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
 }
 
-input editCategoryInput {
-  products: [ID]
+input editBrandInput {
   name: String
   slug: String
+  products: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
 }
 
-input createCategoryInput {
-  data: CategoryInput
+input createBrandInput {
+  data: BrandInput
 }
 
-type createCategoryPayload {
-  category: Categories
+type createBrandPayload {
+  brand: Brand
 }
 
-input updateCategoryInput {
+input updateBrandInput {
   where: InputID
-  data: editCategoryInput
+  data: editBrandInput
 }
 
-type updateCategoryPayload {
-  category: Categories
+type updateBrandPayload {
+  brand: Brand
 }
 
-input deleteCategoryInput {
+input deleteBrandInput {
   where: InputID
 }
 
-type deleteCategoryPayload {
-  category: Categories
+type deleteBrandPayload {
+  brand: Brand
 }
 
-type Orders {
+type Cart {
   id: ID!
   _id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  users_permissions_user: UsersPermissionsUser
-  status: String
-  total_price: Long
-  Create_at: DateTime
-  published_at: DateTime
+  coupon: Coupon
+  user: UsersPermissionsUser
+  items(sort: String, limit: Int, start: Int, where: JSON): [OrderedItem]
 }
 
-type OrdersConnection {
-  values: [Orders]
-  groupBy: OrdersGroupBy
-  aggregate: OrdersAggregator
+type CartConnection {
+  values: [Cart]
+  groupBy: CartGroupBy
+  aggregate: CartAggregator
 }
 
-type OrdersAggregator {
+type CartAggregator {
   count: Int
   totalCount: Int
 }
 
-type OrdersGroupBy {
-  id: [OrdersConnectionId]
-  _id: [OrdersConnection_id]
-  createdAt: [OrdersConnectionCreatedAt]
-  updatedAt: [OrdersConnectionUpdatedAt]
-  users_permissions_user: [OrdersConnectionUsers_permissions_user]
-  status: [OrdersConnectionStatus]
-  total_price: [OrdersConnectionTotal_price]
-  Create_at: [OrdersConnectionCreate_at]
-  published_at: [OrdersConnectionPublished_at]
+type CartGroupBy {
+  id: [CartConnectionId]
+  _id: [CartConnection_id]
+  createdAt: [CartConnectionCreatedAt]
+  updatedAt: [CartConnectionUpdatedAt]
+  coupon: [CartConnectionCoupon]
+  user: [CartConnectionUser]
 }
 
-type OrdersConnectionId {
+type CartConnectionId {
   key: ID
-  connection: OrdersConnection
+  connection: CartConnection
 }
 
-type OrdersConnection_id {
+type CartConnection_id {
   key: ID
-  connection: OrdersConnection
+  connection: CartConnection
 }
 
-type OrdersConnectionCreatedAt {
+type CartConnectionCreatedAt {
   key: DateTime
-  connection: OrdersConnection
+  connection: CartConnection
 }
 
-type OrdersConnectionUpdatedAt {
+type CartConnectionUpdatedAt {
   key: DateTime
-  connection: OrdersConnection
+  connection: CartConnection
 }
 
-type OrdersConnectionUsers_permissions_user {
+type CartConnectionCoupon {
   key: ID
-  connection: OrdersConnection
+  connection: CartConnection
 }
 
-type OrdersConnectionStatus {
+type CartConnectionUser {
+  key: ID
+  connection: CartConnection
+}
+
+input CartInput {
+  items: [ID]
+  coupon: ID
+  user: ID
+  created_by: ID
+  updated_by: ID
+}
+
+input editCartInput {
+  items: [ID]
+  coupon: ID
+  user: ID
+  created_by: ID
+  updated_by: ID
+}
+
+input createCartInput {
+  data: CartInput
+}
+
+type createCartPayload {
+  cart: Cart
+}
+
+input updateCartInput {
+  where: InputID
+  data: editCartInput
+}
+
+type updateCartPayload {
+  cart: Cart
+}
+
+input deleteCartInput {
+  where: InputID
+}
+
+type deleteCartPayload {
+  cart: Cart
+}
+
+type Coupon {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  code: String!
+  expiry_date: DateTime!
+  discount_percentage: Float
+  discount_amount: Long
+  published_at: DateTime
+}
+
+type CouponConnection {
+  values: [Coupon]
+  groupBy: CouponGroupBy
+  aggregate: CouponAggregator
+}
+
+type CouponAggregator {
+  count: Int
+  totalCount: Int
+  sum: CouponAggregatorSum
+  avg: CouponAggregatorAvg
+  min: CouponAggregatorMin
+  max: CouponAggregatorMax
+}
+
+type CouponAggregatorSum {
+  discount_percentage: Float
+}
+
+type CouponAggregatorAvg {
+  discount_percentage: Float
+}
+
+type CouponAggregatorMin {
+  discount_percentage: Float
+}
+
+type CouponAggregatorMax {
+  discount_percentage: Float
+}
+
+type CouponGroupBy {
+  id: [CouponConnectionId]
+  _id: [CouponConnection_id]
+  createdAt: [CouponConnectionCreatedAt]
+  updatedAt: [CouponConnectionUpdatedAt]
+  code: [CouponConnectionCode]
+  expiry_date: [CouponConnectionExpiry_date]
+  discount_percentage: [CouponConnectionDiscount_percentage]
+  discount_amount: [CouponConnectionDiscount_amount]
+  published_at: [CouponConnectionPublished_at]
+}
+
+type CouponConnectionId {
+  key: ID
+  connection: CouponConnection
+}
+
+type CouponConnection_id {
+  key: ID
+  connection: CouponConnection
+}
+
+type CouponConnectionCreatedAt {
+  key: DateTime
+  connection: CouponConnection
+}
+
+type CouponConnectionUpdatedAt {
+  key: DateTime
+  connection: CouponConnection
+}
+
+type CouponConnectionCode {
   key: String
-  connection: OrdersConnection
+  connection: CouponConnection
 }
 
-type OrdersConnectionTotal_price {
+type CouponConnectionExpiry_date {
+  key: DateTime
+  connection: CouponConnection
+}
+
+type CouponConnectionDiscount_percentage {
+  key: Float
+  connection: CouponConnection
+}
+
+type CouponConnectionDiscount_amount {
   key: ID
-  connection: OrdersConnection
+  connection: CouponConnection
 }
 
-type OrdersConnectionCreate_at {
+type CouponConnectionPublished_at {
   key: DateTime
-  connection: OrdersConnection
+  connection: CouponConnection
 }
 
-type OrdersConnectionPublished_at {
+input CouponInput {
+  code: String!
+  expiry_date: DateTime!
+  discount_percentage: Float
+  discount_amount: Long
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editCouponInput {
+  code: String
+  expiry_date: DateTime
+  discount_percentage: Float
+  discount_amount: Long
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createCouponInput {
+  data: CouponInput
+}
+
+type createCouponPayload {
+  coupon: Coupon
+}
+
+input updateCouponInput {
+  where: InputID
+  data: editCouponInput
+}
+
+type updateCouponPayload {
+  coupon: Coupon
+}
+
+input deleteCouponInput {
+  where: InputID
+}
+
+type deleteCouponPayload {
+  coupon: Coupon
+}
+
+enum ENUM_ORDER_STATUS {
+  Pending
+  Confirmed
+  Delivery
+  Delivered
+  Cancelled
+}
+
+enum ENUM_ORDER_PAYMENT_METHOD {
+  COD
+  ZaloPay
+  VnPay
+  MasterCard
+}
+
+type Order {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  consignee_name: String!
+  consignee_phone: String!
+  email: String
+  address_line_1: String
+  district: String
+  city: String
+  status: ENUM_ORDER_STATUS
+  is_paid: Boolean
+  payment_method: ENUM_ORDER_PAYMENT_METHOD
+  total_price: Long
+  user: UsersPermissionsUser
+  final_price: Long
+  items(sort: String, limit: Int, start: Int, where: JSON): [OrderedItem]
+}
+
+type OrderConnection {
+  values: [Order]
+  groupBy: OrderGroupBy
+  aggregate: OrderAggregator
+}
+
+type OrderAggregator {
+  count: Int
+  totalCount: Int
+}
+
+type OrderGroupBy {
+  id: [OrderConnectionId]
+  _id: [OrderConnection_id]
+  createdAt: [OrderConnectionCreatedAt]
+  updatedAt: [OrderConnectionUpdatedAt]
+  consignee_name: [OrderConnectionConsignee_name]
+  consignee_phone: [OrderConnectionConsignee_phone]
+  email: [OrderConnectionEmail]
+  address_line_1: [OrderConnectionAddress_line_1]
+  district: [OrderConnectionDistrict]
+  city: [OrderConnectionCity]
+  status: [OrderConnectionStatus]
+  is_paid: [OrderConnectionIs_paid]
+  payment_method: [OrderConnectionPayment_method]
+  total_price: [OrderConnectionTotal_price]
+  user: [OrderConnectionUser]
+  final_price: [OrderConnectionFinal_price]
+}
+
+type OrderConnectionId {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnection_id {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnectionCreatedAt {
   key: DateTime
-  connection: OrdersConnection
+  connection: OrderConnection
+}
+
+type OrderConnectionUpdatedAt {
+  key: DateTime
+  connection: OrderConnection
+}
+
+type OrderConnectionConsignee_name {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionConsignee_phone {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionEmail {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionAddress_line_1 {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionDistrict {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionCity {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionStatus {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionIs_paid {
+  key: Boolean
+  connection: OrderConnection
+}
+
+type OrderConnectionPayment_method {
+  key: String
+  connection: OrderConnection
+}
+
+type OrderConnectionTotal_price {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnectionUser {
+  key: ID
+  connection: OrderConnection
+}
+
+type OrderConnectionFinal_price {
+  key: ID
+  connection: OrderConnection
 }
 
 input OrderInput {
-  users_permissions_user: ID
-  status: String
+  items: [ID]
+  consignee_name: String!
+  consignee_phone: String!
+  email: String
+  address_line_1: String
+  district: String
+  city: String
+  status: ENUM_ORDER_STATUS
+  is_paid: Boolean
+  payment_method: ENUM_ORDER_PAYMENT_METHOD
   total_price: Long
-  Create_at: DateTime
-  published_at: DateTime
+  user: ID
+  final_price: Long
   created_by: ID
   updated_by: ID
 }
 
 input editOrderInput {
-  users_permissions_user: ID
-  status: String
+  items: [ID]
+  consignee_name: String
+  consignee_phone: String
+  email: String
+  address_line_1: String
+  district: String
+  city: String
+  status: ENUM_ORDER_STATUS
+  is_paid: Boolean
+  payment_method: ENUM_ORDER_PAYMENT_METHOD
   total_price: Long
-  Create_at: DateTime
-  published_at: DateTime
+  user: ID
+  final_price: Long
   created_by: ID
   updated_by: ID
 }
@@ -412,7 +663,7 @@ input createOrderInput {
 }
 
 type createOrderPayload {
-  order: Orders
+  order: Order
 }
 
 input updateOrderInput {
@@ -421,7 +672,7 @@ input updateOrderInput {
 }
 
 type updateOrderPayload {
-  order: Orders
+  order: Order
 }
 
 input deleteOrderInput {
@@ -429,419 +680,539 @@ input deleteOrderInput {
 }
 
 type deleteOrderPayload {
-  order: Orders
+  order: Order
 }
 
-type Products {
+type OrderedItem {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  product: Product
+  color: String
+  qty: Int
+  unit_price: Long
+  total_price: Long
+}
+
+type OrderedItemConnection {
+  values: [OrderedItem]
+  groupBy: OrderedItemGroupBy
+  aggregate: OrderedItemAggregator
+}
+
+type OrderedItemAggregator {
+  count: Int
+  totalCount: Int
+  sum: OrderedItemAggregatorSum
+  avg: OrderedItemAggregatorAvg
+  min: OrderedItemAggregatorMin
+  max: OrderedItemAggregatorMax
+}
+
+type OrderedItemAggregatorSum {
+  qty: Float
+}
+
+type OrderedItemAggregatorAvg {
+  qty: Float
+}
+
+type OrderedItemAggregatorMin {
+  qty: Float
+}
+
+type OrderedItemAggregatorMax {
+  qty: Float
+}
+
+type OrderedItemGroupBy {
+  id: [OrderedItemConnectionId]
+  _id: [OrderedItemConnection_id]
+  createdAt: [OrderedItemConnectionCreatedAt]
+  updatedAt: [OrderedItemConnectionUpdatedAt]
+  product: [OrderedItemConnectionProduct]
+  color: [OrderedItemConnectionColor]
+  qty: [OrderedItemConnectionQty]
+  unit_price: [OrderedItemConnectionUnit_price]
+  total_price: [OrderedItemConnectionTotal_price]
+}
+
+type OrderedItemConnectionId {
+  key: ID
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnection_id {
+  key: ID
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionCreatedAt {
+  key: DateTime
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionUpdatedAt {
+  key: DateTime
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionProduct {
+  key: ID
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionColor {
+  key: String
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionQty {
+  key: Int
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionUnit_price {
+  key: ID
+  connection: OrderedItemConnection
+}
+
+type OrderedItemConnectionTotal_price {
+  key: ID
+  connection: OrderedItemConnection
+}
+
+input OrderedItemInput {
+  product: ID
+  color: String
+  qty: Int
+  unit_price: Long
+  total_price: Long
+  created_by: ID
+  updated_by: ID
+}
+
+input editOrderedItemInput {
+  product: ID
+  color: String
+  qty: Int
+  unit_price: Long
+  total_price: Long
+  created_by: ID
+  updated_by: ID
+}
+
+input createOrderedItemInput {
+  data: OrderedItemInput
+}
+
+type createOrderedItemPayload {
+  orderedItem: OrderedItem
+}
+
+input updateOrderedItemInput {
+  where: InputID
+  data: editOrderedItemInput
+}
+
+type updateOrderedItemPayload {
+  orderedItem: OrderedItem
+}
+
+input deleteOrderedItemInput {
+  where: InputID
+}
+
+type deleteOrderedItemPayload {
+  orderedItem: OrderedItem
+}
+
+enum ENUM_PRODUCT_PLATFORM_NAME {
+  Android
+  iOS
+}
+
+enum ENUM_PRODUCT_BATTERY_TYPE {
+  LiIon
+  LiPo
+}
+
+type Product {
   id: ID!
   _id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
-  price: Long!
-  category: Categories
-  promotions: String!
-  condition: String!
-  boxIncluded: String!
-  warranty: String!
-  description: String!
-  thumbnail: UploadFile
-  salespercentage: Int
-  slug: String
-  build: ComponentSpecificationsBuild
-  weight: Float
-  cpu: String
-  gpu: String
-  mainCamera: [ComponentSpecificationsCamera]
-  selfieCamera: [ComponentSpecificationsCamera]
-  othersFeatures: [ComponentSpecificationsFeature]
-  colors: [ComponentSpecificationsColor]
-  internalMemory: Int
-  ram: Float
-  hasCardSlot: Boolean
-  platformName: String
-  platformVersion: String
-  height: Float
-  width: Float
+  slug: String!
+  cpu: String!
+  gpu: String!
+  screen_size: Float!
+  screen_panel: String!
+  screen_resolution: String!
+  height: Float!
+  width: Float!
   depth: Float
-  charging: String
-  baterryCapacity: Int
-  baterryType: String
-  screenType: String
-  screenRatio: String
-  resolution: String
-  density: Int
-  screenSize: Float
-  published_at: DateTime
-  cart_items(sort: String, limit: Int, start: Int, where: JSON): [CartItem]
+  weight: Float!
+  ram: Int!
+  rom: Int!
+  platform_version: String!
+  full_desc: String
+  short_desc: String
+  platform_name: ENUM_PRODUCT_PLATFORM_NAME!
+  sales_percentage: Int
+  inclusion_box: String!
+  warranty: String
+  product_condition: String
+  battery_capacity: Int!
+  battery_type: ENUM_PRODUCT_BATTERY_TYPE
+  options: [ComponentProductOption]
+  thumbnail: UploadFile
+  brand: Brand
+  stars: Float!
+  votes: Int!
+  regular_price: Long
+  final_price: Long
 }
 
-type ProductsConnection {
-  values: [Products]
-  groupBy: ProductsGroupBy
-  aggregate: ProductsAggregator
+type ProductConnection {
+  values: [Product]
+  groupBy: ProductGroupBy
+  aggregate: ProductAggregator
 }
 
-type ProductsAggregator {
+type ProductAggregator {
   count: Int
   totalCount: Int
-  sum: ProductsAggregatorSum
-  avg: ProductsAggregatorAvg
-  min: ProductsAggregatorMin
-  max: ProductsAggregatorMax
+  sum: ProductAggregatorSum
+  avg: ProductAggregatorAvg
+  min: ProductAggregatorMin
+  max: ProductAggregatorMax
 }
 
-type ProductsAggregatorSum {
-  salespercentage: Float
-  weight: Float
-  internalMemory: Float
-  ram: Float
+type ProductAggregatorSum {
+  screen_size: Float
   height: Float
   width: Float
   depth: Float
-  baterryCapacity: Float
-  density: Float
-  screenSize: Float
+  weight: Float
+  ram: Float
+  rom: Float
+  sales_percentage: Float
+  battery_capacity: Float
+  stars: Float
+  votes: Float
 }
 
-type ProductsAggregatorAvg {
-  salespercentage: Float
-  weight: Float
-  internalMemory: Float
-  ram: Float
+type ProductAggregatorAvg {
+  screen_size: Float
   height: Float
   width: Float
   depth: Float
-  baterryCapacity: Float
-  density: Float
-  screenSize: Float
+  weight: Float
+  ram: Float
+  rom: Float
+  sales_percentage: Float
+  battery_capacity: Float
+  stars: Float
+  votes: Float
 }
 
-type ProductsAggregatorMin {
-  salespercentage: Float
-  weight: Float
-  internalMemory: Float
-  ram: Float
+type ProductAggregatorMin {
+  screen_size: Float
   height: Float
   width: Float
   depth: Float
-  baterryCapacity: Float
-  density: Float
-  screenSize: Float
+  weight: Float
+  ram: Float
+  rom: Float
+  sales_percentage: Float
+  battery_capacity: Float
+  stars: Float
+  votes: Float
 }
 
-type ProductsAggregatorMax {
-  salespercentage: Float
-  weight: Float
-  internalMemory: Float
-  ram: Float
+type ProductAggregatorMax {
+  screen_size: Float
   height: Float
   width: Float
   depth: Float
-  baterryCapacity: Float
-  density: Float
-  screenSize: Float
+  weight: Float
+  ram: Float
+  rom: Float
+  sales_percentage: Float
+  battery_capacity: Float
+  stars: Float
+  votes: Float
 }
 
-type ProductsGroupBy {
-  id: [ProductsConnectionId]
-  _id: [ProductsConnection_id]
-  createdAt: [ProductsConnectionCreatedAt]
-  updatedAt: [ProductsConnectionUpdatedAt]
-  name: [ProductsConnectionName]
-  price: [ProductsConnectionPrice]
-  category: [ProductsConnectionCategory]
-  promotions: [ProductsConnectionPromotions]
-  condition: [ProductsConnectionCondition]
-  boxIncluded: [ProductsConnectionBoxIncluded]
-  warranty: [ProductsConnectionWarranty]
-  description: [ProductsConnectionDescription]
-  thumbnail: [ProductsConnectionThumbnail]
-  salespercentage: [ProductsConnectionSalespercentage]
-  slug: [ProductsConnectionSlug]
-  build: [ProductsConnectionBuild]
-  weight: [ProductsConnectionWeight]
-  cpu: [ProductsConnectionCpu]
-  gpu: [ProductsConnectionGpu]
-  internalMemory: [ProductsConnectionInternalMemory]
-  ram: [ProductsConnectionRam]
-  hasCardSlot: [ProductsConnectionHasCardSlot]
-  platformName: [ProductsConnectionPlatformName]
-  platformVersion: [ProductsConnectionPlatformVersion]
-  height: [ProductsConnectionHeight]
-  width: [ProductsConnectionWidth]
-  depth: [ProductsConnectionDepth]
-  charging: [ProductsConnectionCharging]
-  baterryCapacity: [ProductsConnectionBaterryCapacity]
-  baterryType: [ProductsConnectionBaterryType]
-  screenType: [ProductsConnectionScreenType]
-  screenRatio: [ProductsConnectionScreenRatio]
-  resolution: [ProductsConnectionResolution]
-  density: [ProductsConnectionDensity]
-  screenSize: [ProductsConnectionScreenSize]
-  published_at: [ProductsConnectionPublished_at]
+type ProductGroupBy {
+  id: [ProductConnectionId]
+  _id: [ProductConnection_id]
+  createdAt: [ProductConnectionCreatedAt]
+  updatedAt: [ProductConnectionUpdatedAt]
+  name: [ProductConnectionName]
+  slug: [ProductConnectionSlug]
+  cpu: [ProductConnectionCpu]
+  gpu: [ProductConnectionGpu]
+  screen_size: [ProductConnectionScreen_size]
+  screen_panel: [ProductConnectionScreen_panel]
+  screen_resolution: [ProductConnectionScreen_resolution]
+  height: [ProductConnectionHeight]
+  width: [ProductConnectionWidth]
+  depth: [ProductConnectionDepth]
+  weight: [ProductConnectionWeight]
+  ram: [ProductConnectionRam]
+  rom: [ProductConnectionRom]
+  platform_version: [ProductConnectionPlatform_version]
+  full_desc: [ProductConnectionFull_desc]
+  short_desc: [ProductConnectionShort_desc]
+  platform_name: [ProductConnectionPlatform_name]
+  sales_percentage: [ProductConnectionSales_percentage]
+  inclusion_box: [ProductConnectionInclusion_box]
+  warranty: [ProductConnectionWarranty]
+  product_condition: [ProductConnectionProduct_condition]
+  battery_capacity: [ProductConnectionBattery_capacity]
+  battery_type: [ProductConnectionBattery_type]
+  thumbnail: [ProductConnectionThumbnail]
+  brand: [ProductConnectionBrand]
+  stars: [ProductConnectionStars]
+  votes: [ProductConnectionVotes]
+  regular_price: [ProductConnectionRegular_price]
+  final_price: [ProductConnectionFinal_price]
 }
 
-type ProductsConnectionId {
+type ProductConnectionId {
   key: ID
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnection_id {
+type ProductConnection_id {
   key: ID
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionCreatedAt {
+type ProductConnectionCreatedAt {
   key: DateTime
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionUpdatedAt {
+type ProductConnectionUpdatedAt {
   key: DateTime
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionName {
+type ProductConnectionName {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionPrice {
-  key: ID
-  connection: ProductsConnection
-}
-
-type ProductsConnectionCategory {
-  key: ID
-  connection: ProductsConnection
-}
-
-type ProductsConnectionPromotions {
+type ProductConnectionSlug {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionCondition {
+type ProductConnectionCpu {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionBoxIncluded {
+type ProductConnectionGpu {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionWarranty {
+type ProductConnectionScreen_size {
+  key: Float
+  connection: ProductConnection
+}
+
+type ProductConnectionScreen_panel {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionDescription {
+type ProductConnectionScreen_resolution {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionThumbnail {
-  key: ID
-  connection: ProductsConnection
+type ProductConnectionHeight {
+  key: Float
+  connection: ProductConnection
 }
 
-type ProductsConnectionSalespercentage {
+type ProductConnectionWidth {
+  key: Float
+  connection: ProductConnection
+}
+
+type ProductConnectionDepth {
+  key: Float
+  connection: ProductConnection
+}
+
+type ProductConnectionWeight {
+  key: Float
+  connection: ProductConnection
+}
+
+type ProductConnectionRam {
   key: Int
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionSlug {
+type ProductConnectionRom {
+  key: Int
+  connection: ProductConnection
+}
+
+type ProductConnectionPlatform_version {
   key: String
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionBuild {
+type ProductConnectionFull_desc {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionShort_desc {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionPlatform_name {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionSales_percentage {
+  key: Int
+  connection: ProductConnection
+}
+
+type ProductConnectionInclusion_box {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionWarranty {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionProduct_condition {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionBattery_capacity {
+  key: Int
+  connection: ProductConnection
+}
+
+type ProductConnectionBattery_type {
+  key: String
+  connection: ProductConnection
+}
+
+type ProductConnectionThumbnail {
   key: ID
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionWeight {
+type ProductConnectionBrand {
+  key: ID
+  connection: ProductConnection
+}
+
+type ProductConnectionStars {
   key: Float
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionCpu {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionGpu {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionInternalMemory {
+type ProductConnectionVotes {
   key: Int
-  connection: ProductsConnection
+  connection: ProductConnection
 }
 
-type ProductsConnectionRam {
-  key: Float
-  connection: ProductsConnection
+type ProductConnectionRegular_price {
+  key: ID
+  connection: ProductConnection
 }
 
-type ProductsConnectionHasCardSlot {
-  key: Boolean
-  connection: ProductsConnection
-}
-
-type ProductsConnectionPlatformName {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionPlatformVersion {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionHeight {
-  key: Float
-  connection: ProductsConnection
-}
-
-type ProductsConnectionWidth {
-  key: Float
-  connection: ProductsConnection
-}
-
-type ProductsConnectionDepth {
-  key: Float
-  connection: ProductsConnection
-}
-
-type ProductsConnectionCharging {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionBaterryCapacity {
-  key: Int
-  connection: ProductsConnection
-}
-
-type ProductsConnectionBaterryType {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionScreenType {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionScreenRatio {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionResolution {
-  key: String
-  connection: ProductsConnection
-}
-
-type ProductsConnectionDensity {
-  key: Int
-  connection: ProductsConnection
-}
-
-type ProductsConnectionScreenSize {
-  key: Float
-  connection: ProductsConnection
-}
-
-type ProductsConnectionPublished_at {
-  key: DateTime
-  connection: ProductsConnection
+type ProductConnectionFinal_price {
+  key: ID
+  connection: ProductConnection
 }
 
 input ProductInput {
   name: String!
-  price: Long!
-  category: ID
-  promotions: String!
-  condition: String!
-  boxIncluded: String!
-  warranty: String!
-  description: String!
-  thumbnail: ID
-  salespercentage: Int
-  slug: String
-  cart_items: [ID]
-  build: ComponentSpecificationsBuildInput!
-  weight: Float
-  cpu: String
-  gpu: String
-  mainCamera: [ComponentSpecificationsCameraInput]
-  selfieCamera: [ComponentSpecificationsCameraInput]
-  othersFeatures: [ComponentSpecificationsFeatureInput]
-  colors: [ComponentSpecificationsColorInput]
-  internalMemory: Int
-  ram: Float
-  hasCardSlot: Boolean
-  platformName: String
-  platformVersion: String
-  height: Float
-  width: Float
+  slug: String!
+  cpu: String!
+  gpu: String!
+  screen_size: Float!
+  screen_panel: String!
+  screen_resolution: String!
+  height: Float!
+  width: Float!
   depth: Float
-  charging: String
-  baterryCapacity: Int
-  baterryType: String
-  screenType: String
-  screenRatio: String
-  resolution: String
-  density: Int
-  screenSize: Float
-  published_at: DateTime
+  weight: Float!
+  ram: Int!
+  rom: Int!
+  platform_version: String!
+  full_desc: String
+  short_desc: String
+  platform_name: ENUM_PRODUCT_PLATFORM_NAME
+  sales_percentage: Int
+  inclusion_box: String
+  warranty: String
+  product_condition: String
+  battery_capacity: Int!
+  battery_type: ENUM_PRODUCT_BATTERY_TYPE
+  options: [ComponentProductOptionInput]
+  thumbnail: ID
+  brand: ID
+  stars: Float
+  votes: Int
+  regular_price: Long
+  final_price: Long
   created_by: ID
   updated_by: ID
 }
 
 input editProductInput {
   name: String
-  price: Long
-  category: ID
-  promotions: String
-  condition: String
-  boxIncluded: String
-  warranty: String
-  description: String
-  thumbnail: ID
-  salespercentage: Int
   slug: String
-  cart_items: [ID]
-  build: editComponentSpecificationsBuildInput
-  weight: Float
   cpu: String
   gpu: String
-  mainCamera: [editComponentSpecificationsCameraInput]
-  selfieCamera: [editComponentSpecificationsCameraInput]
-  othersFeatures: [editComponentSpecificationsFeatureInput]
-  colors: [editComponentSpecificationsColorInput]
-  internalMemory: Int
-  ram: Float
-  hasCardSlot: Boolean
-  platformName: String
-  platformVersion: String
+  screen_size: Float
+  screen_panel: String
+  screen_resolution: String
   height: Float
   width: Float
   depth: Float
-  charging: String
-  baterryCapacity: Int
-  baterryType: String
-  screenType: String
-  screenRatio: String
-  resolution: String
-  density: Int
-  screenSize: Float
-  published_at: DateTime
+  weight: Float
+  ram: Int
+  rom: Int
+  platform_version: String
+  full_desc: String
+  short_desc: String
+  platform_name: ENUM_PRODUCT_PLATFORM_NAME
+  sales_percentage: Int
+  inclusion_box: String
+  warranty: String
+  product_condition: String
+  battery_capacity: Int
+  battery_type: ENUM_PRODUCT_BATTERY_TYPE
+  options: [editComponentProductOptionInput]
+  thumbnail: ID
+  brand: ID
+  stars: Float
+  votes: Int
+  regular_price: Long
+  final_price: Long
   created_by: ID
   updated_by: ID
 }
@@ -851,7 +1222,7 @@ input createProductInput {
 }
 
 type createProductPayload {
-  product: Products
+  product: Product
 }
 
 input updateProductInput {
@@ -860,7 +1231,7 @@ input updateProductInput {
 }
 
 type updateProductPayload {
-  product: Products
+  product: Product
 }
 
 input deleteProductInput {
@@ -868,7 +1239,152 @@ input deleteProductInput {
 }
 
 type deleteProductPayload {
-  product: Products
+  product: Product
+}
+
+type Review {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: UsersPermissionsUser
+  product: Product
+  comment: String!
+  stars: Float!
+  published_at: DateTime
+}
+
+type ReviewConnection {
+  values: [Review]
+  groupBy: ReviewGroupBy
+  aggregate: ReviewAggregator
+}
+
+type ReviewAggregator {
+  count: Int
+  totalCount: Int
+  sum: ReviewAggregatorSum
+  avg: ReviewAggregatorAvg
+  min: ReviewAggregatorMin
+  max: ReviewAggregatorMax
+}
+
+type ReviewAggregatorSum {
+  stars: Float
+}
+
+type ReviewAggregatorAvg {
+  stars: Float
+}
+
+type ReviewAggregatorMin {
+  stars: Float
+}
+
+type ReviewAggregatorMax {
+  stars: Float
+}
+
+type ReviewGroupBy {
+  id: [ReviewConnectionId]
+  _id: [ReviewConnection_id]
+  createdAt: [ReviewConnectionCreatedAt]
+  updatedAt: [ReviewConnectionUpdatedAt]
+  user: [ReviewConnectionUser]
+  product: [ReviewConnectionProduct]
+  comment: [ReviewConnectionComment]
+  stars: [ReviewConnectionStars]
+  published_at: [ReviewConnectionPublished_at]
+}
+
+type ReviewConnectionId {
+  key: ID
+  connection: ReviewConnection
+}
+
+type ReviewConnection_id {
+  key: ID
+  connection: ReviewConnection
+}
+
+type ReviewConnectionCreatedAt {
+  key: DateTime
+  connection: ReviewConnection
+}
+
+type ReviewConnectionUpdatedAt {
+  key: DateTime
+  connection: ReviewConnection
+}
+
+type ReviewConnectionUser {
+  key: ID
+  connection: ReviewConnection
+}
+
+type ReviewConnectionProduct {
+  key: ID
+  connection: ReviewConnection
+}
+
+type ReviewConnectionComment {
+  key: String
+  connection: ReviewConnection
+}
+
+type ReviewConnectionStars {
+  key: Float
+  connection: ReviewConnection
+}
+
+type ReviewConnectionPublished_at {
+  key: DateTime
+  connection: ReviewConnection
+}
+
+input ReviewInput {
+  user: ID
+  product: ID
+  comment: String!
+  stars: Float
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editReviewInput {
+  user: ID
+  product: ID
+  comment: String
+  stars: Float
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createReviewInput {
+  data: ReviewInput
+}
+
+type createReviewPayload {
+  review: Review
+}
+
+input updateReviewInput {
+  where: InputID
+  data: editReviewInput
+}
+
+type updateReviewPayload {
+  review: Review
+}
+
+input deleteReviewInput {
+  where: InputID
+}
+
+type deleteReviewPayload {
+  review: Review
 }
 
 type I18NLocale {
@@ -1235,8 +1751,6 @@ type UsersPermissionsUser {
   confirmed: Boolean
   blocked: Boolean
   role: UsersPermissionsRole
-  cart: [ComponentUserUserCart]
-  orders(sort: String, limit: Int, start: Int, where: JSON): [Orders]
 }
 
 type UsersPermissionsUserConnection {
@@ -1323,8 +1837,6 @@ input UserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
-  cart: [ComponentUserUserCartInput]
-  orders: [ID]
   created_by: ID
   updated_by: ID
 }
@@ -1339,8 +1851,6 @@ input editUserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
-  cart: [editComponentUserUserCartInput]
-  orders: [ID]
   created_by: ID
   updated_by: ID
 }
@@ -1370,253 +1880,31 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
-type ComponentProductRating {
+type ComponentProductOption {
   id: ID!
   _id: ID!
-  grade: Float
-  votes: Int
-}
-
-input ComponentProductRatingInput {
-  grade: Float
-  votes: Int
-}
-
-input editComponentProductRatingInput {
-  id: ID
-  grade: Float
-  votes: Int
-}
-
-type ComponentSpecificationsBattery {
-  id: ID!
-  _id: ID!
-  type: String
-  charging: String
-  capacity: Int
-}
-
-input ComponentSpecificationsBatteryInput {
-  type: String
-  charging: String
-  capacity: Int
-}
-
-input editComponentSpecificationsBatteryInput {
-  id: ID
-  type: String
-  charging: String
-  capacity: Int
-}
-
-type ComponentSpecificationsBuild {
-  id: ID!
-  _id: ID!
-  front: String
-  back: String
-  frame: String
-}
-
-input ComponentSpecificationsBuildInput {
-  front: String
-  back: String
-  frame: String
-}
-
-input editComponentSpecificationsBuildInput {
-  id: ID
-  front: String
-  back: String
-  frame: String
-}
-
-type ComponentSpecificationsCamera {
-  id: ID!
-  _id: ID!
-  megapixels: Int
-  lense: String
-  focalLength: Float
-  aperture: Float
-}
-
-input ComponentSpecificationsCameraInput {
-  megapixels: Int
-  lense: String
-  focalLength: Float
-  aperture: Float
-}
-
-input editComponentSpecificationsCameraInput {
-  id: ID
-  megapixels: Int
-  lense: String
-  focalLength: Float
-  aperture: Float
-}
-
-type ComponentSpecificationsColor {
-  id: ID!
-  _id: ID!
-  color: String
-  quantity: Int
-  sold: Int
+  color: String!
+  quantity_in_stock: Int
+  sold_quantity: Int
   images(sort: String, limit: Int, start: Int, where: JSON): [UploadFile]
 }
 
-input ComponentSpecificationsColorInput {
+input ComponentProductOptionInput {
+  color: String!
+  images: [ID]
+  quantity_in_stock: Int
+  sold_quantity: Int
+}
+
+input editComponentProductOptionInput {
+  id: ID
   color: String
   images: [ID]
-  quantity: Int
-  sold: Int
+  quantity_in_stock: Int
+  sold_quantity: Int
 }
 
-input editComponentSpecificationsColorInput {
-  id: ID
-  color: String
-  images: [ID]
-  quantity: Int
-  sold: Int
-}
-
-type ComponentSpecificationsDimensions {
-  id: ID!
-  _id: ID!
-  height: Float
-  width: Float
-  depth: Float
-}
-
-input ComponentSpecificationsDimensionInput {
-  height: Float
-  width: Float
-  depth: Float
-}
-
-input editComponentSpecificationsDimensionInput {
-  id: ID
-  height: Float
-  width: Float
-  depth: Float
-}
-
-type ComponentSpecificationsFeature {
-  id: ID!
-  _id: ID!
-  name: String
-}
-
-input ComponentSpecificationsFeatureInput {
-  name: String
-}
-
-input editComponentSpecificationsFeatureInput {
-  id: ID
-  name: String
-}
-
-type ComponentSpecificationsMemory {
-  id: ID!
-  _id: ID!
-  internal: Int
-  cardSlot: Boolean
-  ram: Float
-}
-
-input ComponentSpecificationsMemoryInput {
-  internal: Int
-  cardSlot: Boolean
-  ram: Float
-}
-
-input editComponentSpecificationsMemoryInput {
-  id: ID
-  internal: Int
-  cardSlot: Boolean
-  ram: Float
-}
-
-type ComponentSpecificationsNetwork {
-  id: ID!
-  _id: ID!
-  network: String
-}
-
-input ComponentSpecificationsNetworkInput {
-  network: String
-}
-
-input editComponentSpecificationsNetworkInput {
-  id: ID
-  network: String
-}
-
-type ComponentSpecificationsPlatform {
-  id: ID!
-  _id: ID!
-  name: String
-  version: String
-}
-
-input ComponentSpecificationsPlatformInput {
-  name: String
-  version: String
-}
-
-input editComponentSpecificationsPlatformInput {
-  id: ID
-  name: String
-  version: String
-}
-
-type ComponentSpecificationsScreen {
-  id: ID!
-  _id: ID!
-  screenType: String
-  screenSize: Float
-  resolution: String
-  ratio: String
-  density: String
-}
-
-input ComponentSpecificationsScreenInput {
-  screenType: String
-  screenSize: Float
-  resolution: String
-  ratio: String
-  density: String
-}
-
-input editComponentSpecificationsScreenInput {
-  id: ID
-  screenType: String
-  screenSize: Float
-  resolution: String
-  ratio: String
-  density: String
-}
-
-type ComponentUserUserCart {
-  id: ID!
-  _id: ID!
-  selectedColor: String
-  product: Products
-  quantity: Int
-}
-
-input ComponentUserUserCartInput {
-  selectedColor: String
-  product: ID
-  quantity: Int
-}
-
-input editComponentUserUserCartInput {
-  id: ID
-  selectedColor: String
-  product: ID
-  quantity: Int
-}
-
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ResponseMessage | CartItem | CartItemConnection | CartItemAggregator | CartItemAggregatorSum | CartItemAggregatorAvg | CartItemAggregatorMin | CartItemAggregatorMax | CartItemGroupBy | CartItemConnectionId | CartItemConnection_id | CartItemConnectionCreatedAt | CartItemConnectionUpdatedAt | CartItemConnectionProduct | CartItemConnectionQuantity | CartItemConnectionPublished_at | createCartItemPayload | updateCartItemPayload | deleteCartItemPayload | Categories | CategoriesConnection | CategoriesAggregator | CategoriesGroupBy | CategoriesConnectionId | CategoriesConnection_id | CategoriesConnectionCreatedAt | CategoriesConnectionUpdatedAt | CategoriesConnectionName | CategoriesConnectionSlug | CategoriesConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Orders | OrdersConnection | OrdersAggregator | OrdersGroupBy | OrdersConnectionId | OrdersConnection_id | OrdersConnectionCreatedAt | OrdersConnectionUpdatedAt | OrdersConnectionUsers_permissions_user | OrdersConnectionStatus | OrdersConnectionTotal_price | OrdersConnectionCreate_at | OrdersConnectionPublished_at | createOrderPayload | updateOrderPayload | deleteOrderPayload | Products | ProductsConnection | ProductsAggregator | ProductsAggregatorSum | ProductsAggregatorAvg | ProductsAggregatorMin | ProductsAggregatorMax | ProductsGroupBy | ProductsConnectionId | ProductsConnection_id | ProductsConnectionCreatedAt | ProductsConnectionUpdatedAt | ProductsConnectionName | ProductsConnectionPrice | ProductsConnectionCategory | ProductsConnectionPromotions | ProductsConnectionCondition | ProductsConnectionBoxIncluded | ProductsConnectionWarranty | ProductsConnectionDescription | ProductsConnectionThumbnail | ProductsConnectionSalespercentage | ProductsConnectionSlug | ProductsConnectionBuild | ProductsConnectionWeight | ProductsConnectionCpu | ProductsConnectionGpu | ProductsConnectionInternalMemory | ProductsConnectionRam | ProductsConnectionHasCardSlot | ProductsConnectionPlatformName | ProductsConnectionPlatformVersion | ProductsConnectionHeight | ProductsConnectionWidth | ProductsConnectionDepth | ProductsConnectionCharging | ProductsConnectionBaterryCapacity | ProductsConnectionBaterryType | ProductsConnectionScreenType | ProductsConnectionScreenRatio | ProductsConnectionResolution | ProductsConnectionDensity | ProductsConnectionScreenSize | ProductsConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductRating | ComponentSpecificationsBattery | ComponentSpecificationsBuild | ComponentSpecificationsCamera | ComponentSpecificationsColor | ComponentSpecificationsDimensions | ComponentSpecificationsFeature | ComponentSpecificationsMemory | ComponentSpecificationsNetwork | ComponentSpecificationsPlatform | ComponentSpecificationsScreen | ComponentUserUserCart
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ProductOption | ProductItem | CartItem | UserCart | Brand | BrandConnection | BrandAggregator | BrandGroupBy | BrandConnectionId | BrandConnection_id | BrandConnectionCreatedAt | BrandConnectionUpdatedAt | BrandConnectionName | BrandConnectionSlug | BrandConnectionPublished_at | createBrandPayload | updateBrandPayload | deleteBrandPayload | Cart | CartConnection | CartAggregator | CartGroupBy | CartConnectionId | CartConnection_id | CartConnectionCreatedAt | CartConnectionUpdatedAt | CartConnectionCoupon | CartConnectionUser | createCartPayload | updateCartPayload | deleteCartPayload | Coupon | CouponConnection | CouponAggregator | CouponAggregatorSum | CouponAggregatorAvg | CouponAggregatorMin | CouponAggregatorMax | CouponGroupBy | CouponConnectionId | CouponConnection_id | CouponConnectionCreatedAt | CouponConnectionUpdatedAt | CouponConnectionCode | CouponConnectionExpiry_date | CouponConnectionDiscount_percentage | CouponConnectionDiscount_amount | CouponConnectionPublished_at | createCouponPayload | updateCouponPayload | deleteCouponPayload | Order | OrderConnection | OrderAggregator | OrderGroupBy | OrderConnectionId | OrderConnection_id | OrderConnectionCreatedAt | OrderConnectionUpdatedAt | OrderConnectionConsignee_name | OrderConnectionConsignee_phone | OrderConnectionEmail | OrderConnectionAddress_line_1 | OrderConnectionDistrict | OrderConnectionCity | OrderConnectionStatus | OrderConnectionIs_paid | OrderConnectionPayment_method | OrderConnectionTotal_price | OrderConnectionUser | OrderConnectionFinal_price | createOrderPayload | updateOrderPayload | deleteOrderPayload | OrderedItem | OrderedItemConnection | OrderedItemAggregator | OrderedItemAggregatorSum | OrderedItemAggregatorAvg | OrderedItemAggregatorMin | OrderedItemAggregatorMax | OrderedItemGroupBy | OrderedItemConnectionId | OrderedItemConnection_id | OrderedItemConnectionCreatedAt | OrderedItemConnectionUpdatedAt | OrderedItemConnectionProduct | OrderedItemConnectionColor | OrderedItemConnectionQty | OrderedItemConnectionUnit_price | OrderedItemConnectionTotal_price | createOrderedItemPayload | updateOrderedItemPayload | deleteOrderedItemPayload | Product | ProductConnection | ProductAggregator | ProductAggregatorSum | ProductAggregatorAvg | ProductAggregatorMin | ProductAggregatorMax | ProductGroupBy | ProductConnectionId | ProductConnection_id | ProductConnectionCreatedAt | ProductConnectionUpdatedAt | ProductConnectionName | ProductConnectionSlug | ProductConnectionCpu | ProductConnectionGpu | ProductConnectionScreen_size | ProductConnectionScreen_panel | ProductConnectionScreen_resolution | ProductConnectionHeight | ProductConnectionWidth | ProductConnectionDepth | ProductConnectionWeight | ProductConnectionRam | ProductConnectionRom | ProductConnectionPlatform_version | ProductConnectionFull_desc | ProductConnectionShort_desc | ProductConnectionPlatform_name | ProductConnectionSales_percentage | ProductConnectionInclusion_box | ProductConnectionWarranty | ProductConnectionProduct_condition | ProductConnectionBattery_capacity | ProductConnectionBattery_type | ProductConnectionThumbnail | ProductConnectionBrand | ProductConnectionStars | ProductConnectionVotes | ProductConnectionRegular_price | ProductConnectionFinal_price | createProductPayload | updateProductPayload | deleteProductPayload | Review | ReviewConnection | ReviewAggregator | ReviewAggregatorSum | ReviewAggregatorAvg | ReviewAggregatorMin | ReviewAggregatorMax | ReviewGroupBy | ReviewConnectionId | ReviewConnection_id | ReviewConnectionCreatedAt | ReviewConnectionUpdatedAt | ReviewConnectionUser | ReviewConnectionProduct | ReviewConnectionComment | ReviewConnectionStars | ReviewConnectionPublished_at | createReviewPayload | updateReviewPayload | deleteReviewPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductOption
 
 input InputID {
   id: ID!
@@ -1635,18 +1923,27 @@ type AdminUser {
 }
 
 type Query {
-  cartItem(id: ID!, publicationState: PublicationState): CartItem
-  cartItems(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [CartItem]
-  cartItemsConnection(sort: String, limit: Int, start: Int, where: JSON): CartItemConnection
-  category(id: ID!, publicationState: PublicationState): Categories
-  categories(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Categories]
-  categoriesConnection(sort: String, limit: Int, start: Int, where: JSON): CategoriesConnection
-  order(id: ID!, publicationState: PublicationState): Orders
-  orders(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Orders]
-  ordersConnection(sort: String, limit: Int, start: Int, where: JSON): OrdersConnection
-  product(id: ID!, publicationState: PublicationState): Products
-  products(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Products]
-  productsConnection(sort: String, limit: Int, start: Int, where: JSON): ProductsConnection
+  brand(id: ID!, publicationState: PublicationState): Brand
+  brands(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Brand]
+  brandsConnection(sort: String, limit: Int, start: Int, where: JSON): BrandConnection
+  cart(id: ID!, publicationState: PublicationState): Cart
+  carts(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Cart]
+  cartsConnection(sort: String, limit: Int, start: Int, where: JSON): CartConnection
+  coupon(id: ID!, publicationState: PublicationState): Coupon
+  coupons(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Coupon]
+  couponsConnection(sort: String, limit: Int, start: Int, where: JSON): CouponConnection
+  order(id: ID!, publicationState: PublicationState): Order
+  orders(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Order]
+  ordersConnection(sort: String, limit: Int, start: Int, where: JSON): OrderConnection
+  orderedItem(id: ID!, publicationState: PublicationState): OrderedItem
+  orderedItems(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [OrderedItem]
+  orderedItemsConnection(sort: String, limit: Int, start: Int, where: JSON): OrderedItemConnection
+  product(id: ID!, publicationState: PublicationState): Product
+  products(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Product]
+  productsConnection(sort: String, limit: Int, start: Int, where: JSON): ProductConnection
+  review(id: ID!, publicationState: PublicationState): Review
+  reviews(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Review]
+  reviewsConnection(sort: String, limit: Int, start: Int, where: JSON): ReviewConnection
   files(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [UploadFile]
   filesConnection(sort: String, limit: Int, start: Int, where: JSON): UploadFileConnection
   role(id: ID!, publicationState: PublicationState): UsersPermissionsRole
@@ -1660,27 +1957,35 @@ type Query {
   users(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [UsersPermissionsUser]
   usersConnection(sort: String, limit: Int, start: Int, where: JSON): UsersPermissionsUserConnection
   me: UsersPermissionsMe
-  cart: [ComponentUserUserCart]!
-  productsByName(searchInput: String!): [Products]!
-  newArrivalsProduct(limit: Int): [Products]!
-  bestSellersProduct(limit: Int): [Products]!
-  hotSalesProduct(limit: Int): [Products]!
-  searchProduct(filter: ProductFilter, skip: Int, limit: Int): [Products]!
+  getCart(cartId: ID): UserCart!
+  getOrders: [Order]!
+  searchProducts(filter: ProductFilter, limit: Int, skip: Int, sort: [String]): [Product]!
+  findSimilarProducts(id: ID!, limit: Int, skip: Int, sort: [String]): [Product]!
+  getReviewsByProduct(productId: ID!): [Review]!
 }
 
 type Mutation {
-  createCartItem(input: createCartItemInput): createCartItemPayload
-  updateCartItem(input: updateCartItemInput): updateCartItemPayload
-  deleteCartItem(input: deleteCartItemInput): deleteCartItemPayload
-  createCategory(input: createCategoryInput): createCategoryPayload
-  updateCategory(input: updateCategoryInput): updateCategoryPayload
-  deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
+  createBrand(input: createBrandInput): createBrandPayload
+  updateBrand(input: updateBrandInput): updateBrandPayload
+  deleteBrand(input: deleteBrandInput): deleteBrandPayload
+  createCart(input: createCartInput): createCartPayload
+  updateCart(input: updateCartInput): updateCartPayload
+  deleteCart(input: deleteCartInput): deleteCartPayload
+  createCoupon(input: createCouponInput): createCouponPayload
+  updateCoupon(input: updateCouponInput): updateCouponPayload
+  deleteCoupon(input: deleteCouponInput): deleteCouponPayload
   createOrder(input: createOrderInput): createOrderPayload
   updateOrder(input: updateOrderInput): updateOrderPayload
   deleteOrder(input: deleteOrderInput): deleteOrderPayload
+  createOrderedItem(input: createOrderedItemInput): createOrderedItemPayload
+  updateOrderedItem(input: updateOrderedItemInput): updateOrderedItemPayload
+  deleteOrderedItem(input: deleteOrderedItemInput): deleteOrderedItemPayload
   createProduct(input: createProductInput): createProductPayload
   updateProduct(input: updateProductInput): updateProductPayload
   deleteProduct(input: deleteProductInput): deleteProductPayload
+  createReview(input: createReviewInput): createReviewPayload
+  updateReview(input: updateReviewInput): updateReviewPayload
+  deleteReview(input: deleteReviewInput): deleteReviewPayload
 
   """Delete one file"""
   deleteFile(input: deleteFileInput): deleteFilePayload
@@ -1710,9 +2015,17 @@ type Mutation {
   forgotPassword(email: String!): UserPermissionsPasswordPayload
   resetPassword(password: String!, passwordConfirmation: String!, code: String!): UsersPermissionsLoginPayload
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
-  addItemsToCart(input: [CartDetail]!): ResponseMessage!
-  deleteAllCartItems: ResponseMessage!
-  deleteOneCartItem(id: ID!): ResponseMessage!
+  addItemToCart(cartId: ID!, newItem: CartItemInput!): UserCart!
+  removeItemFromCart(cartId: ID!, itemId: ID!): UserCart!
+  incrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!
+  decrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!
+  applyCoupon(cartId: ID!, couponCode: String!): UserCart!
+  removeCoupon(cartId: ID!): UserCart!
+  checkout(info: OrderInfo!): Order!
+  cancelOrderById(orderId: ID!): Order!
+  createReviewForProduct(createReviewInput: createProductReviewInput!): Review!
+  editReviewById(reviewId: ID!, editReviewInput: editReviewInput!): Review!
+  deleteReviewById(reviewId: ID!): Review!
 }
 
 """
