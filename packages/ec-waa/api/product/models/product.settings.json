@@ -1,0 +1,165 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "name": "Product",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "cpu": {
+      "type": "string",
+      "required": true
+    },
+    "gpu": {
+      "type": "string",
+      "required": true
+    },
+    "screen_size": {
+      "type": "decimal",
+      "min": 0,
+      "required": true
+    },
+    "screen_panel": {
+      "type": "string",
+      "required": true
+    },
+    "screen_resolution": {
+      "type": "string",
+      "required": true
+    },
+    "height": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "width": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "depth": {
+      "type": "decimal"
+    },
+    "weight": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "ram": {
+      "type": "integer",
+      "required": true,
+      "unique": false,
+      "min": 0
+    },
+    "rom": {
+      "type": "integer",
+      "min": 0,
+      "required": true
+    },
+    "platform_version": {
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    "full_desc": {
+      "type": "richtext"
+    },
+    "short_desc": {
+      "type": "text"
+    },
+    "platform_name": {
+      "type": "enumeration",
+      "enum": [
+        "Android",
+        "iOS"
+      ],
+      "default": "Android",
+      "required": true
+    },
+    "sales_percentage": {
+      "type": "integer",
+      "required": false,
+      "min": 0,
+      "max": 60
+    },
+    "inclusion_box": {
+      "type": "richtext",
+      "default": "Bảo hành chính hãng 12 tháng, 1 ĐỔI 1 trong 30 ngày đầu",
+      "required": true
+    },
+    "warranty": {
+      "type": "richtext",
+      "default": "Bảo hành chính hãng 12 tháng, 1 ĐỔI 1 trong 30 ngày đầu"
+    },
+    "product_condition": {
+      "type": "richtext",
+      "default": "Nguyên hộp, đầy đủ phụ kiện từ nhà sản xuất"
+    },
+    "battery_capacity": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "battery_type": {
+      "type": "enumeration",
+      "enum": [
+        "LiIon",
+        "LiPo"
+      ]
+    },
+    "options": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.option"
+    },
+    "thumbnail": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": true,
+      "pluginOptions": {}
+    },
+    "brand": {
+      "via": "products",
+      "model": "brand"
+    },
+    "stars": {
+      "type": "decimal",
+      "required": true,
+      "default": 0,
+      "unique": false,
+      "max": 5,
+      "min": 0
+    },
+    "votes": {
+      "type": "integer",
+      "default": 0,
+      "required": true,
+      "min": 0
+    },
+    "regular_price": {
+      "type": "biginteger"
+    },
+    "final_price": {
+      "type": "biginteger"
+    }
+  }
+}

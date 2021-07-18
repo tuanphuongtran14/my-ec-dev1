@@ -1,9 +1,0 @@
-DELETE  http://localhost:1337/users-permissions/delete-cart
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYmY5NDJhYWY4OTFkMDdiNDM4MjNkNCIsImlhdCI6MTYyNDE1MTk1NCwiZXhwIjoxNjI2NzQzOTU0fQ.MvfE2ustmLXqGXWIp9uTNZY7YT8lhx6b6al-275lLNo
-# Content-Type: application/json
-
-# {
-#     "selectedColor": "Purple",
-#     "quantity": 2,
-#     "product": "60bce455e2317e25fc96c105"
-# }

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer'
+import Footer from '../../components/Footer/Footer';
+import Banner from '../../components/Banner/Banner';
 import { useState } from 'react';
 import Pagination from '../../components/Category/pagination';
 import Product from '../../components/Category/product';
@@ -9,7 +10,7 @@ import getProductsQuery from '../../components/Category/getProductsQuery'
 
 export async function getServerSideProps() {
     const { data } = await client.query({
-        query: getProductsQuery()
+        query: getProductsQuery(),
     });
 
     return {
@@ -21,7 +22,13 @@ export async function getServerSideProps() {
 
 export default function ({ products }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(5)
+    const [productsPerPage] = useState(12);
+    const [filter, setFilter] = useState({
+        brand: "0",
+        price: "0",
+        ram: "0",
+        rom: "0"
+    });
 
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -29,6 +36,37 @@ export default function ({ products }) {
 
     const paginate = pageNumber => (setCurrentPage(pageNumber))
 
+    let isExist = (arr, x) => arr.includes(x);
+
+    const brandNames = [];
+
+    products.map(product => {
+        if (!isExist(brandNames, product.brand.name))
+            brandNames.push(product.brand.name)
+    })
+
+    const handleFilterBrand = (e) => {
+        setFilter({...filter, brand: e.target.value});
+    }
+
+    const handleFilterPrice = (e) => {
+        setFilter({...filter, price: e.target.value})
+    }
+
+    const handleFilterRam = (e) => {
+        setFilter({...filter, ram: e.target.value})
+    }
+
+    const handleFilterRom = (e) => {
+        setFilter({...filter, rom: e.target.value})
+    }
+
+    const brandName = brandNames.map((name) => (
+        <option value={String(name).toLowerCase()} type="button">
+               {name}
+        </option>
+    ))
+    
     return (
         <>
             <Head>
@@ -44,81 +82,39 @@ export default function ({ products }) {
             <Header></Header>
             <body id="body">
                 <div id="root">
-                    <div className="container px-0 banner">
-                        <div className="carousel row mx-0">
-                            <div className="col-12 col-lg-8 px-0">
-                                <div className="gallery js-flickity " data-flickity-options='{ "freeScroll": true, "wrapAround": true }'>
-                                    <img className="gallery-cell" src="./img/banner/ROG_Phone_Sliding_desk.webp" alt="" />
-                                    <img className="gallery-cell" src="./img/banner/690x300_Buds_.webp" alt="" />
-                                    <img className="gallery-cell" src="./img/banner/mg-6690x300.webp" alt="" />
-                                    <img className="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" />
-                                </div>
-                            </div>
-                            <div className="sub-banner col-12 col-lg-4 px-0">
-                                <div className="col-12 mb-2 pr-0">
-                                    <img src="./img/banner/iPhone_12_690x300_copy_3_.webp" alt="" />
-                                </div>
-                                <div className="col-12 pr-0">
-                                    <img src="./img/banner/Right_banner.jpg" alt="" />
-                                </div>
-                            </div>
-                            <div className="col-12 bottom-banner px-0 mt-2">
-                                <img src="./img/banner/bottom-banner.png" alt="" />
-                            </div>
-                        </div>
-                    </div>
+                    <Banner />
                     <div className="container bg-white mb-5 filter">
                         <div className="d-block py-3">
-                            <select name="" id="" className="filter__option mr-2 my-2">
-                                <option selected>Hãng...</option>
-                                <option value="">Iphone</option>
-                                <option value="">SamSung</option>
-                                <option value="">Oppo</option>
+                            <select className="filter__option mr-2 my-2" onChange={handleFilterBrand}>
+                                <option value="0" selected>Hãng...</option>
+                                {brandName}
                             </select>
 
-                            <select name="" id="" className="filter__option mr-2 my-2">
-                                <option selected>Giá...</option>
-                                <option value="">Dưới 2 triệu</option>
-                                <option value="">Từ 2 đến 4 triệu</option>
-                                <option value="">Từ 4 đến 7 triệu</option>
-                                <option value="">Từ 7 đến 13 triệu</option>
-                                <option value="">Từ 13 đến 20 triệu</option>
-                                <option value="">Trên 20 triệu</option>
+                            <select className="filter__option mr-2 my-2" onChange={handleFilterPrice}>
+                                <option value="0" selected>Giá...</option>
+                                <option value="duoi-5-trieu">Dưới 5 triệu</option>
+                                <option value="tu-5-den-10-trieu">Từ 5 đến 10 triệu</option>
+                                <option value="tu-10-den-15-trieu">Từ 10 đến 15 triệu</option> 
+                                <option value="tren-15-trieu">Trên 15 triệu</option>
                             </select>
 
-                            <select name="" id="" className="filter__option mr-2 my-2">
-                                <option selected>Hiệu năng & Pin...</option>
-                                <option value="">Chơi game / Cấu hình cao</option>
-                                <option value="">Pin khủng trên 5000 mAh</option>
-                                <option value="">Sạc pin nhanh</option>
+                            <select className="filter__option mr-2 my-2" onChange={handleFilterRam}>
+                                <option value="0" selected>Ram...</option>
+                                <option value="duoi-4">Dưới 4 GB</option>
+                                <option value="4-den-6">4 - 6 GB</option>
+                                <option value="tren-8">8 GB trở lên</option>
 
                             </select>
-                            <select name="" id="" className="filter__option mr-2 my-2">
-                                <option selected>Ram...</option>
-                                <option value="">Dưới 4 GB</option>
-                                <option value="">4 - 6 GB</option>
-                                <option value="">8 GB trở lên</option>
-
-                            </select>
-                            <select name="" id="" className="filter__option mr-2 my-2">
-                                <option selected>Bộ nhớ trong...</option>
-                                <option value="">Dưới 32 GB</option>
-                                <option value="">32 - 64 GB</option>
-                                <option value="">128 - 256 GB</option>
-                                <option value="">512 GB trở lên</option>
-                            </select>
-
-                            <select name="" id="" className="filter__option mr-2 my-2">
-                                <option selected>Tính năng đặc biệt...</option>
-                                <option value="">Hỗ trợ 5G</option>
-                                <option value="">Bảo mật khuôn mặt</option>
-                                <option value="">Bảo mật vân tay</option>
-                                <option value="">Sạc không dây</option>
-                                <option value="">Chống nước, bụi</option>
+                            <select className="filter__option mr-2 my-2" onChange={handleFilterRom}>
+                                <option value="0" selected>Bộ nhớ trong...</option>
+                                <option value="duoi-32">Dưới 32 GB</option>
+                                <option value="32-den-64">32 - 64 GB</option>
+                                <option value="128-den-256">128 - 256 GB</option>
+                                <option value="tren-512">512 GB trở lên</option>
                             </select>
                         </div>
                         <div className="product-list product-list--non-slide border-0">
-                            <Product currentProducts={currentProducts} />
+                            <Product currentProducts={currentProducts} filter={filter} />
                         </div>
                         <Pagination
                             productsPerPage={productsPerPage}
@@ -126,8 +122,6 @@ export default function ({ products }) {
                             paginate={paginate}
                             currentPage={currentPage}
                         />
-
-
                     </div>
                     <Footer />
                 </div>
