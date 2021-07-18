@@ -99,30 +99,14 @@ body {
 /*-------------------------*/
 /* 2.4. Button
 /*-------------------------*/
-.btn.btn--searchGo {
-  position: absolute;
-  top: 0px;
-  right: 125px;
-  font-size: 1rem;
-  padding: 0.5rem 0.5rem;
-  background-color: #FFFFFF;
-  border: none;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  outline: none;
-  height: 2.3rem; }
-  .searchGo_text{
-    margin-top: -0.2rem;
-    border: 1px solid black;
-    padding: 0.05rem 0.5rem;
-  }
-
 .btn.btn--no-outline {
   outline: none; }
   .btn.btn--no-outline:focus {
     box-shadow: none; }
+
+.btn.btn--no-padding-x {
+  padding-left: 0 !important;
+  padding-right: 0 !important; }
 
 .btn.btn--search {
   position: absolute;
@@ -152,50 +136,67 @@ body {
   .btn.btn--buy-now:hover {
     background-color: #b30015 !important; }
 
+.btn.btn--searchGo {
+  position: absolute;
+  top: 0px;
+  right: 125px;
+  font-size: 1rem;
+  padding: 0.5rem 0.5rem;
+  background-color: #FFFFFF;
+  border: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  outline: none;
+  height: 2.3rem; }
+
+.btn .searchGo_text {
+  margin-top: -0.2rem;
+  border: 1px solid black;
+  padding: 0.05rem 0.5rem; }
+
 /*-------------------------*/
 /* 2.5. Menu
 /*-------------------------*/
 .menu {
   list-style: none;
   margin-bottom: 0; }
-  .menu.menu--nav {
-    transition: 0.4s; }
-    .menu.menu--nav .menu__item {
-      display: inline-block;
-      padding-left: 1rem;
-      padding-right: 1rem; }
-      .menu.menu--nav .menu__item:hover {
-        background-color: #b60015; }
-      .menu.menu--nav .menu__item a {
-        text-decoration: none;
-        height: 4rem;
-        line-height: 4rem;
-        display: inline-block; }
-    @media only screen and (max-width: 991px) {
-      .menu.menu--nav {
-        position: fixed;
-        top: 0;
-        left: -60vw;
-        z-index: 100;
-        width: 60vw;
-        height: 100%;
-        background-color: #fff; }
-        .menu.menu--nav .menu__item {
-          display: block;
-          width: 100%;
-          border-bottom: 1px solid #e5e5e5; }
-          .menu.menu--nav .menu__item:hover {
-            background-color: #f3f3f3; }
-          .menu.menu--nav .menu__item a {
-            color: #000 !important; } }
-  .menu.menu--horizontal .menu__item {
+  .menu.menu--nav .menu__item {
     display: inline-block;
-    padding-left: 0rem;
-    padding-right: 0rem; }
-    @media only screen and (min-width: 400px) {
-      .menu.menu--horizontal .menu__item {
-        padding-left: 1rem;
-        padding-right: 1rem; } }
+    padding-left: 1rem;
+    padding-right: 1rem; }
+    .menu.menu--nav .menu__item:hover {
+      background-color: #b60015; }
+    .menu.menu--nav .menu__item a {
+      text-decoration: none;
+      height: 4rem;
+      line-height: 4rem;
+      display: inline-block; }
+  @media only screen and (max-width: 991px) {
+    .menu.menu--nav {
+      position: fixed;
+      top: 0;
+      left: -60vw;
+      z-index: 100;
+      width: 60vw;
+      height: 100%;
+      background-color: #fff; }
+      .menu.menu--nav .menu__item {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid #e5e5e5; }
+        .menu.menu--nav .menu__item:hover {
+          background-color: #f3f3f3; }
+        .menu.menu--nav .menu__item a {
+          color: #000 !important; } }
+  .menu.menu--horizontal .menu__item {
+    display: inline-block; }
+    .menu.menu--horizontal .menu__item + .menu__item {
+      margin-left: .375rem; }
+    @media only screen and (min-width: 576px) {
+      .menu.menu--horizontal .menu__item + .menu__item {
+        margin-left: 1rem; } }
     .menu.menu--horizontal .menu__item a {
       text-decoration: none;
       cursor: pointer; }
@@ -249,19 +250,15 @@ body {
   align-items: center;
   justify-content: center; }
   .navbar__logo .logo {
-    width: 100px; }
-    @media only screen and (max-width: 320px) {
-      .navbar__logo .logo {
-        display:none; } }
-    @media only screen and (min-width: 400px) {
-      .navbar__logo .logo {
-        width: 120px; } }
+    max-width: 130px; }
     @media only screen and (min-width: 768px) {
       .navbar__logo .logo {
-        width: 150px; } }
+        padding: 0 .75rem;
+        max-width: 160px;
+        display: block; } }
     @media only screen and (min-width: 992px) {
       .navbar__logo .logo {
-        width: 180px; } }
+        max-width: 180px; } }
   @media only screen and (min-width: 992px) {
     .navbar__logo .bars-btn {
       display: none; } }
@@ -324,8 +321,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 10000;
-  display: none; }
+  z-index: 10000; }
   .search-bar .search-input {
     width: 80%;
     height: 2.3rem;
@@ -563,7 +559,7 @@ ul.product-details__bonus {
       margin-left: 0.25rem; }
     .related-products .product .product__box-sticker {
       width: 100%;
-      /* height: 100%; */
+      height: 100%;
       position: absolute;
       left: 0;
       top: 0; }
@@ -623,7 +619,6 @@ ul.product-details__bonus {
   width: 50%;
   display: inline-block;
   padding: .5rem;
-  border: 1px solid #f3f3f3;
   text-decoration: none;
   font-size: .9rem;
   position: relative;
@@ -639,20 +634,20 @@ ul.product-details__bonus {
       width: 20%; } }
   .product-list .product:hover {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25); }
-  .product-list .product + .product {
-    border-left: none; }
   .product-list .product .product__img {
     display: block;
     width: 100%;
     margin: 0 auto; }
   .product-list .product .product__title {
-    font-weight: 500;
+    font-weight: 600;
     color: #4d4d4d; }
+    .product-list .product .product__title a {
+      font-weight: 600;
+      color: #4d4d4d; }
   .product-list .product .product__price {
     margin: .5rem 0; }
     .product-list .product .product__price .regular-price {
       display: inline-block;
-      margin-left: 5px;
       color: #bf081f;
       font-weight: 600; }
     .product-list .product .product__price .sales-price {
@@ -661,6 +656,7 @@ ul.product-details__bonus {
       font-weight: 600; }
       .product-list .product .product__price .sales-price + .regular-price {
         font-size: 0.8rem;
+        margin-left: 5px;
         font-weight: normal;
         text-decoration: line-through;
         color: #aaa; }
@@ -674,7 +670,7 @@ ul.product-details__bonus {
     margin-left: 0.25rem; }
   .product-list .product .product__box-sticker {
     width: 100%;
-    /* height: 100%; */
+    height: 100%;
     position: absolute;
     left: 0;
     top: 0; }

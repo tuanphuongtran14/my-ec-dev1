@@ -1961,6 +1961,7 @@ type Query {
   getOrders: [Order]!
   searchProducts(filter: ProductFilter, limit: Int, skip: Int, sort: [String]): [Product]!
   findSimilarProducts(id: ID!, limit: Int, skip: Int, sort: [String]): [Product]!
+  findRelatedBySlug(slug: String!, limit: Int, skip: Int, sort: [String]): [Product]!
   getReviewsByProduct(productId: ID!): [Review]!
 }
 

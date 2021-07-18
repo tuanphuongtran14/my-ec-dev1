@@ -20,8 +20,9 @@ module.exports = {
         }
     `,
     query: `
-        searchProducts(filter: ProductFilter, limit: Int, skip: Int, sort: [String]): [Product]!
-        findSimilarProducts(id: ID!, limit: Int, skip: Int, sort: [String]): [Product]!
+        searchProducts(filter: ProductFilter, limit: Int, skip: Int, sort: [String]): [Product]!,
+        findSimilarProducts(id: ID!, limit: Int, skip: Int, sort: [String]): [Product]!,
+        findRelatedBySlug(slug: String!, limit: Int, skip: Int, sort: [String]): [Product]!,
     `,
     resolver: {
       Query: {
@@ -30,8 +31,12 @@ module.exports = {
             resolver: 'application::product.product.search',
           },
           findSimilarProducts: {
-            description: 'Receiving product id, then find similar products',
+            description: 'Receiving product id, then return similar products',
             resolver: 'application::product.product.findSimilar',
+          },
+          findRelatedBySlug: {
+            description: 'Receiving product slug, then return related products',
+            resolver: 'application::product.product.findRelatedBySlug',
           },
       },
     },

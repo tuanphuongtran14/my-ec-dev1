@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link';
 import '../../pages/_app'
 import '../../pages/_document'
 import Flickity from 'react-flickity-component'
 
 export default function Header() {
+    let flkty;
+
     const flickityOptions = {
         // initialIndex: 2,
         freeScroll: true,
         wrapAround: true,
-        imagesLoaded: true
+        imagesLoaded: true,
+        autoPlay: 5000
     }
+
+    useEffect(() => {
+        flkty.playPlayer();
+    }, [])
+
     return (
         <div class="container px-0 banner">
             <div class="carousel row mx-0">
@@ -22,6 +30,7 @@ export default function Header() {
                         <img class="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" />
                     </div> */}
                     <Flickity
+                        flickityRef={c => flkty = c}
                         className={'carousel'} // default ''
                         elementType={'div'} // default 'div'
                         options={flickityOptions} // takes flickity options {}
