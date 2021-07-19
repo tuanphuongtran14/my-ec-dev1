@@ -398,11 +398,17 @@ module.exports = {
                     "let": { "brandId": "$brand" },
                     "pipeline": [
                         {
-                            "$match": { "_id": "$$brandId"}
+                            "$match": { "$expr": { "$eq": ["$_id", "$$brandId"] } }
                         }
                     ],
                     "as": "brand"
                 }
+            },
+            {
+              "$unwind": {
+                "path": "$brand",
+                "preserveNullAndEmptyArrays": true
+              }
             },
             {
                 "$lookup": {
@@ -410,11 +416,17 @@ module.exports = {
                     "let": { "thumbnailId": "$thumbnail" },
                     "pipeline": [
                         {
-                            "$match": { "_id": "$$thumbnailId"}
+                            "$match": { "$expr": { "$eq": ["$_id", "$$thumbnailId"] } }
                         }
                     ],
                     "as": "thumbnail"
                 }
+            },
+            {
+              "$unwind": {
+                "path": "$thumbnail",
+                "preserveNullAndEmptyArrays": true
+              }
             },
             {
                 "$lookup": {

@@ -50,8 +50,6 @@ module.exports = {
         const skip = Number(ctx.query._skip);
         const limit = Number(ctx.query._limit);
 
-        console.log(slug);
-
         // Search and return products which match filter
         return await strapi.services.product.findRelatedBySlug(slug, limit, skip, sort);
     }
