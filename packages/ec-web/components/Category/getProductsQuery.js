@@ -18,7 +18,8 @@ export default function query() {
                 brand{
                     name,
                     slug
-                }
+                },
+                updatedAt
             }
         }
   `
