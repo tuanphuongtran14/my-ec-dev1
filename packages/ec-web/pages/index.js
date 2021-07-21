@@ -10,7 +10,7 @@ import client from '../components/Category/apolloClient';
 import getProductsQuery from '../components/Category/getProductsQuery';
 import Flickity from 'react-flickity-component'
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const { data } = await client.query({
     query: getProductsQuery()
   });
@@ -18,26 +18,21 @@ export async function getServerSideProps() {
   return {
     props: {
       products: data.products,
+      productsBestSell: data.productsBestSell,
+      productsBestNew:data.productsBestNew
     },
   };
 }
 
 
-export default function Home({ products }) {
+export default function Home({ products,productsBestSell,productsBestNew }) {
 
-  const productHotSale = products.filter(product => product.sales_percentage > 10)
+  const productHotSale = products.filter(product => product.sales_percentage > 0)
   
   productHotSale.sort(function (a, b) {
     return b.sales_percentage - a.sales_percentage;
   });
 
-  const productNew = products.filter(product =>{
-    const newDate = new Date(product.updatedAt);
-    const date = new Date();
-    return (
-      (newDate.getMonth() - date.getMonth()) === 0
-    )
-  })
 
   const HotSale = productHotSale.map((product) => {
     const regularPrice = product.regular_price.toLocaleString("DE-de");
@@ -81,7 +76,7 @@ export default function Home({ products }) {
   }
   )
 
-  const productsNew = productNew.map((product) => {
+  const productsNew = productsBestNew.map((product) => {
     const regularPrice = product.regular_price.toLocaleString("DE-de");
     const finalPrice = product.final_price.toLocaleString("DE-de");
 
@@ -123,7 +118,7 @@ export default function Home({ products }) {
   }
   )
 
-  const bestSeller  = products.map((product) => {
+  const bestSeller  = productsBestSell.map((product) => {
     const regularPrice = product.regular_price.toLocaleString("DE-de");
     const finalPrice = product.final_price.toLocaleString("DE-de");
 

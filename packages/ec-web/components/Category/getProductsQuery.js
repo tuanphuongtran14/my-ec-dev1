@@ -21,6 +21,35 @@ export default function query() {
                 },
                 updatedAt
             }
+            productsBestSell: searchProducts(sort:["total_sold:desc"],
+            limit:10
+            )
+            {
+              name
+              slug
+              regular_price
+              sales_percentage
+              final_price
+              votes
+              stars
+              thumbnail{
+                url
+              }
+            }
+            productsBestNew:searchProducts(sort:["createAt:desc"],
+            limit:10
+            ){
+              name
+              slug
+              regular_price
+              sales_percentage
+              final_price
+              votes
+              stars
+              thumbnail{
+                url
+              }
+            }
         }
   `
 
