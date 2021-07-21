@@ -146,20 +146,25 @@ body {
             box-shadow: none;
         }
     }
+    &.btn--no-padding-x {
+        padding-left: 0!important;
+        padding-right: 0!important;
+    }
     &.btn--search {
-        @include button-basic-style;
-
-        background-color: #fff;
+        position: absolute;
+        top: 0px;
+        right: 10px;
+        z-index: 100000000000000000000000000000000;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #FFFFFF;
         border: none;
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         outline: none;
-
         height: 2.3rem;
-
-        line-height: 1rem;
     }
 
     &.btn--buy-now {
@@ -178,6 +183,25 @@ body {
             background-color: #b30015 !important;
         }
     }
+    &.btn--searchGo {
+        position: absolute;
+        top: 0px;
+        right: 125px;
+        font-size: 1rem;
+        padding: 0.5rem 0.5rem;
+        background-color: #FFFFFF;
+        border: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        outline: none;
+        height: 2.3rem; }
+        .searchGo_text{
+          margin-top: -0.2rem;
+          border: 1px solid black;
+          padding: 0.05rem 0.5rem;
+        }
 }
 
 /*-------------------------*/
@@ -188,7 +212,7 @@ body {
     margin-bottom: 0;
 
     &.menu--nav {
-        transition: 0.4s;
+        // transition: 0.4s;
 
         .menu__item {
             display: inline-block;
@@ -237,9 +261,17 @@ body {
     &.menu--horizontal {
         .menu__item {
             display: inline-block;
-            padding-left: 0rem;
-            padding-right: 0rem;
 
+            &+.menu__item {
+                margin-left: .375rem
+            }
+
+            @media only screen and (min-width: 576px) {
+                &+.menu__item {
+                    margin-left: 1rem
+                }
+                
+            }
 
             a {
                 text-decoration: none;
@@ -314,18 +346,22 @@ body {
     @include center-align;
 
     .logo {
-        width: 100px;
+        // display: none;
+        max-width: 130px;
 
-        @media only screen and (min-width: 400px) {
-            width: 120px;
-        }
+        // @media only screen and (min-width: 400px) {
+        //     width: 120px;
+        //     display: block;
+        // }
 
         @media only screen and (min-width: 768px) {
-            width: 150px;
+            padding: 0 .75rem;
+            max-width: 160px;
+            display: block;
         }
 
         @media only screen and (min-width: 992px) {
-            width: 180px;
+            max-width: 180px;
         }
     }
 
@@ -422,8 +458,6 @@ body {
     left: 0;
     z-index: 10000;
 
-    display: none;
-
     .search-input {
         width: 80%;
         height: 2.3rem;
@@ -432,6 +466,8 @@ body {
         border: none;
         border-top-left-radius: 20px;
         border-bottom-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
 
         padding: 0.5rem 1rem;
 
@@ -820,7 +856,6 @@ ul.product-details__bonus {
         width: 50%;
         display: inline-block;
         padding: .5rem;
-        border: 1px solid #f3f3f3;
         
         text-decoration: none;
         font-size: .9rem;
@@ -845,24 +880,25 @@ ul.product-details__bonus {
             box-shadow: 0 .5rem 1rem rgba(0,0,0,.25);
         }
 
-        &+.product {
-            border-left: none;
-        }
         .product__img {
             display: block;
             width: 100%;
             margin: 0 auto;
         }
         .product__title {
-            font-weight: 500;
+            font-weight: 600;
             color: #4d4d4d;
+
+            a {
+                font-weight: 600;
+                color: #4d4d4d;
+            }
         }
         .product__price {
             margin: .5rem 0;
             
             .regular-price {
                 display: inline-block;
-                margin-left: 5px;
                 color: #bf081f;
                 font-weight: 600;
             }
@@ -873,6 +909,7 @@ ul.product-details__bonus {
                 font-weight: 600;
                 &+.regular-price {
                     font-size: 0.8rem;
+                    margin-left: 5px;
                     font-weight: normal;
                     text-decoration: line-through;
                     color: #aaa;

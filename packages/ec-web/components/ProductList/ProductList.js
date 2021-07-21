@@ -20,8 +20,18 @@ export default function ProductList(props) {
       })
   
       return (
-            <div className="product-list" id={props.id}>
+          <Flickity
+              flickityRef={c => flkty = c}
+              className={'carousel'} // default ''
+              id={props.id}
+              elementType={'div'} // default 'div'
+              options={flickityOptions} // takes flickity options {}
+              disableImagesLoaded={false} // default false
+              reloadOnUpdate // default false
+              static // default false
+              
+          >
               {productList}
-            </div>
+          </Flickity>
       )
 }

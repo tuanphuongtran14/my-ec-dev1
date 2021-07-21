@@ -42,5 +42,15 @@ module.exports = {
 
         // Search and return products which match filter
         return await strapi.services.product.search(filter, limit, skip, sort);
+    },
+
+    async findRelatedBySlug(ctx) {
+        const slug = ctx.query._slug;
+        const sort = ctx.query._sort;
+        const skip = Number(ctx.query._skip);
+        const limit = Number(ctx.query._limit);
+
+        // Search and return products which match filter
+        return await strapi.services.product.findRelatedBySlug(slug, limit, skip, sort);
     }
 };

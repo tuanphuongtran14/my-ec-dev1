@@ -15,7 +15,7 @@ module.exports = {
 
         if (data.sales_percentage > 0) {
           data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
-          data.final_price -= data.final_price % 1000;
+          data.final_price -= data.final_price % 10000;
         }
         else
           data.final_price = data.regular_price;

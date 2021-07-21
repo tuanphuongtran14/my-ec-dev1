@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react';
 import client from '../components/Category/apolloClient';
 import getProductsQuery from '../components/Category/getProductsQuery';
+import Flickity from 'react-flickity-component'
 
 export async function getServerSideProps() {
   const { data } = await client.query({
@@ -23,7 +24,7 @@ export async function getServerSideProps() {
 
 export default function Home({ products }) {
 
-  const ProductItem = products.slice(0, 5).map((product) => {
+  const ProductItem = products.map((product) => {
     const regularPrice = product.regular_price.toLocaleString("DE-de");
     const finalPrice = product.final_price.toLocaleString("DE-de");
 
@@ -65,8 +66,16 @@ export default function Home({ products }) {
   }
   )
 
-  const ProductList = (typeCategory) => {
+  const flickityOptions = {
+      initialIndex: 2,
+      freeScroll: true,
+      imagesLoaded: true,
+      prevNextButtons: false,
+      pageDots: false,
+      contain: true
+  }
 
+  const ProductList = (typeCategory) => {
     return (
       <div className="box container px-0">
         <div className="box-title px-3">
@@ -78,11 +87,16 @@ export default function Home({ products }) {
           </div>
         </div>
         <div className="box-body">
-          <div className="js-flickity " data-flickity-options='{ "freeScroll": true, "prevNextButtons": false, "pageDots": false, "contain": true }'>
-            <div className="product-list product-list--non-slide border-0">
-              {ProductItem}
-            </div>
-          </div>
+          <Flickity
+              className={'product-list border-0'} // default ''
+              elementType={'div'} // default 'div'
+              options={flickityOptions} // takes flickity options {}
+              disableImagesLoaded={false} // default false
+              reloadOnUpdate // default false
+              static // default false
+          >
+           {ProductItem}
+          </Flickity>
         </div>
       </div>
     )
@@ -96,9 +110,9 @@ export default function Home({ products }) {
         </Head>
         <Header />
         <Banner />
-        {ProductList('Hot sale')}
-        {ProductList('Bán chạy nhất')}
-        {ProductList('Sản phẩm mới nhất')}
+        {ProductList('Hot sales')}
+        {ProductList('Bán chạy')}
+        {ProductList('Mới nhất')}
         <Footer />
       </div>
     </body>

@@ -58,6 +58,10 @@
       "via": "users",
       "plugin": "users-permissions",
       "configurable": false
+    },
+    "wish_list": {
+      "via": "user",
+      "model": "wish-list"
     }
   }
 }
