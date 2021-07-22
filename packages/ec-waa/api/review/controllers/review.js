@@ -1,25 +1,75 @@
 'use strict';
 
+const { toASCII } = require("punycode");
+
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
  * to customize this controller
  */
 
 module.exports = {
-    async getReviewsByProduct(ctx) {
+    async getReviewsByProductSlug(ctx) {
         try {
             // Get product's id from request
-            const { _productId: productId } = ctx.request.query;
+            const { _slug, _skip, _limit, _sort } = ctx.request.query;
 
-            // Find product need to be added review in database by id
-            const productNeedToGetReview = await strapi.query('product').model.findById(productId, '_id');
+            // Find reviews by product's slug
+            let reviews = await strapi.services.review.getReviews({
+                slug: _slug,
+            }, _sort);
 
-            // If product is not exist, throw an error
-            if(!productNeedToGetReview) 
-                throw new Error(`Cannot get reviews for product with id ${productId} because this product is not exist`);
+            let oneStar = 0, twoStar = 0, threeStar = 0, fourStar = 0, fiveStar = 0, totalScore = 0;
+            let total = reviews.length;
+            reviews.forEach(review => {
+                if(review.stars === 1)
+                    oneStar++;
+                
+                if(review.stars === 2)
+                    twoStar++;
+
+                if(review.stars === 3)
+                    threeStar++;
+                
+                if(review.stars === 4)
+                    fourStar++;
+                
+                if(review.stars === 5)
+                    fiveStar++;
+                
+                totalScore += review.stars;
+            });
+
+            // Initial user's review
+            let userReview;
+
+            // If user has already logged in, get user's review
+            if(ctx.request.header && ctx.request.header.authorization) {
+                // Get user's id from request header
+                const { id: userId } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+
+                // Find user's review and move it from reviews to userReview
+                const userReviewIndex = reviews.findIndex(ele => ele.user._id == userId);
+
+                if(userReviewIndex !== -1) 
+                    userReview = reviews.splice(userReviewIndex, 1)[0];
+            }
+
+            reviews.slice(Number(_skip) || 0, (Number(_skip) + Number(_limit)) || 100);
 
             // Get and return product's reviews
-            return await strapi.query('review').find({ product: productId });
+            return {
+                reviews,
+                userReview,
+                overviews: {
+                    oneStar,
+                    twoStar,
+                    threeStar,
+                    fourStar,
+                    fiveStar,
+                    total,
+                    average: (totalScore/total).toFixed(2)
+                }
+            }
 
         } catch (error) {
             console.log(error);
@@ -32,23 +82,23 @@ module.exports = {
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
                 // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+                const { id: userId } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
                 // Get product's id, comment, stars from request
-                const { productId, stars, comment } = ctx.request.body.createReviewInput;
+                const { productSlug, stars, comment } = ctx.request.body.createReviewInput;
 
                 // Find product need to be added review in database by id
-                const productNeedToBeAddedReviewed = await strapi.query('product').model.findById(productId, '_id stars votes');
+                const productNeedToBeAddedReviewed = await strapi.query('product').model.findOne({slug: productSlug}, '_id stars votes');
 
                 // If product need to be added review is not exist, throw an error
                 if(!productNeedToBeAddedReviewed) 
-                    throw new Error(`Cannot add review for product with id ${productId} because this product is not exist`);
+                    throw new Error(`Cannot add review for product with slug ${productSlug} because this product is not exist`);
 
                 // If user has review this product before, stop and throw an error
                 // Because users can only add review each product only one time
                 const review = await strapi.query('review').model.findOne({
-                    user: user_id,
-                    product: productId,
+                    user: userId,
+                    product: productNeedToBeAddedReviewed._id,
                 }, '_id').lean();
 
                 if(review) 
@@ -61,8 +111,8 @@ module.exports = {
 
                 // Create review based on input
                 return await strapi.query('review').create({
-                    user: user_id,
-                    product: productId,
+                    user: userId,
+                    product: productNeedToBeAddedReviewed._id,
                     comment,
                     stars
                 });

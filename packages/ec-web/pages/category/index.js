@@ -20,7 +20,7 @@ export async function getServerSideProps() {
     };
 }
 
-export default function ({ products }) {
+export default function Category({ products }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
     const [filter, setFilter] = useState({
