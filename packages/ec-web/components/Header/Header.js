@@ -128,13 +128,13 @@ export default function Header() {
                         </li>
                         <li className="menu__item">
                             <button type="button" className="text-white btn btn--no-outline">
-                                <i class="fa fa-user  fa--md" aria-hidden="true"></i>
+                                <i className="fa fa-user  fa--md" aria-hidden="true"></i>
                             </button>
                         </li>
                     </ul>
                 </div>
             </div>
-            <form action className="search-bar" id="search-bar">
+            <form className="search-bar" id="search-bar">
                 <div className="container position-relative">
                     <input type="text" name="search" id="search" className="search-input container " placeholder="Search" style={{ width: '100%' }} />
                     <button type="submit" className="btn btn--searchGo" id="search-go">

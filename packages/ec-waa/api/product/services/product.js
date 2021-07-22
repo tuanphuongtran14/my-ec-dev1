@@ -364,7 +364,7 @@ module.exports = {
         // If sort is passed into, add it to option variable
         // Create sortContent variable to contain sort options
         let sortContent = {
-            updatedAt: -1
+            createdAt: -1
         };
         if (sort) {
             sortContent = {};
@@ -385,12 +385,6 @@ module.exports = {
         const relatedProducts = await strapi.query('product').model.aggregate([
             { 
                 "$match": query 
-            },
-            {
-                "$skip": skip || 0
-            },
-            {
-                "$limit": limit || 100
             },
             {
                 "$lookup": {
@@ -454,7 +448,13 @@ module.exports = {
             },
             {
                 "$sort": sortContent
-            }
+            },
+            {
+                "$skip": skip || 0
+            },
+            {
+                "$limit": limit || 100
+            },
         ]);
 
         return relatedProducts;

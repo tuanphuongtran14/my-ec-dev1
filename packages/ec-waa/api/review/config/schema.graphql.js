@@ -5,13 +5,27 @@ module.exports = {
             stars: Int
         }
         input createProductReviewInput {
-            productId: ID!, 
+            productSlug: String!, 
             comment: String!, 
             stars: Int!
         }
+        type Overview {
+            oneStar: Int,
+            twoStar: Int,
+            threeStar: Int,
+            fourStar: Int,
+            fiveStar: Int,
+            total: Int,
+            average: Float!
+        }
+        type ReviewsBySlugPayload {
+            reviews: [Review]!,
+            userReview: Review,
+            overviews: Overview!
+        }
     `,
     query: `
-        getReviewsByProduct(productId: ID!): [Review]!
+        getReviewsByProductSlug(slug: String!, skip: Int, limit: Int, sort: [String]): ReviewsBySlugPayload!
     `,
     mutation: `
         createReviewForProduct(createReviewInput: createProductReviewInput!): Review!
@@ -20,9 +34,9 @@ module.exports = {
     `,
     resolver: {
       Query: {
-        getReviewsByProduct: {
+        getReviewsByProductSlug: {
             description: `Retrieve product's reviews by product id`,
-            resolver: 'application::review.review.getReviewsByProduct',
+            resolver: 'application::review.review.getReviewsByProductSlug',
         },
       },
       Mutation: {
