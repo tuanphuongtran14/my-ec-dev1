@@ -1,8 +1,9 @@
-import React from "react";
+import React,{ useState} from "react";
 import {
-  ApolloClient, HttpLink,ApolloProvider, ApolloLink, InMemoryCache, concat,useQuery,
-  gql
+  ApolloClient,ApolloProvider, HttpLink, ApolloLink, InMemoryCache, concat,useQuery,
+  gql,useMutation
 } from "@apollo/client";
+
 
 const httpLink = new HttpLink({ uri: 'http://localhost:1337/graphql' });
 
@@ -11,7 +12,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
-      authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZTgxMmYyMzkzOGU5MzRiNGE5ZjBmZiIsImlhdCI6MTYyNTgyMjA0MiwiZXhwIjoxNjI4NDE0MDQyfQ.moLVkY18c8mAsybvXXLJju7gNIXP30mvbOuwLvAhWFA"||null,
+      // authorization:null,
     }
   }));
 
@@ -20,46 +21,91 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: concat(authMiddleware, httpLink),
+  link: concat(authMiddleware, httpLink)
 });
 
 
-const EXCHANGE_RATES = gql`
-  query {
-    getCart {
-      items {
-        id
-        product {
-          name,
-          price,
-          thumbnail {
+const query = gql`  
+        query{
+          cart:getCart(cartId:"60f7f03207418c1d68001ea7"){
+            _id
+            items{
+              _id
+              product{
+                _id
+                name
+                thumbnail{
+                  url
+                }
+              }
+              color
+              qty
+              amount
+            }
+            total_amount
+            final_amount
+          }
+        }
+  `
+
+const increaseCart = gql`
+  mutation($itemId: ID!) {
+    incrementItemQuantity(
+      cartId:"60f7f03207418c1d68001ea7",
+      itemId:$itemId,
+      by:1)
+    {
+      _id
+      items{
+        _id
+        product{
+          _id
+          name
+          thumbnail{
             url
           }
-        },
-        color,
-        qty,
-        price
+        }
+        color
+        qty
+        amount
       }
-      user {
-        username
-      }
+      total_amount
+      final_amount
     }
   }
-`;
+`
+
+function money(data) {
+  const string = data.toString()
+  const arr = string.split('')
+  let dem=0
+  for(let i=arr.length-1;i>=0;i--){
+    dem++
+      if(dem===3){
+        if(i === 0){
+          break
+        }
+        arr[i]=`.${arr[i]}`
+        dem=0
+      }
+  }
+  return arr.join('').toString()
+}
+
 
 function ProductItem() {
-  const { loading, error, data } = useQuery(EXCHANGE_RATES);
-
+  const { loading, error, data } = useQuery(query);
+  // const [incrementItemQuantity] = useMutation(increaseCart);
+  // onClick={incrementItemQuantity({ variables: { itemId: item.id } })}
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-
-  return data.getCart.items.map((item) => (
+  return data.cart.items.map((item) => (
     <div className="items" key={item.id}>
       <div className="check-item">
         <div className="check-item-left">
           <input type="checkbox" className="checkbox-wrap__input" />
           <img
-            src="https://didongviet.vn/pub/media/catalog/product//i/p/iphone-12-didongviet_1.jpg"
+            src={process.env.NEXT_PUBLIC_API_URL + item.product.thumbnail.url}
             alt="iphone"
             className="check-item-left__img"
           />
@@ -71,24 +117,21 @@ function ProductItem() {
               -
             </button>
             <button type="button" className="btn btn-outline-dark">
-              1
+              {item.qty}
             </button>
-            <button type="button" className="btn btn-outline-secondary">
+            <a type="button" href="/cart" className="btn btn-outline-secondary" >
               +
-            </button>
+            </a>
           </div>
           <div className="middle-color">
             <label htmlFor="select-color">Màu:</label>
             <select name="color" id="select-color">
-              <option value="den">Đen</option>
-              <option value="hong">Hồng</option>
-              <option value="trang">Trắng</option>
-              <option value="xanh">Xanh</option>
+              <option value={item.color}>{item.color}</option>
             </select>
           </div>
         </div>
         <div className="check-item-right">
-          <span>{item.price}đ</span>
+          <span>{money(item.amount)}đ</span>
           <div className="item-right-icon">
             <i className="far fa-heart"></i>
             <i className="far fa-trash-alt"></i>
@@ -97,6 +140,47 @@ function ProductItem() {
       </div>
     </div>
   ));
+}
+
+function Total(){
+  const { loading, error, data } = useQuery(query);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+  return(
+    <div className="col l-4 md-4 c-12 cart-checkout">
+                <h4>Thông tin đơn hàng</h4>
+                <div className="price">
+                  <h6>Tạm Tính (1 SP)</h6>
+                  <span>{money(data.cart.total_amount)}đ</span>
+                </div>
+                <div className="delivery-fee">
+                  <h6>Phí giao hàng</h6>
+                  <span>15.000đ</span>
+                </div>
+                <div className="voucher">
+                  <input
+                    type="text"
+                    placeholder="Mã giảm giá(mã chỉ áp dụng 1 lần)"
+                    className="voucher__input"
+                  />
+                  <button
+                    type="button "
+                    className="btn btn-success voucher__btn"
+                  >
+                    Áp Dụng
+                  </button>
+                </div>
+                <div className="total">
+                  <h6 className="total__title">Tổng Cộng:</h6>
+                  <span className="total__price">{money(data.cart.final_amount+15000)}đ</span>
+                </div>
+                <div className="checkout">
+                  <button type="button" className="checkout__btn btn btn-info">
+                    Thanh Toán Ngay
+                  </button>
+                </div>
+              </div>
+  )
 }
 
 const Cart = () => {
@@ -135,41 +219,9 @@ const Cart = () => {
                     <span>Xóa</span>
                   </div>
                 </div>
-                <ProductItem/>
+               <ProductItem/>
               </div>
-              <div className="col l-4 md-4 c-12 cart-checkout">
-                <h4>Thông tin đơn hàng</h4>
-                <div className="price">
-                  <h6>Tạm Tính (1 SP)</h6>
-                  <span>25.000.000đ</span>
-                </div>
-                <div className="delivery-fee">
-                  <h6>Phí giao hàng</h6>
-                  <span>15.000đ</span>
-                </div>
-                <div className="voucher">
-                  <input
-                    type="text"
-                    placeholder="Mã giảm giá(mã chỉ áp dụng 1 lần)"
-                    className="voucher__input"
-                  />
-                  <button
-                    type="button "
-                    className="btn btn-success voucher__btn"
-                  >
-                    Áp Dụng
-                  </button>
-                </div>
-                <div className="total">
-                  <h6 className="total__title">Tổng Cộng:</h6>
-                  <span className="total__price">25.015.000đ</span>
-                </div>
-                <div className="checkout">
-                  <button type="button" className="checkout__btn btn btn-info">
-                    Thanh Toán Ngay
-                  </button>
-                </div>
-              </div>
+              <Total/>
             </div>
           </div>
         </div>
