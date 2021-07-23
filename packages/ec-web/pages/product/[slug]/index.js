@@ -1,14 +1,14 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
-// import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 import { graphqlClient, gql } from "../../../lib/apollo-client";
 import { isSignIn, getJwt, useAuth } from "../../../lib/auth";
 import Modal from "../../../components/Modal/Modal";
 import Review from "../../../components/Review/Review";
 import axios from 'axios';
+import Flickity from "react-flickity-component";
 
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
@@ -17,107 +17,108 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
 
     const { data } = await client.query({
         query: gql`
-            query($filter: ProductFilter!, $slug: String!) {
-                products: searchProducts {
-                    name
-                    slug
-                    sales_percentage
-                    regular_price
-                    final_price
-                    id
-                    thumbnail {
+        query($filter: ProductFilter!, $slug: String!) {
+            relatedProducts: findRelatedBySlug(slug: $slug){
+                id,
+                name,
+                slug,
+                thumbnail{
+                    url
+                }
+                regular_price,
+                final_price,
+                sales_percentage
+            }
+            product: searchProducts(filter: $filter) {
+                name
+                sales_percentage
+                slug
+                regular_price
+                final_price
+                id
+                ram
+                thumbnail {
+                    url
+                }
+                full_desc
+                product_condition
+                warranty
+                inclusion_box
+                height
+                width
+                depth
+                platform_name
+                platform_version
+                screen_size
+                screen_panel
+                screen_resolution
+                cpu
+                gpu
+                options {
+                    images {
                         url
                     }
-                }
-                product: searchProducts(filter: $filter) {
-                    name
-                    sales_percentage
-                    slug
-                    regular_price
-                    final_price
-                    id
-                    ram
-                    thumbnail {
-                        url
-                    }
-                    full_desc
-                    product_condition
-                    warranty
-                    inclusion_box
-                    height
-                    width
-                    depth
-                    platform_name
-                    platform_version
-                    screen_size
-                    screen_panel
-                    screen_resolution
-                    cpu
-                    gpu
-                    options {
-                        images {
-                            url
-                        }
-                    }
-                }
-                reviewList: getReviewsByProductSlug(slug: $slug) {
-                    reviews {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                    userReview {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                    overviews {
-                        oneStar
-                        twoStar
-                        threeStar
-                        fourStar
-                        fiveStar
-                        total,
-                        average
-                    }
+                    color,
                 }
             }
-        `,
+            reviewList: getReviewsByProductSlug(slug: $slug) {
+                reviews {
+                    _id
+                    user {
+                        username
+                    }
+                    comment
+                    stars
+                    createdAt
+                }
+                userReview {
+                    _id
+                    user {
+                        username
+                    }
+                    comment
+                    stars
+                    createdAt
+                }
+                overviews {
+                    oneStar
+                    twoStar
+                    threeStar
+                    fourStar
+                    fiveStar
+                    total,
+                    average
+                }
+            }
+        }`,
         variables: {
-            filter: {
-                slug: `${params.slug}`,
+            "filter": {
+                "slug": `${params.slug}`
             },
-            slug: `${params.slug}`,
-        },
+            "slug": `${params.slug}`
+        }
     });
 
+    console.log(data);
     return {
         props: {
             product: data.product[0],
-            products: data.products,
             reviewList: data.reviewList,
             isSignedIn: jwt ? true : false,
             jwt,
             params,
+            relatedProducts: data.relatedProducts
         },
     };
 });
 
 export default function product({
     product,
-    products,
     reviewList,
     isSignedIn,
     jwt,
     params,
+    relatedProducts
 }) {
     const [stars, setStars] = useState(5);
     const [userReview, setUserReview] = useState(reviewList.userReview);
@@ -130,7 +131,7 @@ export default function product({
     const finalPrice = product.final_price.toLocaleString("DE-de");
 
     // Sản phẩm liên quan
-    const relatedProduct = products.slice(1, 5).map((product, index) => {
+    const relatedProduct = relatedProducts.slice(0, 4).map((product, index) => {
         const regularPrice = product.regular_price.toLocaleString("DE-de");
         const finalPrice = product.final_price.toLocaleString("DE-de");
         return (
@@ -194,7 +195,7 @@ export default function product({
     });
 
     // Hình ảnh lớn của sản phẩm
-    const color = () => {
+    const largePic = () => {
         if (product.options) {
             return product.options.map((option, index) => {
                 return option.images.map((image, index) => {
@@ -217,7 +218,7 @@ export default function product({
     // Hình ảnh nhỏ của sản phẩm
     const thumbs = () => {
         if (product.options) {
-            return product.options.map((option, index) => {
+            return product.options.map((option, indexOption) => {
                 return option.images.map((image, index) => (
                     <img
                         className={
@@ -369,7 +370,7 @@ export default function product({
     };
 
     const displayReviews = () => {
-        const reviewElements = reviews.slice(0, displayNumber).map(review => 
+        const reviewElements = reviews.slice(0, displayNumber).map(review =>
             <Review
                 username={review.user.username}
                 stars={review.stars}
@@ -388,8 +389,8 @@ export default function product({
                         <option value="stars:asc">Tiêu cực</option>
                     </select>
                 </div>
-                { reviewElements }
-                { (displayNumber < reviewList.reviews.length) ? (
+                {reviewElements}
+                {(displayNumber < reviewList.reviews.length) ? (
                     <p className="text-center">
                         <button type="button" class="btn btn-success mt-3" onClick={loadMore}>Tải thêm...</button>
                     </p>) : null
@@ -530,7 +531,7 @@ export default function product({
                     </div>
                 </div>
             </div>
-            );
+        );
     }
 
     const refeshReviews = async slug => {
@@ -569,14 +570,14 @@ export default function product({
                     }
                 }
             `;
-    
+
             const variables = {
                 filter: {
                     slug
                 },
                 slug
             };
-    
+
             const { data } = await axios({
                 method: 'POST',
                 url: '/api/query',
@@ -588,11 +589,11 @@ export default function product({
                     variables
                 },
             });
-    
+
             setReviews(data.reviewList.reviews);
             setUserReview(data.reviewList.userReview);
             setOverviews(data.reviewList.overviews);
-    
+
         } catch {
 
         }
@@ -782,7 +783,7 @@ export default function product({
             `;
 
             const review = await editReview(userReview._id, comment, stars);
-            
+
             await refeshReviews(params.slug);
 
             btnEle.removeAttribute("disabled");
@@ -889,6 +890,32 @@ export default function product({
         return result;
     };
 
+    const flickityOptions = {
+        freeScroll: false,
+        wrapAround: false,
+        draggable: true,
+        prevNextButtons: false,
+        pageDots: false
+    }
+
+    let flkty;
+    useEffect(() => {
+        var thumbnails = document.getElementsByClassName('thumbnail');
+
+        flkty.on('change', function (index) {
+            document.querySelector(".thumbnail.active").classList.remove("active");
+            thumbnails[index].classList.add("active");
+        });
+
+        for (let i = 0; i < thumbnails.length; i++) {
+            thumbnails[i].onclick = function () {
+                document.querySelector(".thumbnail.active").classList.remove("active");
+                this.classList.add("active");
+                flkty.select(i, true, false)
+            }
+        }
+    })
+
     return (
         <>
             <Head>
@@ -938,16 +965,17 @@ export default function product({
                     </section>
                     <section className="row mx-0">
                         <div className="product-details__images px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3 ">
-                            <div
-                                className="product-images__slide js-flickity mb-2"
-                                data-flickity-options='{ "freeScroll": true, "wrapAround": true, "prevNextButtons": false, &apos;pageDots&apos;: false }'
+                            <Flickity
+                                className={'product-images__slide mb-2'}
+                                elementType={'div'}
+                                options={flickityOptions}
+                                reloadOnUpdate
+                                static
+                                flickityRef={c => flkty = c}
                             >
-                                {color()}
-                            </div>
-
-                            <div className="product-images__thumbnails px-4">
-                                {thumbs()}
-                            </div>
+                                {largePic()}
+                            </Flickity>
+                            <div className="product-images__thumbnails px-4">{thumbs()}</div>
                         </div>
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
                             <div className="product-details__price">
@@ -961,28 +989,20 @@ export default function product({
                                 </span>
                             </div>
                             <p className="my-2">
-                                <b>Chọn phiên bản phù hợp</b>
-                            </p>
-                            <div
-                                className="product-details__versions"
-                                id="versions"
-                            >
-                                <div className="version active">
-                                    {product.ram}G
-                                    <span className="version__price">
-                                        {finalPrice} ₫
-                                    </span>
-                                </div>
-                            </div>
-                            <p className="my-2">
                                 <b>Chọn màu phù hợp</b>
                             </p>
-                            <div
-                                className="product-details__versions"
-                                id="colors"
-                            >
-                                {colorOption}
+                            <div className="product-details__versions" id="colors">
+                                {colorOption()}
                             </div>
+                            <p className="my-2">
+                                <b>Khuyến mãi: </b>
+                                <ul class="product-details__bonus">
+                                    <li>Tặng voucher mua hàng trị giá 2000.000đ</li>
+                                    <li>Tặng voucher sửa chữa trị giá 500.000</li>
+                                    <li>Tặng sạc chính hãng 18W trị giá 550.000đ</li>
+                                    <li>Tặng sim ghép Fix full lỗi trị giá 120.000đ</li>
+                                    <li>Tặng nón bảo hiểm cao cấp</li>
+                                </ul></p>
                             <div className="row px-0 mx-0">
                                 <button className="btn btn--buy-now col-12 px-0 mb-2">
                                     <i
@@ -1010,6 +1030,7 @@ export default function product({
                                     </button>
                                 </div>
                             </div>
+
                         </div>
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
                             <b>Khuyến mãi: </b>
@@ -1226,11 +1247,11 @@ export default function product({
                                 aria-labelledby="pills-reviews-tab"
                             >
                                 {displayOverviews()}
-                               
+
                                 {displayReviewingForm()}
 
-                                { displayReviews() }
-                                
+                                {displayReviews()}
+
                             </div>
                         </div>
                     </div>

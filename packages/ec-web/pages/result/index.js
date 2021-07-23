@@ -4,73 +4,72 @@ import Footer from '../../components/Footer/Footer';
 import Banner from '../../components/Banner/Banner';
 import { useState } from 'react';
 import Pagination from '../../components/Category/pagination';
-import Product from '../../components/Category/product';
+import Product from './product';
 import client from '../../components/Category/apolloClient'
-import getProductsQuery from '../../components/Category/getProductsQuery'
+import { gql } from '@apollo/client';
+import { useRouter } from "next/router"
 
-export async function getServerSideProps() {
+export async function getServerSideProps({query}) {
+    query.minPrice = Number(query.minPrice);
+    query.maxPrice = Number(query.maxPrice);
+    query.minRam = Number(query.minRam);
+    query.maxRam = Number(query.maxRam);
+    query.minScreenSize = Number(query.minScreenSize);
+    query.maxScreenSize = Number(query.maxScreenSize);
+    query.minBatteryCapacity = Number(query.minBatteryCapacity);
+    query.maxBatteryCapacity = Number(query.maxBatteryCapacity);
+
+
     const { data } = await client.query({
-        query: getProductsQuery(),
+        query: gql`
+            query($filter: ProductFilter!) {
+                products: searchProducts(filter: $filter){
+                    name,
+                    sales_percentage,
+                    slug,
+                    regular_price,
+                    final_price,
+                    id,
+                    ram,
+                    thumbnail{
+                        url
+                    },
+                    brand{
+                        name
+                    }
+                }
+            }
+        `,
+        variables: {
+            "filter": query
+        }
     });
+
+    console.log(data);
 
     return {
         props: {
             products: data.products,
+            // products: [],
         },
     };
 }
 
-export default function Category({ products }) {
+export default function ({ products }) {
+    // export default function () {
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(25);
-    const [filter, setFilter] = useState({
-        brand: "0",
-        price: "0",
-        ram: "0",
-        rom: "0"
-    });
 
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
     const paginate = pageNumber => (setCurrentPage(pageNumber))
-
-    let isExist = (arr, x) => arr.includes(x);
-
-    const brandNames = [];
-
-    products.map(product => {
-        if (!isExist(brandNames, product.brand.name))
-            brandNames.push(product.brand.name)
-    })
-
-    const handleFilterBrand = (e) => {
-        setFilter({...filter, brand: e.target.value});
-    }
-
-    const handleFilterPrice = (e) => {
-        setFilter({...filter, price: e.target.value})
-    }
-
-    const handleFilterRam = (e) => {
-        setFilter({...filter, ram: e.target.value})
-    }
-
-    const handleFilterRom = (e) => {
-        setFilter({...filter, rom: e.target.value})
-    }
-
-    const brandName = brandNames.map((name) => (
-        <option value={String(name).toLowerCase()} type="button">
-               {name}
-        </option>
-    ))
     
     return (
         <>
             <Head>
-                <title>Category</title>
+                <title>Kết quả tìm kiếm</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" key="title" />
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
                 {/* <!-- Bootstrap CSS --> */}
@@ -83,38 +82,11 @@ export default function Category({ products }) {
             <body id="body">
                 <div id="root">
                     <Banner />
-                    <div className="container bg-white mb-5 filter">
-                        <div className="d-block py-3">
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterBrand}>
-                                <option value="0" selected>Hãng...</option>
-                                {brandName}
-                            </select>
-
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterPrice}>
-                                <option value="0" selected>Giá...</option>
-                                <option value="duoi-5-trieu">Dưới 5 triệu</option>
-                                <option value="tu-5-den-10-trieu">Từ 5 đến 10 triệu</option>
-                                <option value="tu-10-den-15-trieu">Từ 10 đến 15 triệu</option> 
-                                <option value="tren-15-trieu">Trên 15 triệu</option>
-                            </select>
-
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterRam}>
-                                <option value="0" selected>Ram...</option>
-                                <option value="duoi-4">Dưới 4 GB</option>
-                                <option value="4-den-6">4 - 6 GB</option>
-                                <option value="tren-8">8 GB trở lên</option>
-
-                            </select>
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterRom}>
-                                <option value="0" selected>Bộ nhớ trong...</option>
-                                <option value="duoi-32">Dưới 32 GB</option>
-                                <option value="32-den-64">32 - 64 GB</option>
-                                <option value="128-den-256">128 - 256 GB</option>
-                                <option value="tren-512">512 GB trở lên</option>
-                            </select>
-                        </div>
+                    
+                    <div className="container bg-white mb-5 filter py-3">
+                        {/* <i><h1 className="text-center text-primary">Kết quả tìm kiếm</h1></i> */}
                         <div className="product-list product-list--non-slide border-0">
-                            <Product currentProducts={currentProducts} filter={filter} />
+                            <Product currentProducts={currentProducts} />
                         </div>
                         <Pagination
                             productsPerPage={productsPerPage}
@@ -125,14 +97,14 @@ export default function Category({ products }) {
                     </div>
                     <Footer />
                 </div>
-                <form action="" className="search-bar" id="search-bar">
+                {/* <form action="" className="search-bar" id="search-bar">
                     <input type="text" name="seach" id="seach" className="search-input" placeholder="Search" />
                     <button type="submit" className="btn btn--search">
                         <i className="fa fa-search " aria-hidden="true"></i>
                     </button>
-                </form>
+                </form> */}
 
-                <div id="overlaybody"></div>
+                {/* <div id="overlaybody"></div> */}
                 {/* <!-- Optional JavaScript --> */}
                 <script src="./vendors/flickity.pkgd.min.js"></script>
                 <script src="./js/main.js"></script>
