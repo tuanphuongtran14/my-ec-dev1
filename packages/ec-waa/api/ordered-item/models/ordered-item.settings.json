@@ -12,20 +12,21 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "product": {
-      "model": "product"
-    },
     "color": {
       "type": "string"
     },
     "qty": {
       "type": "integer"
     },
-    "unit_price": {
+    "unitPrice": {
       "type": "biginteger"
     },
-    "total_price": {
+    "totalPrice": {
       "type": "biginteger"
+    },
+    "selected": {
+      "type": "boolean",
+      "default": true
     }
   }
 }

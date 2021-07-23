@@ -9,13 +9,13 @@ const pro = ({ currentProducts, filter }) => {
             currentProducts = (currentProducts.filter(product => product.brand.slug === filter.brand))
         // filter price
         if (filter.price === "duoi-5-trieu")
-            currentProducts = (currentProducts.filter(product => product.final_price <= 5000000))
+            currentProducts = (currentProducts.filter(product => product.finalPrice <= 5000000))
         else if (filter.price === "tu-5-den-10-trieu")
-            currentProducts = (currentProducts.filter(product => product.final_price >= 5000000 && product.final_price <= 10000000))
+            currentProducts = (currentProducts.filter(product => product.finalPrice >= 5000000 && product.finalPrice <= 10000000))
         else if (filter.price === "tu-10-den-15-trieu")
-            currentProducts = (currentProducts.filter(product => product.final_price >= 10000000 && product.final_price <= 15000000))
+            currentProducts = (currentProducts.filter(product => product.finalPrice >= 10000000 && product.finalPrice <= 15000000))
         else if (filter.price === "tren-15-trieu")
-            currentProducts = (currentProducts.filter(product => product.final_price >= 15000000))
+            currentProducts = (currentProducts.filter(product => product.finalPrice >= 15000000))
         // filter ram
         if (filter.ram === "duoi-4")
             currentProducts = (currentProducts.filter(product => product.ram <= 4))
@@ -38,8 +38,8 @@ const pro = ({ currentProducts, filter }) => {
     const products = productsFilter()
 
     var product = products.map((product, index) => {
-        const regularPrice = product.regular_price.toLocaleString("DE-de");
-        const finalPrice = product.final_price.toLocaleString("DE-de");
+        const regularPrice = product.regularPrice.toLocaleString("DE-de");
+        const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
         return (
             <div className="product">
@@ -50,7 +50,7 @@ const pro = ({ currentProducts, filter }) => {
                     </Link>
                 </span>
                 <div className="product__price">
-                    {product.sales_percentage === 0 ?
+                    {product.salesPercentage === 0 ?
                         null :
                         <span className="sales-price">
                             {finalPrice}₫
@@ -67,11 +67,11 @@ const pro = ({ currentProducts, filter }) => {
                     <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
                     <span>(442 đánh giá)</span>
                 </div>
-                {product.sales_percentage === 0 ?
+                {product.salesPercentage === 0 ?
                     "" :
                     <div className="product__box-sticker">
                         <p className="sticker-percent">
-                            -{product.sales_percentage}%
+                            -{product.salesPercentage}%
                         </p>
                     </div>
                 }

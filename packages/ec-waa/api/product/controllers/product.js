@@ -33,10 +33,10 @@ module.exports = {
         const filter = {
             minRam: product.ram - 2,
             maxRam: product.ram + 2,
-            minScreenSize: product.screen_size - 0.5,
-            maxScreenSize: product.screen_size + 0.5,
-            minBatteryCapacity: product.battery_capacity - 1000,
-            maxBatteryCapacity: product.battery_capacity + 1000,
+            minScreenSize: product.screenSize - 0.5,
+            maxScreenSize: product.screenSize + 0.5,
+            minBatteryCapacity: product.batteryCapacity - 1000,
+            maxBatteryCapacity: product.batteryCapacity + 1000,
             id_ne: product.id,
         }
 

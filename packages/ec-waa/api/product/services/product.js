@@ -46,14 +46,14 @@ module.exports = {
 
         // If user query min price, add it to query conditions
         if (filter.minPrice)
-            query['final_price'] = {
+            query['finalPrice'] = {
                 $gte: Number(filter.minPrice)
             };
 
         // If user query max price, add it to query conditions
         if (filter.maxPrice)
-            query['final_price'] = {
-                ...query['final_price'],
+            query['finalPrice'] = {
+                ...query['finalPrice'],
                 $lte: Number(filter.maxPrice)
             };
 
@@ -72,39 +72,39 @@ module.exports = {
 
         // If user query screen panel, add it to query conditions
         if (filter.screenPanel)
-            query['screen_panel'] = filter.screenPanel;
+            query['screenPanel'] = filter.screenPanel;
 
         // If user query screen resolution, add it to query conditions
         if (filter.screenResolution)
-            query['screen_resolution'] = filter.screenResolution;
+            query['screenResolution'] = filter.screenResolution;
 
         // If user query min ram, add it to query conditions
         if (filter.minScreenSize)
-            query['screen_size'] = {
+            query['screenSize'] = {
                 $gte: Number(filter.minScreenSize)
             };
 
         // If user query max ram, add it to query conditions
         if (filter.maxScreenSize)
-            query['screen_size'] = {
-                ...query['screen_size'],
+            query['screenSize'] = {
+                ...query['screenSize'],
                 $lte: Number(filter.maxScreenSize)
             };
 
         // If user query platform, add it to query conditions
         if (filter.platform)
-            query['platform_name'] = filter.platform;
+            query['platformName'] = filter.platform;
 
         // If user query min battery capacity, add it to query conditions
         if (filter.minBatteryCapacity)
-            query['battery_capacity'] = {
+            query['batteryCapacity'] = {
                 $gte: Number(filter.minBatteryCapacity)
             };
 
         // If user query max battery capacity,, add it to query conditions
         if (filter.maxBatteryCapacity)
-            query['battery_capacity'] = {
-                ...query['battery_capacity'],
+            query['batteryCapacity'] = {
+                ...query['batteryCapacity'],
                 $lte: Number(filter.maxBatteryCapacity)
             };
 
@@ -133,16 +133,11 @@ module.exports = {
 
         // ================= End handle sort ====================
         let products = await strapi.query('product').model
-            .aggregate([{
+            .aggregate([
+                {
                     "$match": query
                 },
-                {
-                    "$skip": skip || 0
-                },
-                {
-                    "$limit": limit || 100
-                },
-                {
+                { 
                     "$lookup": {
                         "from": "brands",
                         "localField": "brand",
@@ -151,12 +146,12 @@ module.exports = {
                     }
                 },
                 {
-                    "$match": queryMore
+                    "$unwind": {
+                        "path": "$brand",
+                        "preserveNullAndEmptyArrays": true
+                    }
                 },
-                {
-                    "$unwind": "$brand"
-                },
-                {
+                { 
                     "$lookup": {
                         "from": "upload_file",
                         "localField": "thumbnail",
@@ -165,140 +160,49 @@ module.exports = {
                     }
                 },
                 {
-                    "$unwind": "$thumbnail"
+                    "$unwind": {
+                        "path": "$thumbnail",
+                        "preserveNullAndEmptyArrays": true
+                    }
                 },
-                {
+                { 
                     "$lookup": {
                         "from": "components_product_options",
-                        "localField": "options.ref",
-                        "foreignField": "_id",
+                        "let": { "optionIds": "$options.ref" },
+                        "pipeline": [
+                            { "$match": { "$expr": { "$in": ["$_id", "$$optionIds"] } } },
+                            { 
+                                "$lookup": {
+                                    "from": "upload_file",
+                                    "let": { "imageIds": "$images" },
+                                    "pipeline": [
+                                        { "$match": { "$expr": { "$in": ["$_id", "$$imageIds"] } } },
+                                    ],
+                                    "as": "images"
+                                }
+                            },
+                        ],
                         "as": "options"
-                    }
-                },
-                {
-                    "$unwind": "$options"
-                },
-                {
-                    "$lookup": {
-                        "from": "upload_file",
-                        "localField": "options.images",
-                        "foreignField": "_id",
-                        "as": "options.images"
-                    }
-                },
-                {
-                    "$group": {
-                        "_id": "$_id",
-                        "name": {
-                            "$first": '$name'
-                        },
-                        "regular_price": {
-                            "$first": '$regular_price'
-                        },
-                        "final_price": {
-                            "$first": '$final_price'
-                        },
-                        "slug": {
-                            "$first": '$slug'
-                        },
-                        "sales_percentage": {
-                            "$first": '$sales_percentage'
-                        },
-                        "cpu": {
-                            "$first": '$cpu'
-                        },
-                        "gpu": {
-                            "$first": '$gpu'
-                        },
-                        "screen_panel": {
-                            "$first": '$screen_panel'
-                        },
-                        "screen_size": {
-                            "$first": '$screen_size'
-                        },
-                        "screen_resolution": {
-                            "$first": '$screen_resolution'
-                        },
-                        "height": {
-                            "$first": '$height'
-                        },
-                        "width": {
-                            "$first": '$width'
-                        },
-                        "depth": {
-                            "$first": '$depth'
-                        },
-                        "weight": {
-                            "$first": '$weight'
-                        },
-                        "ram": {
-                            "$first": '$ram'
-                        },
-                        "rom": {
-                            "$first": '$rom'
-                        },
-                        "platform_name": {
-                            "$first": '$platform_name'
-                        },
-                        "platform_version": {
-                            "$first": '$platform_version'
-                        },
-                        "battery_type": {
-                            "$first": '$battery_type'
-                        },
-                        "battery_capacity": {
-                            "$first": '$battery_capacity'
-                        },
-                        "short_desc": {
-                            "$first": '$short_desc'
-                        },
-                        "full_desc": {
-                            "$first": '$full_desc'
-                        },
-                        "inclusion_box": {
-                            "$first": '$inclusion_box'
-                        },
-                        "warranty": {
-                            "$first": '$warranty'
-                        },
-                        "condition": {
-                            "$first": '$condition'
-                        },
-                        "brand": {
-                            "$first": '$brand'
-                        },
-                        "thumbnail": {
-                            "$first": '$thumbnail'
-                        },
-                        "updatedAt": {
-                            "$first": '$updatedAt'
-                        },
-                        "createdAt": {
-                            "$first": '$createdAt'
-                        },
-                        "stars": {
-                            "$first": '$stars'
-                        },
-                        "votes": {
-                            "$first": '$votes'
-                        },
-                        "options": {
-                            "$push": "$options"
-                        }
                     }
                 },
                 {
                     "$addFields": {
                         "total_sold": {
-                            "$sum": "$options.sold_quantity"
+                            "$sum": "$options.soldQuantity"
                         }
                     }
                 },
                 {
                     "$sort": sortContent
-                }
-            ])
-
+                },
+                {
+                    "$skip": skip || 0
+                },
+                {
+                    "$limit": limit || 100
+                },
+            ]);
+            
         return products;
     },
 
@@ -326,11 +230,11 @@ module.exports = {
         // Get product's attribute need to compare
         const {
             ram,
-            final_price,
-            battery_capacity,
-            screen_panel,
-            screen_size,
-            platform_name
+            finalPrice,
+            batteryCapacity,
+            screenPanel,
+            screenSize,
+            platformName
         } = product;
 
         // Create filter varible
@@ -344,17 +248,17 @@ module.exports = {
                     }
                 },
                 {
-                    final_price: {
-                        $gt: final_price - 2000000,
-                        $lt: final_price + 2000000
+                    finalPrice: {
+                        $gt: finalPrice - 2000000,
+                        $lt: finalPrice + 2000000
                     }
                 },
                 {
-                    screen_size: {
-                        $gt: screen_size - 0.5,
-                        $lt: screen_size + 0.5
+                    screenSize: {
+                        $gt: screenSize - 0.5,
+                        $lt: screenSize + 0.5
                     },
-                    screen_panel: screen_panel
+                    screenPanel: screenPanel
                 },
             ]
         };

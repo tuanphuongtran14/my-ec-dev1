@@ -18,18 +18,18 @@
       "required": true,
       "unique": true
     },
-    "expiry_date": {
+    "expiryDate": {
       "type": "datetime",
       "required": true
     },
-    "discount_percentage": {
+    "discountPercentage": {
       "type": "decimal",
       "default": 0,
       "required": false,
       "max": 60,
       "min": 0
     },
-    "discount_amount": {
+    "discountAmount": {
       "type": "biginteger",
       "min": "50000"
     }

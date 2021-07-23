@@ -21,9 +21,9 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
                 products: searchProducts {
                     name
                     slug
-                    sales_percentage
-                    regular_price
-                    final_price
+                    salesPercentage
+                    regularPrice
+                    finalPrice
                     id
                     thumbnail {
                         url
@@ -31,27 +31,27 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
                 }
                 product: searchProducts(filter: $filter) {
                     name
-                    sales_percentage
+                    salesPercentage
                     slug
-                    regular_price
-                    final_price
+                    regularPrice
+                    finalPrice
                     id
                     ram
                     thumbnail {
                         url
                     }
-                    full_desc
-                    product_condition
+                    fullDesc
+                    condition
                     warranty
-                    inclusion_box
+                    inclusionBox
                     height
                     width
                     depth
-                    platform_name
-                    platform_version
-                    screen_size
-                    screen_panel
-                    screen_resolution
+                    platformName
+                    platformVersion
+                    screenSize
+                    screenPanel
+                    screenResolution
                     cpu
                     gpu
                     options {
@@ -126,13 +126,13 @@ export default function product({
     const [isEditing, setIsEditing] = useState(false);
     const [displayNumber, setDisplayNumber] = useState(1);
 
-    const regularPrice = product.regular_price.toLocaleString("DE-de");
-    const finalPrice = product.final_price.toLocaleString("DE-de");
+    const regularPrice = product.regularPrice.toLocaleString("DE-de");
+    const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     // Sản phẩm liên quan
     const relatedProduct = products.slice(1, 5).map((product, index) => {
-        const regularPrice = product.regular_price.toLocaleString("DE-de");
-        const finalPrice = product.final_price.toLocaleString("DE-de");
+        const regularPrice = product.regularPrice.toLocaleString("DE-de");
+        const finalPrice = product.finalPrice.toLocaleString("DE-de");
         return (
             <div className="product col-6 col-md-3 col-lg-10 col-xl-9 my-3">
                 <img
@@ -951,7 +951,7 @@ export default function product({
                         </div>
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
                             <div className="product-details__price">
-                                {product.sales_percentage === 0 ? null : (
+                                {product.salesPercentage === 0 ? null : (
                                     <span className="sales-price">
                                         {finalPrice} ₫{" "}
                                     </span>
@@ -1027,7 +1027,7 @@ export default function product({
                             <div className="mt-2">
                                 <b>Tình trạng</b>
                                 <br />
-                                {product.product_condition === null ? (
+                                {product.condition === null ? (
                                     <span className="text-justify">
                                         Máy mới 100%, nguyên hộp, đầy đủ phụ
                                         kiện từ nhà sản xuất.
@@ -1036,7 +1036,7 @@ export default function product({
                                     <div
                                         className="text-justify"
                                         dangerouslySetInnerHTML={{
-                                            __html: product.product_condition,
+                                            __html: product.condition,
                                         }}
                                     ></div>
                                 )}
@@ -1047,7 +1047,7 @@ export default function product({
                                 <ul
                                     className="text-justify list-unstyled"
                                     dangerouslySetInnerHTML={{
-                                        __html: product.inclusion_box,
+                                        __html: product.inclusionBox,
                                     }}
                                 ></ul>
                             </div>
@@ -1122,7 +1122,7 @@ export default function product({
                                 role="tabpanel"
                                 aria-labelledby="pills-desc-tab"
                                 dangerouslySetInnerHTML={{
-                                    __html: product.full_desc,
+                                    __html: product.fullDesc,
                                 }}
                             ></div>
 
@@ -1173,17 +1173,17 @@ export default function product({
                                             <td scope="row">
                                                 Kích thước màn hình
                                             </td>
-                                            <td>{product.screen_size}</td>
+                                            <td>{product.screenSize}</td>
                                         </tr>
                                         <tr>
                                             <td scope="row">
                                                 Công nghệ màn hình
                                             </td>
-                                            <td>{product.screen_panel}</td>
+                                            <td>{product.screenPanel}</td>
                                         </tr>
                                         <tr>
                                             <td scope="row">Độ phân giải</td>
-                                            <td>{product.screen_resolution}</td>
+                                            <td>{product.screenResolution}</td>
                                         </tr>
                                     </tbody>
                                     <thead>
@@ -1194,11 +1194,11 @@ export default function product({
                                     <tbody>
                                         <tr>
                                             <td scope="row">Hệ điều hành</td>
-                                            <td>{product.platform_name}</td>
+                                            <td>{product.platformName}</td>
                                         </tr>
                                         <tr>
                                             <td scope="row">Phiên bản</td>
-                                            <td>{product.platform_version}</td>
+                                            <td>{product.platformVersion}</td>
                                         </tr>
                                     </tbody>
                                     <thead>

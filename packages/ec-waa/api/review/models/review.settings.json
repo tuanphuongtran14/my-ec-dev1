@@ -16,9 +16,6 @@
       "plugin": "users-permissions",
       "model": "user"
     },
-    "product": {
-      "model": "product"
-    },
     "comment": {
       "type": "text",
       "required": true
@@ -29,6 +26,10 @@
       "required": true,
       "max": 5,
       "min": 0
+    },
+    "isBought": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

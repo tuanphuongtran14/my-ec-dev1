@@ -13,7 +13,7 @@ export async function getServerSideProps({ params }) {
       query($filter: ProductFilter!) {
         products: searchProducts {
               name,
-              sales_percentage,
+              salesPercentage,
               price,
               id,
               thumbnail{
@@ -27,7 +27,7 @@ export async function getServerSideProps({ params }) {
           }
           product: searchProducts(filter: $filter){
               name,
-              sales_percentage,
+              salesPercentage,
               price,
               id,
               thumbnail{

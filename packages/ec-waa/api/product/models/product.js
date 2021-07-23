@@ -7,31 +7,35 @@ const slugify = require('slugify');
 
 module.exports = {
     lifecycles: {
-      beforeCreate: async (data) => {
-        if (data.name) 
-          data.slug = slugify(data.name, {
-              lower: true
-          });
+        beforeCreate: async (data) => {
+            if (data.name)
+                data.slug = slugify(data.name, {
+                    lower: true
+                });
 
-        if (data.sales_percentage > 0) {
-          data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
-          data.final_price -= data.final_price % 10000;
-        }
-        else
-          data.final_price = data.regular_price;
-      },
-      beforeUpdate: async (params, data) => {
-        if (data.name) 
-          data.slug = slugify(data.name, {
-            lower: true
-        });
-          
-        if (data.sales_percentage > 0) {
-          data.final_price = data.regular_price * (1 - data.sales_percentage / 100);
-          data.final_price -= data.final_price % 1000;
-        }
-        else
-          data.final_price = data.regular_price;
-      },
+            if(data.finalPrice && data.salesPercentage) {
+                if (Number(data.salesPercentage)) {
+                    data.finalPrice = parseInt(Number(data.regularPrice) * (1 - Number(data.salesPercentage) / 100));
+                    data.finalPrice -= data.finalPrice % 10000;
+                    data.finalPrice = data.finalPrice.toString();
+                } else
+                    data.finalPrice = data.regularPrice;
+            }
+        },
+        beforeUpdate: async (params, data) => {
+            if (data.name)
+                data.slug = slugify(data.name, {
+                    lower: true
+                });
+
+            if(data.finalPrice && data.salesPercentage) {
+                if (Number(data.salesPercentage)) {
+                    data.finalPrice = parseInt(Number(data.regularPrice) * (1 - Number(data.salesPercentage) / 100));
+                    data.finalPrice -= data.finalPrice % 10000;
+                    data.finalPrice = data.finalPrice.toString();
+                } else
+                    data.finalPrice = data.regularPrice;
+            }
+        },
     },
 };

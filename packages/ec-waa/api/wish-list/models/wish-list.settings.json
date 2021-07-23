@@ -17,9 +17,6 @@
       "plugin": "users-permissions",
       "model": "user",
       "via": "wish_list"
-    },
-    "products": {
-      "collection": "product"
     }
   }
 }

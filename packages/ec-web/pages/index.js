@@ -27,16 +27,16 @@ export async function getStaticProps() {
 
 export default function Home({ products,productsBestSell,productsBestNew }) {
 
-  const productHotSale = products.filter(product => product.sales_percentage > 0)
+  const productHotSale = products.filter(product => product.salesPercentage > 0)
   
   productHotSale.sort(function (a, b) {
-    return b.sales_percentage - a.sales_percentage;
+    return b.salesPercentage - a.salesPercentage;
   });
 
 
   const HotSale = productHotSale.map((product) => {
-    const regularPrice = product.regular_price.toLocaleString("DE-de");
-    const finalPrice = product.final_price.toLocaleString("DE-de");
+    const regularPrice = product.regularPrice.toLocaleString("DE-de");
+    const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
       <Link href="/product/[slug]" as={`/product/${product.slug}`} key={product.id}>
@@ -48,7 +48,7 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             </Link>
           </span>
           <div className="product__price">
-            {product.sales_percentage === 0 ?
+            {product.salesPercentage === 0 ?
               null :
               <span className="sales-price">{finalPrice}₫</span>
             }
@@ -63,9 +63,9 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             <span>(472 đánh giá)</span>
           </div>
           {
-            product.sales_percentage != 0 ?
+            product.salesPercentage != 0 ?
               <div className="product__box-sticker">
-                <p className="sticker-percent">{product.sales_percentage}%</p>
+                <p className="sticker-percent">{product.salesPercentage}%</p>
               </div>
               : null
           }
@@ -77,8 +77,8 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
   )
 
   const productsNew = productsBestNew.map((product) => {
-    const regularPrice = product.regular_price.toLocaleString("DE-de");
-    const finalPrice = product.final_price.toLocaleString("DE-de");
+    const regularPrice = product.regularPrice.toLocaleString("DE-de");
+    const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
       <Link href="/product/[slug]" as={`/product/${product.slug}`} key={product.id}>
@@ -90,7 +90,7 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             </Link>
           </span>
           <div className="product__price">
-            {product.sales_percentage === 0 ?
+            {product.salesPercentage === 0 ?
               null :
               <span className="sales-price">{finalPrice}₫</span>
             }
@@ -105,9 +105,9 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             <span>(472 đánh giá)</span>
           </div>
           {
-            product.sales_percentage != 0 ?
+            product.salesPercentage != 0 ?
               <div className="product__box-sticker">
-                <p className="sticker-percent">{product.sales_percentage}%</p>
+                <p className="sticker-percent">{product.salesPercentage}%</p>
               </div>
               : null
           }
@@ -119,8 +119,8 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
   )
 
   const bestSeller  = productsBestSell.map((product) => {
-    const regularPrice = product.regular_price.toLocaleString("DE-de");
-    const finalPrice = product.final_price.toLocaleString("DE-de");
+    const regularPrice = product.regularPrice.toLocaleString("DE-de");
+    const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
       <Link href="/product/[slug]" as={`/product/${product.slug}`} key={product.id}>
@@ -132,7 +132,7 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             </Link>
           </span>
           <div className="product__price">
-            {product.sales_percentage === 0 ?
+            {product.salesPercentage === 0 ?
               null :
               <span className="sales-price">{finalPrice}₫</span>
             }
@@ -147,9 +147,9 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             <span>(472 đánh giá)</span>
           </div>
           {
-            product.sales_percentage != 0 ?
+            product.salesPercentage != 0 ?
               <div className="product__box-sticker">
-                <p className="sticker-percent">{product.sales_percentage}%</p>
+                <p className="sticker-percent">{product.salesPercentage}%</p>
               </div>
               : null
           }

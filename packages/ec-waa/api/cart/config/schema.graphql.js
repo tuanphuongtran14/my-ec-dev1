@@ -8,16 +8,16 @@ module.exports = {
 
         type ProductOption {
             color: String!,
-            quantity_in_stock: Int!,
-            sold_quantity: Int!,
+            quantityInStock: Int!,
+            soldQuantity: Int!,
         }
 
         type ProductItem {
             _id: ID!,
             name: String!,
             slug: String!,
-            regular_price: Long!,
-            final_price: Long!,
+            regularPrice: Long!,
+            finalPrice: Long!,
             thumbnail: UploadFile!,
             brand: Brand!,
             options: [ProductOption]!,
@@ -28,7 +28,8 @@ module.exports = {
             product: ProductItem!,
             color: String!,
             qty: Int!,
-            amount: Long!
+            amount: Long!,
+            selected: Boolean!
         },
 
         type UserCart {
@@ -36,8 +37,8 @@ module.exports = {
             coupon: Coupon,
             items: [CartItem]!,
             coupon_is_valid: Boolean!,
-            total_amount: Long!,
-            final_amount: Long!,
+            totalAmount: Long!,
+            finalAmount: Long!,
         }
     `,
     query: `
@@ -46,6 +47,7 @@ module.exports = {
     mutation: `
         addItemToCart(cartId: ID!, newItem: CartItemInput!): UserCart!,
         removeItemFromCart(cartId: ID!, itemId: ID!): UserCart!,
+        toggleSelectItem(cartId: ID!, itemId: ID!): UserCart!,
         incrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!,
         decrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!,
         applyCoupon(cartId: ID!, couponCode: String!): UserCart!,
@@ -66,6 +68,10 @@ module.exports = {
             removeItemFromCart: {
                 description: 'Remove an item to user cart',
                 resolver: 'application::cart.cart.removeItemFromCart',
+            },
+            toggleSelectItem: {
+                description: 'Toggle select item in user cart',
+                resolver: 'application::cart.cart.toggleSelect',
             },
             incrementItemQuantity: {
                 description: 'Increment quantity item',

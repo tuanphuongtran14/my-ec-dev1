@@ -21,6 +21,10 @@ module.exports = {
                 // Get user's id from request header
                 const { id: userId } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
+                // If cart is belongs to user, only return this cart
+                if(cart && cart.user == userId) 
+                    return await strapi.services.cart.displayCart(cart._id);
+
                 // Retrieve user's cart
                 let userCart = await strapi.query('cart').model.findOne({user: userId});
 
@@ -92,7 +96,7 @@ module.exports = {
                 if(option.color === newItemInput.color) {
                     checkColorValid = true;
 
-                    if(option.quantity_in_stock >= newItemInput.qty && newItemInput.qty > 0)
+                    if(newItemInput.qty > 0 && newItemInput.qty <= option.quantityInStock)
                         checkQuantityValid = true;
                 }
                 
@@ -110,6 +114,7 @@ module.exports = {
                 product: newItemInput.product,
                 color: newItemInput.color,
                 qty: newItemInput.qty,
+                selected: true,
             });
 
             // Find cart in database
@@ -218,7 +223,7 @@ module.exports = {
             // If increment quantity is greater than product's stock quantity, throw an error
             const { product } = cart.item;
 
-            if (product.option.quantity_in_stock < cart.item.qty + by) 
+            if (product.option.quantityInStock < cart.item.qty + by) 
                 throw new Error(`Increment quantity is greater than product's stock quantity`);
 
             // Increase item quantity
@@ -333,4 +338,48 @@ module.exports = {
             throw error;
         }
     },
+
+    async toggleSelect(ctx) {
+        try {
+            // Get id of item need to be removed in database
+            const { cartId, itemId } = ctx.request.body;
+    
+            // Find item in database
+            const item = await strapi.query('ordered-item').model.findById(itemId);
+    
+            // If no exist that item, throw an error
+            if(!item)
+                throw new Error(`Cannot toggle select item with id ${itemId} because that item is not exist`);
+
+            // Find cart in database
+            let cart = await strapi.query('cart').model.findById(cartId).lean();
+            
+            // If user's cart is not exist, create a new cart for user
+            if(!cart) {
+                cart = await strapi.query('cart').model.create({
+                    items: []
+                }).lean();
+
+                // Return user's cart
+                return await strapi.services.cart.displayCart(cart._id);
+            }
+
+            // If item need to be toggle select is not in user's cart, throw new error
+            const itemIndex = cart.items.findIndex(item => (item == itemId) ? true : false);
+            if(itemIndex === -1) 
+                throw new Error(`Cannot toggle select item with id ${itemId} because that item is not in your cart`)
+
+            // If item is in user's cart, toggle select for it
+            await strapi.query('ordered-item').model.findByIdAndUpdate(itemId, {
+                selected: !item.selected
+            });
+            
+            // Return user's cart
+            return await strapi.services.cart.displayCart(cart._id);
+
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 };

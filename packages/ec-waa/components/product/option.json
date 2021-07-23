@@ -21,10 +21,10 @@
       "required": true,
       "pluginOptions": {}
     },
-    "quantity_in_stock": {
+    "quantityInStock": {
       "type": "integer"
     },
-    "sold_quantity": {
+    "soldQuantity": {
       "type": "integer",
       "default": 0
     }

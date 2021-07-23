@@ -20,10 +20,6 @@
     "slug": {
       "type": "string",
       "unique": true
-    },
-    "products": {
-      "via": "brand",
-      "collection": "product"
     }
   }
 }

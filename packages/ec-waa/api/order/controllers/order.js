@@ -30,146 +30,112 @@ module.exports = {
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
                 // Get user's id from request header
-                const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
+                const { id: userId } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
                 // Get input from request 
                 const {
-                    consignee_name,
-                    consignee_phone,
+                    consigneeName,
+                    consigneePhone,
                     email,
-                    address_line_1,
+                    addressLine1,
                     district,
                     city,
-                    payment_method
+                    paymentMethod
                 } = ctx.request.body.info;
 
-                // Get user's cart
-                const [ userCart ] = await strapi.query('cart').model
-                    .aggregate([
-                        { "$match": { "user": new ObjectID(user_id) }},
-                        { "$lookup": {
-                          "from": "coupons",
-                          "localField": "coupon",
-                          "foreignField": "_id",
-                          "as": "coupon"
-                        }},
-                        {
-                          "$unwind": {
-                            "path": "$coupon",
-                            "preserveNullAndEmptyArrays": true
-                          }
-                        },
-                        {
-                          "$unwind": {
-                            "path": "$items",
-                            "preserveNullAndEmptyArrays": true
-                          }
-                        },
-                        { "$lookup": {
-                          "from": "ordered_items",
-                          "localField": "items",
-                          "foreignField": "_id",
-                          "as": "items_details"
-                        }},
-                        {
-                          "$unwind": {
-                            "path": "$items_details",
-                            "preserveNullAndEmptyArrays": true
-                          }
-                        },
-                        { "$lookup": {
-                          "from": "products",
-                          "localField": "items_details.product",
-                          "foreignField": "_id",
-                          "as": "items_details.product"
-                        }},
-                        {
-                          "$unwind": {
-                            "path": "$items_details.product",
-                            "preserveNullAndEmptyArrays": true
-                          }
-                        },
-                        {
-                          "$addFields": { 
-                              "items_details.price": { "$multiply": [ "$items_details.product.final_price", "$items_details.qty" ] }
-                        }},
-                        { "$group": {
-                            "_id": "$_id",
-                            "user": { "$first": '$user' },
-                            "coupon": { "$first": '$coupon' },
-                            "coupon_is_valid": { "$first": '$coupon_is_valid' },
-                            "items": { "$push": "$items" },
-                            "items_details": { "$push": "$items_details" },
-                        }},
-                        {
-                          "$addFields": { 
-                              "total_price": { "$sum": "$items_details.price" }
-                        }},
-                    ]);
-
-                console.log(userCart);
+                const userCart = await strapi.services.cart.checkout(userId);
                 
                 // If user's cart is not exist or has no items, throw an error
                 if(!userCart && userCart.items.length === 0) 
                     throw new Error('Cannot checkout because your cart is empty');
 
-                // Calc final price of user's cart
-                userCart.final_price = userCart.total_price;
+                // Check color, qty and filter product which user want to buy
+                const itemToBuy = [];
+                const idItemToBuy = [], idItemToKeep = [];
+                userCart.items.forEach(item => {
+                    if(item.selected) {
+                        itemToBuy.push(item);
+                        idItemToBuy.push(item._id);
 
-                if(userCart.coupon) {
-                    // If coupon is expiry, update coupon status and return user's cart
-                    if(Number(userCart.coupon.expiry_date) < Date.now())
-                        await strapi.query('cart').model.findByIdAndUpdate(cart._id, {
-                            coupon_is_valid: false
+                        // Check color & quantity input is valid or not
+                        let checkColorValid = false;
+                        let checkQuantityValid = false;
+
+                        item.product.options.forEach(option => {
+                            if(option.color === item.color) {
+                                checkColorValid = true;
+
+                                if(item.qty > 0 && item.qty <= option.quantityInStock)
+                                    checkQuantityValid = true;
+                            }
                         });
-                    else {
-                        // Else, calculate final price with coupon discount
-                        if(userCart.coupon.discount_percentage) 
-                            userCart.final_price *= 1 - userCart.coupon.discount_percentage / 100;
-            
-                        if(userCart.coupon.discount_amount) 
-                            userCart.final_price -= userCart.coupon.discount_amount;
-            
-                        if(userCart.final_price < 0)
-                                userCart.final_price = 0;  
+
+                        if(!checkColorValid)
+                            throw new Error('Color which you want to buy is not valid');
+
+                        if(!checkQuantityValid)
+                            throw new Error('Quantity which you want to buy is great than stock quantity');
+                    } else {
+                        idItemToKeep.push(item._id);
                     }
-                }
-
-                console.log(1)
-
-                // Get items && total price from user's cart
-                const { items, total_price, final_price, user } = userCart;
-                
-                // After creating order, set user's cart to empty
-                await strapi.query('cart').model.findByIdAndUpdate(userCart._id, {
-                    items: [],
-                    coupon: undefined,
-                    coupon_is_valid: undefined
                 });
 
+                // Create order
+                const order = await strapi.query('order').create({
+                    consigneeName,
+                    consigneePhone,
+                    email,
+                    addressLine1,
+                    district,
+                    city,
+                    items: idItemToBuy,
+                    totalAmount: userCart.totalAmount,
+                    finalAmount: userCart.finalAmount,
+                    status: 'Pending',
+                    isPaid: false,
+                    paymentMethod,
+                    user: userId,
+                    coupon: userCart.coupon
+                });
+                
+                // After creating order, remove items that is bought from cart
+                await strapi.query('cart').model.findByIdAndUpdate(userCart._id, {
+                    items: idItemToKeep,
+                    coupon: undefined,
+                    coupon_is_valid: undefined
+                }); 
+
                 // Add price information to order items
-                await Promise.all(userCart.items_details.map(async item => {
-                    return await strapi.query('cart').model.findByIdAndUpdate(item._id, {
-                        price: item.price
+                await Promise.all(itemToBuy.map(async item => {
+                    return await strapi.query('ordered-item').model.findByIdAndUpdate(item._id, {
+                        unitPrice: item.product.finalPrice,
+                        totalPrice: item.amount,
                     });
                 }));
                 
-                // Create new order based on input
-                return await strapi.query('order').create({
-                    consignee_name,
-                    consignee_phone,
-                    email,
-                    address_line_1,
-                    district,
-                    city,
-                    items,
-                    total_price,
-                    final_price,
-                    status: 'Pending',
-                    is_paid: false,
-                    payment_method,
-                    user
-                });
+                // Decrease product's qty
+                await Promise.all(itemToBuy.map(async item => {
+                    const options = item.product.options.map(option => {
+                        if((option.color === item.color))
+                            return {
+                                id: `${option._id}`,
+                                quantityInStock: Number(option.quantityInStock) - Number(item.qty),
+                                soldQuantity: Number(option.soldQuantity) + Number(item.qty),
+                            };
+                        
+                        return {
+                            id: `${option._id}`,
+                        };
+                    });
+                    console.log(options);
+
+                    return await strapi.query('product').update({id: `${item.product._id}`}, {
+                        options: options
+                    });
+                }));
+                
+                // Return order
+                return order;
 
             } catch (error) {
                 console.log(error);
@@ -189,7 +155,7 @@ module.exports = {
                 // Get the order's id which user provided from request
                 const { orderId } = ctx.request.body;
 
-                // Find the order by id which user provided
+                // Retrieve the order by id which user provided
                 const orderNeedToBeCancelled = await strapi.query('order').model.findById(orderId);
 
                 // If the order need to be cancelled is not exist, throw an error

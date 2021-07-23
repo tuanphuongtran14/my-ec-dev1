@@ -67,7 +67,7 @@ module.exports = {
                     fourStar,
                     fiveStar,
                     total,
-                    average: (totalScore/total).toFixed(2)
+                    average: (total !== 0) ? (totalScore/total).toFixed(2) : 0
                 }
             }
 
@@ -104,6 +104,25 @@ module.exports = {
                 if(review) 
                     throw new Error(`Cannot add review for product with id ${productId} because you had already added review for this product before`);
 
+                // Check if user bought product or not
+                let isBought = false;
+                const orders = strapi.query('order').model.aggregate([
+                    { 
+                        "$match": { user: userId, status: "Confirmed" }
+                    },
+                    {
+                        "$lookup": {
+                            "from": "order-items",
+                            "localField": "items",
+                            "foreignField": "_id",
+                            "as": "items"
+                        },
+                    },
+                    { "$match": { "$expr": { "$in": [productNeedToBeAddedReviewed._id, "$items"] } } }
+                ]);
+                if(orders)
+                    isBought = true;
+                
                 // Modify stars and votes number of product
                 productNeedToBeAddedReviewed.stars = (productNeedToBeAddedReviewed.stars * productNeedToBeAddedReviewed.votes + stars) / (productNeedToBeAddedReviewed.votes + 1);
                 productNeedToBeAddedReviewed.votes += 1;
@@ -114,7 +133,8 @@ module.exports = {
                     user: userId,
                     product: productNeedToBeAddedReviewed._id,
                     comment,
-                    stars
+                    stars,
+                    isBought
                 });
 
             } catch (error) {

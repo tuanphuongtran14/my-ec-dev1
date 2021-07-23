@@ -1,13 +1,13 @@
 module.exports = {
     definition: `
         input OrderInfo {
-            consignee_name: String!,
-            consignee_phone: String!,
+            consigneeName: String!,
+            consigneePhone: String!,
             email: String!,
-            address_line_1: String!,
+            addressLine1: String!,
             district: String!,
             city: String!,
-            payment_method: String!
+            paymentMethod: String!
         }
     `,
     query: `

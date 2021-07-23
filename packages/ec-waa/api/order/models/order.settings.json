@@ -15,11 +15,11 @@
     "items": {
       "collection": "ordered-item"
     },
-    "consignee_name": {
+    "consigneeName": {
       "type": "string",
       "required": true
     },
-    "consignee_phone": {
+    "consigneePhone": {
       "type": "string",
       "regex": "[0-9]",
       "required": true
@@ -27,7 +27,7 @@
     "email": {
       "type": "email"
     },
-    "address_line_1": {
+    "addressLine1": {
       "type": "string"
     },
     "district": {
@@ -46,10 +46,10 @@
         "Cancelled"
       ]
     },
-    "is_paid": {
+    "isPaid": {
       "type": "boolean"
     },
-    "payment_method": {
+    "paymentMethod": {
       "type": "enumeration",
       "enum": [
         "COD",
@@ -58,15 +58,18 @@
         "MasterCard"
       ]
     },
-    "total_price": {
+    "totalAmount": {
       "type": "biginteger"
     },
     "user": {
       "plugin": "users-permissions",
       "model": "user"
     },
-    "final_price": {
+    "finalAmount": {
       "type": "biginteger"
+    },
+    "coupon": {
+      "model": "coupon"
     }
   }
 }

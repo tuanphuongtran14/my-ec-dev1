@@ -47,12 +47,12 @@ module.exports = {
                             { "$match": { "$expr": { "$eq": ["$_id", "$$productId"] } } },
                             {
                               "$project": {
-                                "full_desc": 0,
-                                "inclusion_box": 0,
-                                "short_desc": 0,
-                                "product_condition": 0,
+                                "fullDesc": 0,
+                                "inclusionBox": 0,
+                                "shortDesc": 0,
+                                "condition": 0,
                                 "warranty": 0,
-                                "platform_version": 0,
+                                "platformVersion": 0,
                               }
                             },
                             { 
@@ -111,7 +111,7 @@ module.exports = {
                       },
                       {
                         "$addFields": { 
-                            "amount": { "$multiply": [ "$product.final_price", "$qty" ] }
+                            "amount": { "$cond": [{ "$eq": [ "$selected", true ] } , { "$multiply": [ "$product.finalPrice", "$qty" ] }, 0 ] }
                       }},
                     ],
                     "as": "items"
@@ -119,30 +119,172 @@ module.exports = {
                 },
                 {
                   "$addFields": { 
-                      "total_amount": { "$sum": "$items.amount" }
+                      "totalAmount": { "$sum": "$items.amount" }
                 }},
             ]);
         
         // Calc final price of user's cart
         cart.coupon_is_valid = true;
-        cart.final_amount = cart.total_amount;
+        cart.finalAmount = cart.totalAmount;
 
         if(cart.coupon) {
             // If coupon is expiry, update coupon status and return user's cart
-            if(Number(cart.coupon.expiry_date) < Date.now())
+            if(Number(cart.coupon.expiryDate) < Date.now())
                 cart.coupon_is_valid = false;
             else {
                 cart.coupon_is_valid = true;
 
                 // Else, calculate final price with coupon discount
-                if(cart.coupon.discount_percentage) 
-                    cart.final_amount *= 1 - cart.coupon.discount_percentage / 100;
+                if(cart.coupon.discountPercentage) 
+                    cart.finalAmount *= 1 - cart.coupon.discountPercentage / 100;
     
-                if(cart.coupon.discount_amount) 
-                    cart.final_amount -= cart.coupon.discount_amount;
+                if(cart.coupon.discountAmount) 
+                    cart.finalAmount -= cart.coupon.discountAmount;
     
-                if(cart.final_amount < 0)
-                        cart.final_amount = 0;  
+                if(cart.finalAmount < 0)
+                        cart.finalAmount = 0;  
+            }
+        }
+
+        return cart;
+    },
+
+    async checkout(userId) {
+        // Get cart information from database by id
+        let [ cart ] = await strapi.query('cart').model
+            .aggregate([
+                // Filter cart which is user's cart
+                { "$match": { "user": new ObjectID(userId) }},
+
+                // Get cart's coupon information by joining with coupons table
+                { 
+                  "$lookup": {
+                    "from": "coupons",
+                    "localField": "coupon",
+                    "foreignField": "_id",
+                    "as": "coupon"
+                  }
+                },
+                {
+                  "$unwind": {
+                    "path": "$coupon",
+                    "preserveNullAndEmptyArrays": true
+                  }
+                },
+
+                // Get cart's items information by joining with order-items table
+                { 
+                  "$lookup": {
+                    "from": "ordered_items",
+                    "let": { "itemIds": "$items" },
+                    "pipeline": [
+                      { "$match": { "$expr": { "$in": ["$_id", "$$itemIds"] } } },
+
+                      // Get cart's items product information by joining with order-items table
+                      { 
+                        "$lookup": {
+                          "from": "products",
+                          "let": { "productId": "$product" },
+                          "pipeline": [
+                            { "$match": { "$expr": { "$eq": ["$_id", "$$productId"] } } },
+                            {
+                              "$project": {
+                                "fullDesc": 0,
+                                "inclusionBox": 0,
+                                "shortDesc": 0,
+                                "condition": 0,
+                                "warranty": 0,
+                                "platformVersion": 0,
+                              }
+                            },
+                            { 
+                              "$lookup": {
+                                "from": "components_product_options",
+                                "let": { "optionIds": "$options.ref" },
+                                "pipeline": [
+                                  { "$match": { "$expr": { "$in": ["$_id", "$$optionIds"] } } },
+                                  { 
+                                    "$lookup": {
+                                      "from": "upload_file",
+                                      "let": { "imageIds": "$images" },
+                                      "pipeline": [
+                                        { "$match": { "$expr": { "$in": ["$_id", "$$imageIds"] } } },
+                                      ],
+                                      "as": "images"
+                                    }
+                                  },
+                                ],
+                                "as": "options"
+                              }
+                            },
+                            { "$lookup": {
+                              "from": "brands",
+                              "localField": "brand",
+                              "foreignField": "_id",
+                              "as": "brand"
+                            }},
+                            {
+                              "$unwind": {
+                                "path": "$brand",
+                                "preserveNullAndEmptyArrays": true
+                              }
+                            },
+                            { "$lookup": {
+                              "from": "upload_file",
+                              "localField": "thumbnail",
+                              "foreignField": "_id",
+                              "as": "thumbnail"
+                            }},
+                            {
+                              "$unwind": {
+                                "path": "$thumbnail",
+                                "preserveNullAndEmptyArrays": true
+                              }
+                            },
+                          ],
+                          "as": "product"
+                        }
+                      },
+                      {
+                        "$unwind": {
+                          "path": "$product",
+                          "preserveNullAndEmptyArrays": true
+                        }
+                      },
+                      {
+                        "$addFields": { 
+                            "amount": { "$cond": [{ "$eq": [ "$selected", true ] } , { "$multiply": [ "$product.finalPrice", "$qty" ] }, 0 ] }
+                      }},
+                    ],
+                    "as": "items"
+                  }
+                },
+                {
+                  "$addFields": { 
+                      "totalAmount": { "$sum": "$items.amount" }
+                }},
+            ]);
+        
+        // Calc final price of user's cart
+        cart.coupon_is_valid = true;
+        cart.finalAmount = cart.totalAmount;
+
+        if(cart.coupon) {
+            // If coupon is expiry, update coupon status and return user's cart
+            if(Number(cart.coupon.expiryDate) < Date.now())
+                cart.coupon_is_valid = false;
+            else {
+                cart.coupon_is_valid = true;
+
+                // Else, calculate final price with coupon discount
+                if(cart.coupon.discountPercentage) 
+                    cart.finalAmount *= 1 - cart.coupon.discountPercentage / 100;
+    
+                if(cart.coupon.discountAmount) 
+                    cart.finalAmount -= cart.coupon.discountAmount;
+    
+                if(cart.finalAmount < 0)
+                        cart.finalAmount = 0;  
             }
         }
 

@@ -6,9 +6,9 @@ export default function query() {
             products: searchProducts {
                 name,
                 slug,
-                sales_percentage,
-                regular_price,
-                final_price,
+                salesPercentage,
+                regularPrice,
+                finalPrice,
                 id,
                 thumbnail{
                     url
@@ -27,9 +27,9 @@ export default function query() {
             {
               name
               slug
-              regular_price
-              sales_percentage
-              final_price
+              regularPrice
+              salesPercentage
+              finalPrice
               votes
               stars
               thumbnail{
@@ -41,9 +41,9 @@ export default function query() {
             ){
               name
               slug
-              regular_price
-              sales_percentage
-              final_price
+              regularPrice
+              salesPercentage
+              finalPrice
               votes
               stars
               thumbnail{
