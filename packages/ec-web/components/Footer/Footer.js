@@ -26,9 +26,6 @@ const Footer = () => {
                             <li>
                                 <a class="text-white" href="/chinh-sach-bao-mat-thong-tin-khach-hang/" title="Mua hàng trả góp">Chính sách bảo mật thông tin khách hàng</a>
                             </li>
-                            <li>
-                                <a class="text-white" href="http://online.gov.vn/HomePage/CustomWebsiteDisplay.aspx?DocId=16826" target="_blank"><img src="https://uqoojcos5nobj.vcdn.cloud/dathongbao.png" style={{width:"130px",height:"auto"}} alt="Đã thông báo với Bộ Công Thương"/></a>
-                            </li>
                         </ul>
                     </div>
                     <div class="col-md-3 mx-auto mb-4 px-3">

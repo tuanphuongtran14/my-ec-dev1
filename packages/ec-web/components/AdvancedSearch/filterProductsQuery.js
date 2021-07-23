@@ -8,11 +8,11 @@ export default function query() {
                 brand{
                     name
                 },
-                platform_name,
+                platformName,
                 ram,
-                screen_size,
+                screenSize,
                 battery_capacity,
-                screen_panel
+                screenPanel
             }
         }
   `

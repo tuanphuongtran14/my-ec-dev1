@@ -42,8 +42,8 @@ const query = gql`
               qty
               amount
             }
-            total_amount
-            final_amount
+            totalAmount
+            finalAmount
           }
         }
   `
@@ -69,8 +69,8 @@ const increaseCart = gql`
         qty
         amount
       }
-      total_amount
-      final_amount
+      totalAmount
+      finalAmount
     }
   }
 `
@@ -151,7 +151,7 @@ function Total(){
                 <h4>Thông tin đơn hàng</h4>
                 <div className="price">
                   <h6>Tạm Tính (1 SP)</h6>
-                  <span>{money(data.cart.total_amount)}đ</span>
+                  <span>{money(data.cart.totalAmount)}đ</span>
                 </div>
                 <div className="delivery-fee">
                   <h6>Phí giao hàng</h6>
@@ -172,7 +172,7 @@ function Total(){
                 </div>
                 <div className="total">
                   <h6 className="total__title">Tổng Cộng:</h6>
-                  <span className="total__price">{money(data.cart.final_amount+15000)}đ</span>
+                  <span className="total__price">{money(data.cart.finalAmount+15000)}đ</span>
                 </div>
                 <div className="checkout">
                   <button type="button" className="checkout__btn btn btn-info">

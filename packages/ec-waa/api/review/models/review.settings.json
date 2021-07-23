@@ -30,6 +30,9 @@
     "isBought": {
       "type": "boolean",
       "default": false
+    },
+    "product": {
+      "model": "product"
     }
   }
 }

@@ -63,8 +63,8 @@ export default function query() {
                 qty
                 amount
               }
-              total_amount
-              final_amount
+              totalAmount
+              finalAmount
             }
         }
   `

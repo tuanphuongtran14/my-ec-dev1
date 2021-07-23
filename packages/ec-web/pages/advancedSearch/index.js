@@ -44,11 +44,11 @@ export default function Index({ products }) {
         if (!isExist(brandNameList, product.brand.name))
             setBrandNameList([...brandNameList, product.brand.name])
         // thêm tên hệ điều hành
-        if (!isExist(platformNameList, product.platform_name))
-            setPlatformNameList([...platformNameList, product.platform_name])
+        if (!isExist(platformNameList, product.platformName))
+            setPlatformNameList([...platformNameList, product.platformName])
         // thêm loại màn hình
-        if (!isExist(screenPanelList, product.screen_panel))
-            setScreenPanelList([...screenPanelList, product.screen_panel])
+        if (!isExist(screenPanelList, product.screenPanel))
+            setScreenPanelList([...screenPanelList, product.screenPanel])
     })
 
     const brandName = brandNameList.map((name) => (

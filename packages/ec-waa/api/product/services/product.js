@@ -234,7 +234,8 @@ module.exports = {
             batteryCapacity,
             screenPanel,
             screenSize,
-            platformName
+            platformName,
+            brand
         } = product;
 
         // Create filter varible
@@ -242,18 +243,23 @@ module.exports = {
             _id: { $nin: [new ObjectID(product._id)] },
             $or: [
                 {
-                    ram: {
-                        $gt: ram - 2,
-                        $lt: ram + 2
-                    }
+                    brand: brand._id,
                 },
                 {
                     finalPrice: {
                         $gt: finalPrice - 2000000,
-                        $lt: finalPrice + 2000000
+                        $lt: finalPrice + 2000000,
                     }
                 },
                 {
+                    ram: {
+                        $gt: ram - 2,
+                        $lt: ram + 2
+                    },
+                    batteryCapacity: {
+                        $gt: batteryCapacity - 1000,
+                        $lt: batteryCapacity + 1000
+                    },
                     screenSize: {
                         $gt: screenSize - 0.5,
                         $lt: screenSize + 0.5

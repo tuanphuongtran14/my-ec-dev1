@@ -1,10 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import { graphqlClient, gql } from "../../../lib/apollo-client";
-import { isSignIn, getJwt, useAuth } from "../../../lib/auth";
+import { useAuth } from "../../../lib/auth";
 import Modal from "../../../components/Modal/Modal";
 import Review from "../../../components/Review/Review";
 import axios from 'axios';
@@ -25,33 +25,33 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
                 thumbnail{
                     url
                 }
-                regular_price,
-                final_price,
-                sales_percentage
+                regularPrice,
+                finalPrice,
+                salesPercentage
             }
             product: searchProducts(filter: $filter) {
                 name
-                sales_percentage
+                salesPercentage
                 slug
-                regular_price
-                final_price
+                regularPrice
+                finalPrice
                 id
                 ram
                 thumbnail {
                     url
                 }
-                full_desc
-                product_condition
+                fullDesc
+                condition
                 warranty
-                inclusion_box
+                inclusionBox
                 height
                 width
                 depth
-                platform_name
-                platform_version
-                screen_size
-                screen_panel
-                screen_resolution
+                platformName
+                platformVersion
+                screenSize
+                screenPanel
+                screenResolution
                 cpu
                 gpu
                 options {
@@ -99,7 +99,6 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
         }
     });
 
-    console.log(data);
     return {
         props: {
             product: data.product[0],
@@ -131,7 +130,7 @@ export default function product({
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     // Sản phẩm liên quan
-    const relatedProduct = products.slice(1, 5).map((product, index) => {
+    const relatedProduct = relatedProducts.slice(1, 5).map((product, index) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
         return (
@@ -312,7 +311,7 @@ export default function product({
                             <div className="form-group w-100">
                                 <label htmlFor>Đánh giá của bạn: </label>
                                 <span className="rating-result ml-3">
-                                    {displayStars()}
+                                    {displayStars(stars)}
                                 </span>
                                 <textarea
                                     className="form-control mb-3"
@@ -341,7 +340,7 @@ export default function product({
                         <div className="form-group w-100">
                             <label htmlFor>Đánh giá của bạn: </label>
                             <span className="rating-result ml-3">
-                                {displayStars()}
+                                {displayStars(stars)}
                             </span>
                             <textarea
                                 className="form-control mb-3"
@@ -393,19 +392,23 @@ export default function product({
                 {(displayNumber < reviewList.reviews.length) ? (
                     <p className="text-center">
                         <button type="button" class="btn btn-success mt-3" onClick={loadMore}>Tải thêm...</button>
-                    </p>) : null
+                    </p>) : (
+                        <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này</p>
+                    )
                 }
             </>
         )
     }
 
     const displayOverviews = () => {
-        let oneStarPercentage, twoStarPercentage, threeStarPercentage, fourStarPercentage, fiveStarPercentage;
-        oneStarPercentage = ((overviews.oneStar / overviews.total) * 100).toFixed(2);
-        twoStarPercentage = ((overviews.twoStar / overviews.total) * 100).toFixed(2);
-        threeStarPercentage = ((overviews.threeStar / overviews.total) * 100).toFixed(2);
-        fourStarPercentage = ((overviews.fourStar / overviews.total) * 100).toFixed(2);
-        fiveStarPercentage = ((overviews.fiveStar / overviews.total) * 100).toFixed(2);
+        let oneStarPercentage = 0, twoStarPercentage = 0, threeStarPercentage = 0, fourStarPercentage = 0, fiveStarPercentage = 0;
+        if(overviews.total) {
+            oneStarPercentage = ((overviews.oneStar / overviews.total) * 100).toFixed(2);
+            twoStarPercentage = ((overviews.twoStar / overviews.total) * 100).toFixed(2);
+            threeStarPercentage = ((overviews.threeStar / overviews.total) * 100).toFixed(2);
+            fourStarPercentage = ((overviews.fourStar / overviews.total) * 100).toFixed(2);
+            fiveStarPercentage = ((overviews.fiveStar / overviews.total) * 100).toFixed(2);
+        }
         return (
             <div className="d-flex justify-content-between row mx-0 p-3 border">
                 <div className="customer-reviews__overviews">
@@ -413,26 +416,7 @@ export default function product({
                         {overviews.average}/5
                     </span>
                     <span className="rating-result">
-                        <i
-                            className="fa fa-star checked"
-                            aria-hidden="true"
-                        />
-                        <i
-                            className="fa fa-star checked"
-                            aria-hidden="true"
-                        />
-                        <i
-                            className="fa fa-star checked"
-                            aria-hidden="true"
-                        />
-                        <i
-                            className="fa fa-star checked"
-                            aria-hidden="true"
-                        />
-                        <i
-                            className="fa fa-star-half-empty checked"
-                            aria-hidden="true"
-                        />
+                        { displayStars(overviews.average) }
                     </span>
                     <span className="overviews__quantity-reviews mt-1">
                         {overviews.total} Đánh giá
@@ -534,7 +518,7 @@ export default function product({
         );
     }
 
-    const refeshReviews = async slug => {
+    const refreshReviews = async slug => {
         try {
             // Declare query & its variables
             const query = `
@@ -590,12 +574,28 @@ export default function product({
                 },
             });
 
+            console.log(data.reviewList);
+
+            // setReviews([]);
+            // setUserReview(null);
+            // setOverviews({
+            //     oneStar: 0,
+            //     twoStar: 0,
+            //     threeStar: 0,
+            //     fourStar: 0,
+            //     fiveStar: 0,
+            //     total: 0,
+            //     average: 0
+            // });
+
             setReviews(data.reviewList.reviews);
             setUserReview(data.reviewList.userReview);
             setOverviews(data.reviewList.overviews);
 
-        } catch {
+            return true;
 
+        } catch {
+            return false;
         }
     }
 
@@ -720,7 +720,7 @@ export default function product({
 
             const newReview = await createReview(comment, stars);
 
-            await refeshReviews(params.slug);
+            await refreshReviews(params.slug);
 
             btnEle.removeAttribute("disabled");
             btnEle.innerHTML = `
@@ -753,7 +753,7 @@ export default function product({
 
             if (deletedReview) {
                 $(`#deleteConfirm`).modal("hide");
-                await refeshReviews(params.slug);
+                await refreshReviews(params.slug);
                 setStars(5);
             }
 
@@ -784,7 +784,7 @@ export default function product({
 
             const review = await editReview(userReview._id, comment, stars);
 
-            await refeshReviews(params.slug);
+            await refreshReviews(params.slug);
 
             btnEle.removeAttribute("disabled");
             btnEle.innerHTML = `
@@ -866,7 +866,7 @@ export default function product({
         setStars(i);
     };
 
-    const displayStars = () => {
+    const displayStars = (stars) => {
         const result = [];
 
         for (let i = 1; i <= stars; i++)
@@ -914,7 +914,7 @@ export default function product({
                 flkty.select(i, true, false)
             }
         }
-    })
+    }, [])
 
     return (
         <>
@@ -952,14 +952,10 @@ export default function product({
                         </h1>
                         <div className="col-12 col-lg-6 product-details__rating">
                             <span className="rating-result mr-3">
-                                <i className="fa fa-star checked" />
-                                <i className="fa fa-star checked" />
-                                <i className="fa fa-star checked" />
-                                <i className="fa fa-star checked" />
-                                <i className="fa fa-star checked" />
+                                {displayStars(overviews.average)}
                             </span>
                             <span>
-                                4 Đánh giá | <a href>Nhận xét ngay</a>
+                                {overviews.total} Đánh giá | <a href>Nhận xét ngay</a>
                             </span>
                         </div>
                     </section>
@@ -1033,18 +1029,6 @@ export default function product({
 
                         </div>
                         <div className="px-0 px-md-2 col-12 col-lg-4 col-xl-4 mb-3">
-                            <b>Khuyến mãi: </b>
-                            <ul className="product-details__bonus">
-                                <li>Tặng voucher mua hàng trị giá 2000.000đ</li>
-                                <li>Tặng voucher sửa chữa trị giá 500.000</li>
-                                <li>
-                                    Tặng sạc chính hãng 18W trị giá 550.000đ
-                                </li>
-                                <li>
-                                    Tặng sim ghép Fix full lỗi trị giá 120.000đ
-                                </li>
-                                <li>Tặng nón bảo hiểm cao cấp</li>
-                            </ul>
                             <div className="mt-2">
                                 <b>Tình trạng</b>
                                 <br />
@@ -1287,23 +1271,23 @@ export default function product({
             <script
                 src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
                 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                crossorigin="anonymous"
+                crossOrigin="anonymous"
             ></script>
             <script
                 src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
                 integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-                crossorigin="anonymous"
+                crossOrigin="anonymous"
             ></script>
             <script
                 src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
                 integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-                crossorigin="anonymous"
+                crossOrigin="anonymous"
             ></script>
         </>
     );
 }
 
-const refeshReviews = async slug => {
+const refreshReviews = async slug => {
     try {
         // Declare query & its variables
         const query = `

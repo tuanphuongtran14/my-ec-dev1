@@ -5,8 +5,8 @@ const pro = ({ currentProducts }) => {
     const products = currentProducts
 
     var product = products.map((product, index) => {
-        const regularPrice = product.regular_price.toLocaleString("DE-de");
-        const finalPrice = product.final_price.toLocaleString("DE-de");
+        const regularPrice = product.regularPrice.toLocaleString("DE-de");
+        const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
         return (
             <div className="product">
@@ -17,7 +17,7 @@ const pro = ({ currentProducts }) => {
                     </Link>
                 </span>
                 <div className="product__price">
-                    {product.sales_percentage === 0 ?
+                    {product.salesPercentage === 0 ?
                         null :
                         <span className="sales-price">
                             {finalPrice}₫
@@ -34,11 +34,11 @@ const pro = ({ currentProducts }) => {
                     <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
                     <span>(442 đánh giá)</span>
                 </div>
-                {product.sales_percentage === 0 ?
+                {product.salesPercentage === 0 ?
                     "" :
                     <div className="product__box-sticker">
                         <p className="sticker-percent">
-                            -{product.sales_percentage}%
+                            -{product.salesPercentage}%
                         </p>
                     </div>
                 }
