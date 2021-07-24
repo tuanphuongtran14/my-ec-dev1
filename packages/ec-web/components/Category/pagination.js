@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const page = ({ productsPerPage, totalProducts, paginate, currentPage }) => {
+export default function page ({ productsPerPage, totalProducts, paginate, currentPage }) {
     const pageNumbers = [];
     const totalPages = Math.ceil(totalProducts / productsPerPage)
 
@@ -11,7 +11,7 @@ const page = ({ productsPerPage, totalProducts, paginate, currentPage }) => {
 
     return (
         <>
-            <ul className="pagination my-3 justify-content-center">
+            <ul className="pagination pagination--custom my-3 justify-content-center">
                 <li className={ currentPage <= 1 ? "page-item disabled" : "page-item"}>
                     <a onClick={() => paginate(currentPage - 1)} href="#!" className="page-link">
                         Previos
@@ -35,4 +35,3 @@ const page = ({ productsPerPage, totalProducts, paginate, currentPage }) => {
     )
 }
 
-export default page

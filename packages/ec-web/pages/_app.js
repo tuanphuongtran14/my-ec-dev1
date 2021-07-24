@@ -2,9 +2,10 @@ import React from 'react';
 import Head from 'next/head';
 
 export default function App({ Component, pageProps }) {
+    
     return (
         <>
-            <Head>
+            <Head> 
                 {/* FontAwesome CSS */}
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
                 {/* Bootstrap CSS */}

@@ -50,22 +50,6 @@ export default function query() {
                 url
               }
             }
-
-            cart:getCart(cartId:"60f7f03207418c1d68001ea7"){
-              _id
-              items{
-                _id
-                product{
-                  _id
-                  name
-                }
-                color
-                qty
-                amount
-              }
-              totalAmount
-              finalAmount
-            }
         }
   `
 

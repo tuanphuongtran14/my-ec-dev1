@@ -83,45 +83,47 @@ export default function Category({ products }) {
             <body id="body">
                 <div id="root">
                     <Banner />
-                    <div className="container bg-white mb-5 filter">
-                        <div className="d-block py-3">
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterBrand}>
-                                <option value="0" selected>Hãng...</option>
-                                {brandName}
-                            </select>
+                    <div className="container">
+                        <div className="bg-white mb-5 filter p-3">
+                            <div className="d-block py-3">
+                                <select className="filter__option mr-2 my-2" onChange={handleFilterBrand}>
+                                    <option value="0" selected>Hãng...</option>
+                                    {brandName}
+                                </select>
 
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterPrice}>
-                                <option value="0" selected>Giá...</option>
-                                <option value="duoi-5-trieu">Dưới 5 triệu</option>
-                                <option value="tu-5-den-10-trieu">Từ 5 đến 10 triệu</option>
-                                <option value="tu-10-den-15-trieu">Từ 10 đến 15 triệu</option> 
-                                <option value="tren-15-trieu">Trên 15 triệu</option>
-                            </select>
+                                <select className="filter__option mr-2 my-2" onChange={handleFilterPrice}>
+                                    <option value="0" selected>Giá...</option>
+                                    <option value="duoi-5-trieu">Dưới 5 triệu</option>
+                                    <option value="tu-5-den-10-trieu">Từ 5 đến 10 triệu</option>
+                                    <option value="tu-10-den-15-trieu">Từ 10 đến 15 triệu</option> 
+                                    <option value="tren-15-trieu">Trên 15 triệu</option>
+                                </select>
 
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterRam}>
-                                <option value="0" selected>Ram...</option>
-                                <option value="duoi-4">Dưới 4 GB</option>
-                                <option value="4-den-6">4 - 6 GB</option>
-                                <option value="tren-8">8 GB trở lên</option>
+                                <select className="filter__option mr-2 my-2" onChange={handleFilterRam}>
+                                    <option value="0" selected>Ram...</option>
+                                    <option value="duoi-4">Dưới 4 GB</option>
+                                    <option value="4-den-6">4 - 6 GB</option>
+                                    <option value="tren-8">8 GB trở lên</option>
 
-                            </select>
-                            <select className="filter__option mr-2 my-2" onChange={handleFilterRom}>
-                                <option value="0" selected>Bộ nhớ trong...</option>
-                                <option value="duoi-32">Dưới 32 GB</option>
-                                <option value="32-den-64">32 - 64 GB</option>
-                                <option value="128-den-256">128 - 256 GB</option>
-                                <option value="tren-512">512 GB trở lên</option>
-                            </select>
+                                </select>
+                                <select className="filter__option mr-2 my-2" onChange={handleFilterRom}>
+                                    <option value="0" selected>Bộ nhớ trong...</option>
+                                    <option value="duoi-32">Dưới 32 GB</option>
+                                    <option value="32-den-64">32 - 64 GB</option>
+                                    <option value="128-den-256">128 - 256 GB</option>
+                                    <option value="tren-512">512 GB trở lên</option>
+                                </select>
+                            </div>
+                            <div className="product-list product-list--non-slide border-0">
+                                <Product currentProducts={currentProducts} filter={filter} />
+                            </div>
+                            <Pagination
+                                productsPerPage={productsPerPage}
+                                totalProducts={products.length}
+                                paginate={paginate}
+                                currentPage={currentPage}
+                            />
                         </div>
-                        <div className="product-list product-list--non-slide border-0">
-                            <Product currentProducts={currentProducts} filter={filter} />
-                        </div>
-                        <Pagination
-                            productsPerPage={productsPerPage}
-                            totalProducts={products.length}
-                            paginate={paginate}
-                            currentPage={currentPage}
-                        />
                     </div>
                     <Footer />
                 </div>

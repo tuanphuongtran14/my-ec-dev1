@@ -7,7 +7,7 @@
 // const { parseCookies, setCookie, destroyCookie } = require('nookies');
 import Cookies from 'cookies';
 import cookie from 'cookie';
-import { graphqlClient, gql } from '../../../lib/apollo-client';
+import { graphqlClient, gql } from '../../../helpers/apollo-client';
 
 // export default async function handler(req, res) {
 //     if (req.method === 'POST') {

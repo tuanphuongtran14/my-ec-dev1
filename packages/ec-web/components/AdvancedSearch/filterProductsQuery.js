@@ -11,7 +11,7 @@ export default function query() {
                 platformName,
                 ram,
                 screenSize,
-                battery_capacity,
+                batteryCapacity,
                 screenPanel
             }
         }

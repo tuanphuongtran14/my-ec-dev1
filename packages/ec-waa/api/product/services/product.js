@@ -193,6 +193,9 @@ module.exports = {
                     }
                 },
                 {
+                    "$match": queryMore
+                },
+                {
                     "$sort": sortContent
                 },
                 {

@@ -12,8 +12,8 @@ const pro = ({ currentProducts }) => {
             <div className="product">
                 <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                 <span className="product__title">
-                    <Link href="/product/[slug]" as={`/product/${product.slug}`}>
-                        {product.name}
+                    <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`}>
+                       <a>{product.name}</a> 
                     </Link>
                 </span>
                 <div className="product__price">

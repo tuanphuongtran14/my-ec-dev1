@@ -124,15 +124,15 @@ module.exports = {
             ]);
         
         // Calc final price of user's cart
-        cart.coupon_is_valid = true;
+        cart.couponIsValid = true;
         cart.finalAmount = cart.totalAmount;
 
         if(cart.coupon) {
             // If coupon is expiry, update coupon status and return user's cart
             if(Number(cart.coupon.expiryDate) < Date.now())
-                cart.coupon_is_valid = false;
+                cart.couponIsValid = false;
             else {
-                cart.coupon_is_valid = true;
+                cart.couponIsValid = true;
 
                 // Else, calculate final price with coupon discount
                 if(cart.coupon.discountPercentage) 
@@ -266,15 +266,15 @@ module.exports = {
             ]);
         
         // Calc final price of user's cart
-        cart.coupon_is_valid = true;
+        cart.couponIsValid = true;
         cart.finalAmount = cart.totalAmount;
 
         if(cart.coupon) {
             // If coupon is expiry, update coupon status and return user's cart
             if(Number(cart.coupon.expiryDate) < Date.now())
-                cart.coupon_is_valid = false;
+                cart.couponIsValid = false;
             else {
-                cart.coupon_is_valid = true;
+                cart.couponIsValid = true;
 
                 // Else, calculate final price with coupon discount
                 if(cart.coupon.discountPercentage) 

@@ -4,7 +4,7 @@
 //     HttpLink,
 //     gql
 // } from '@apollo/client';
-import { graphqlClient, gql } from '../../../lib/apollo-client';
+import { graphqlClient, gql } from '../../../helpers/apollo-client';
 import fetchgql from '../../../helpers/fetchgql';
 
 import {
@@ -18,7 +18,7 @@ async function handler(req, res) {
             variables
         } = req.body;
 
-        const jwt = (req.session.get("user")) ? req.session.get("user").jwt : null;
+        const jwt = (req.session.get("user")) ? req.session.get("user").jwt : null; 
         const options = {};
 
         if(jwt) 
