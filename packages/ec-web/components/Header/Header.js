@@ -178,13 +178,13 @@ export default function Header() {
                             </Link>
                         </li>
                         <li className="menu__item">
-                            <a href="true" className="text-white">Về chúng tôi</a>
+                            <a href="/about" className="text-white">Về chúng tôi</a>
                         </li>
                         <li className="menu__item">
-                            <a href="true" className="text-white">Tin tức</a>
+                            <a href="/new" className="text-white">Tin tức</a>
                         </li>
                         <li className="menu__item">
-                            <a href="true" className="text-white">Liên hệ</a>
+                            <a href="/about" className="text-white">Liên hệ</a>
                         </li>
                     </ul>
                 </div>
