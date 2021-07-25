@@ -44,19 +44,19 @@ export default function Customer() {
                         <div className="mt-2">
                             <ul className="list-group">
                                 <li className="list-group-item list-group-item__edit" id="account-event">
-                                    <a className="account-list-info">
+                                    <a href="" className="account-list-info">
                                         <i className="fas account-list-info__icon fa-user-circle"></i>
                                         <span>Thông tin tài khoản</span>
                                     </a>
                                 </li>
                                 <li className="list-group-item list-group-item__edit" id="order-event">
-                                    <a className="account-list-info">
+                                    <a href="" className="account-list-info">
                                         <i className="fas account-list-info__icon fa-th-list"></i>
                                         <span>Quản lý đơn hàng</span>                
                                     </a>
                                 </li>
                                 <li className="list-group-item list-group-item__edit">
-                                    <a className="account-list-info wish-list-event">
+                                    <a href="" className="account-list-info wish-list-event">
                                         <i className="fas account-list-info__icon fa-sign-out-alt"></i>
                                         <span>Đăng xuất</span>
                                     </a>
