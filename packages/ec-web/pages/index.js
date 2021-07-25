@@ -39,11 +39,11 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
-      <Link href="/product/[slug]" as={`/product/${product.slug}`} key={product.id}>
+      <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
         <div className="product">
           <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px"}}/>
           <span className="product__title">
-            <Link href="/product/[slug]" as={`/product/${product.slug}`} className="text-dark">
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
               {product.name}
             </Link>
           </span>
@@ -81,11 +81,11 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
-      <Link href="/product/[slug]" as={`/product/${product.slug}`} key={product.id}>
+      <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
         <div className="product">
           <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px"}}/>
           <span className="product__title">
-            <Link href="/product/[slug]" as={`/product/${product.slug}`} className="text-dark">
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
               {product.name}
             </Link>
           </span>
@@ -123,11 +123,11 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
-      <Link href="/product/[slug]" as={`/product/${product.slug}`} key={product.id}>
+      <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
         <div className="product">
           <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px"}}/>
           <span className="product__title">
-            <Link href="/product/[slug]" as={`/product/${product.slug}`} className="text-dark">
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
               {product.name}
             </Link>
           </span>
@@ -171,29 +171,31 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
 
   const ProductList = (typeCategory) => {
     return (
-      <div className="box container px-0">
-        <div className="box-title px-3">
-          <h2 className="title">
-            <i className="fa fa-fire" aria-hidden="true"></i> &nbsp; {typeCategory}
-          </h2>
-          <div className="col text-right">
-            <a href="" className="text-blue">Xem tất cả</a>
+      <div className="container">
+          <div className="box">
+          <div className="box-title px-3">
+            <h2 className="title">
+              <i className="fa fa-fire" aria-hidden="true"></i> &nbsp; {typeCategory}
+            </h2>
+            <div className="col text-right">
+              <a href="" className="text-blue">Xem tất cả</a>
+            </div>
           </div>
-        </div>
-        <div className="box-body">
-          <Flickity
-              className={'product-list border-0'} // default ''
-              elementType={'div'} // default 'div'
-              options={flickityOptions} // takes flickity options {}
-              disableImagesLoaded={false} // default false
-              reloadOnUpdate // default false
-              static // default false
-          >
-           {typeCategory === 'Hot sales' ? HotSale :
-            typeCategory === 'Bán chạy' ? bestSeller :
-            typeCategory === 'Mới nhất' ? productsNew :''
-          }
-          </Flickity>
+          <div className="box-body">
+            <Flickity
+                className={'product-list border-0'} // default ''
+                elementType={'div'} // default 'div'
+                options={flickityOptions} // takes flickity options {}
+                disableImagesLoaded={false} // default false
+                reloadOnUpdate // default false
+                static // default false
+            >
+            {typeCategory === 'Hot sales' ? HotSale :
+              typeCategory === 'Bán chạy' ? bestSeller :
+              typeCategory === 'Mới nhất' ? productsNew :''
+            }
+            </Flickity>
+          </div>
         </div>
       </div>
     )

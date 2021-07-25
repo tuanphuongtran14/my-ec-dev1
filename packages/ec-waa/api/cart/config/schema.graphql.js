@@ -36,7 +36,7 @@ module.exports = {
             _id: ID!,
             coupon: Coupon,
             items: [CartItem]!,
-            coupon_is_valid: Boolean!,
+            couponIsValid: Boolean!,
             totalAmount: Long!,
             finalAmount: Long!,
         }
@@ -47,7 +47,10 @@ module.exports = {
     mutation: `
         addItemToCart(cartId: ID!, newItem: CartItemInput!): UserCart!,
         removeItemFromCart(cartId: ID!, itemId: ID!): UserCart!,
-        toggleSelectItem(cartId: ID!, itemId: ID!): UserCart!,
+        changeItemColor(cartId: ID!, itemId: ID!, color: String!): UserCart!,
+        removeSelectedItems(cartId: ID!): UserCart!,
+        toggleSelectItem(cartId: ID!, itemId: ID!, value: Boolean!): UserCart!,
+        toggleSelectAll(cartId: ID!, value: Boolean!): UserCart!,
         incrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!,
         decrementItemQuantity(cartId: ID!, itemId: ID!, by: Int!): UserCart!,
         applyCoupon(cartId: ID!, couponCode: String!): UserCart!,
@@ -69,9 +72,21 @@ module.exports = {
                 description: 'Remove an item to user cart',
                 resolver: 'application::cart.cart.removeItemFromCart',
             },
+            removeSelectedItems: {
+                description: 'Remove selected items to user cart',
+                resolver: 'application::cart.cart.removeSelectedItems',
+            },
+            changeItemColor: {
+                description: 'Change item color by item and cart id',
+                resolver: 'application::cart.cart.changeItemColor',
+            },
             toggleSelectItem: {
                 description: 'Toggle select item in user cart',
                 resolver: 'application::cart.cart.toggleSelect',
+            },
+            toggleSelectAll: {
+                description: 'Toggle select all items in user cart',
+                resolver: 'application::cart.cart.toggleSelectAll',
             },
             incrementItemQuantity: {
                 description: 'Increment quantity item',

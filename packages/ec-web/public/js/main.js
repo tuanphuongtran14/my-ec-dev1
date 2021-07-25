@@ -1,10 +1,4 @@
 window.onload = function () {
-
-    if (document.getElementById('versions'))
-        selectVersions('versions');
-
-    if (document.getElementById('colors'))
-        selectVersions('colors');
 }
 
 window.onclick = function () {

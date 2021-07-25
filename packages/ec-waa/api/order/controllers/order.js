@@ -46,7 +46,7 @@ module.exports = {
                 const userCart = await strapi.services.cart.checkout(userId);
                 
                 // If user's cart is not exist or has no items, throw an error
-                if(!userCart && userCart.items.length === 0) 
+                if(!userCart || userCart.items.length === 0) 
                     throw new Error('Cannot checkout because your cart is empty');
 
                 // Check color, qty and filter product which user want to buy
@@ -95,44 +95,20 @@ module.exports = {
                     isPaid: false,
                     paymentMethod,
                     user: userId,
-                    coupon: userCart.coupon
+                    coupon: userCart.coupon,
+                    itemDetails: itemToBuy
                 });
                 
                 // After creating order, remove items that is bought from cart
                 await strapi.query('cart').model.findByIdAndUpdate(userCart._id, {
                     items: idItemToKeep,
                     coupon: undefined,
-                    coupon_is_valid: undefined
+                    couponIsValid: undefined
                 }); 
 
-                // Add price information to order items
-                await Promise.all(itemToBuy.map(async item => {
-                    return await strapi.query('ordered-item').model.findByIdAndUpdate(item._id, {
-                        unitPrice: item.product.finalPrice,
-                        totalPrice: item.amount,
-                    });
-                }));
-                
-                // Decrease product's qty
-                await Promise.all(itemToBuy.map(async item => {
-                    const options = item.product.options.map(option => {
-                        if((option.color === item.color))
-                            return {
-                                id: `${option._id}`,
-                                quantityInStock: Number(option.quantityInStock) - Number(item.qty),
-                                soldQuantity: Number(option.soldQuantity) + Number(item.qty),
-                            };
-                        
-                        return {
-                            id: `${option._id}`,
-                        };
-                    });
-                    console.log(options);
-
-                    return await strapi.query('product').update({id: `${item.product._id}`}, {
-                        options: options
-                    });
-                }));
+                // Decrease product's qty and add price information to order items
+                // => This code is written in order model lifecycle
+                // ../models/order.js
                 
                 // Return order
                 return order;

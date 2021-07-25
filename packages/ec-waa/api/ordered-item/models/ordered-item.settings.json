@@ -27,6 +27,10 @@
     "selected": {
       "type": "boolean",
       "default": true
+    },
+    "product": {
+      "model": "product",
+      "autoPopulate": false
     }
   }
 }

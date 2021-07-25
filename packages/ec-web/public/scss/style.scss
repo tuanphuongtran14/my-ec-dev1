@@ -73,7 +73,7 @@ $bodyColor: #f0f0f0;
 
 * {
     font-family: sans-serif;
-    font-size: 16px;
+    font-size: 15px;
 
     margin: 0;
     padding: 0;
@@ -89,6 +89,73 @@ body {
 /* 2.1. #root & #overlaybody
 /*-------------------------*/
 
+/* Preloder */
+#preloder {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    background: #000;
+  }
+  
+  .loader {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -13px;
+    margin-left: -13px;
+    border-radius: 60px;
+    animation: loader 0.8s linear infinite;
+    -webkit-animation: loader 0.8s linear infinite;
+  }
+
+  @keyframes loader {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+      border: 4px solid #f44336;
+      border-left-color: transparent;
+    }
+  
+    50% {
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg);
+      border: 4px solid #673ab7;
+      border-left-color: transparent;
+    }
+  
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+      border: 4px solid #f44336;
+      border-left-color: transparent;
+    }
+  }
+  
+  @-webkit-keyframes loader {
+    0% {
+      -webkit-transform: rotate(0deg);
+      border: 4px solid #f44336;
+      border-left-color: transparent;
+    }
+  
+    50% {
+      -webkit-transform: rotate(180deg);
+      border: 4px solid #673ab7;
+      border-left-color: transparent;
+    }
+  
+    100% {
+      -webkit-transform: rotate(360deg);
+      border: 4px solid #f44336;
+      border-left-color: transparent;
+    }
+  }
+  
 #root {
     transition: 0.4s;
     transition-delay: 0.05s;
@@ -119,6 +186,10 @@ body {
 /*-------------------------*/
 .bg-dark--custom {
     background-color: #343a40 !important;
+}
+
+.bg-grey {
+    background-color: #F0F0F0 !important;
 }
 
 /*-------------------------*/
@@ -172,7 +243,7 @@ body {
 
         background-color: #d70018 !important;
 
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: white;
 
         display: flex;
@@ -182,6 +253,13 @@ body {
         &:hover {
             background-color: #b30015 !important;
         }
+    }
+    &.btn-quantity-control {
+        width: 38px;
+    }
+    &.btn-red {
+        background-color: #d70018 !important;
+        color: white !important;
     }
     &.btn--searchGo {
         position: absolute;
@@ -319,6 +397,13 @@ body {
     }
 }
 
+/*-------------------------*/
+/* 2.7. Text Color
+/*-------------------------*/
+.text-grey {
+    color: #8b8b8b  !important;
+}
+
 /*=================================================================================*/
 /* 3. Header Section
 /*=================================================================================*/
@@ -412,7 +497,7 @@ body {
 }
 
 .title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: $mainColor;
     text-transform: uppercase;
     font-weight: 600;
@@ -429,6 +514,7 @@ body {
 
     .breadcrumb-item {
         color: $mainColor !important;
+        display: inline-block!important;
 
         &+.breadcrumb-item::before {
             content: "›";
@@ -550,7 +636,7 @@ body {
 }
 
 .product-details__name {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
 
     @media only screen and (max-width: 991px) {
@@ -672,22 +758,20 @@ body {
 /*-------------------------*/
 /* 5.4. Product Price
 /*-------------------------*/
-.product-details__price {
-    .regular-price {
-        color: #d70018;
-        font-weight: 600;
-        font-size: 1.1rem;
-    }
-    .sales-price {
-        color: #d70018;
-        font-weight: 600;
-        font-size: 1.1rem;
-        &+.regular-price {
-            font-size: 0.9rem;
-            font-weight: normal;
-            text-decoration: line-through;
-            color: #aaa;
-        }
+.regular-price {
+    color: #d70018;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.sales-price {
+    color: #d70018;
+    font-weight: 600;
+    font-size: 1rem;
+    &+.regular-price {
+        font-size: 0.9rem;
+        font-weight: normal;
+        text-decoration: line-through;
+        color: #aaa;
     }
 }
 
@@ -853,9 +937,6 @@ ul.product-details__bonus {
     &.product-list--non-slide {
         display: flex;
         flex-wrap: wrap;
-        .product {
-            border: 1px solid #f3f3f3!important;
-        }
     }
     .product {
         width: 50%;
@@ -1436,4 +1517,62 @@ footer i {
 footer a {
   color: #3c97bf;
   text-decoration: none;
+}
+
+/*=================================================================================*/
+/* 11. Box
+/*=================================================================================*/
+.box-2-column {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .box-left-12, .box-right-12 {
+        width: 100%;
+    }
+
+    .box-left-9-md {
+        @media only screen and (min-width: 768px) {
+            width: calc(75% - .5rem);
+        }
+    }
+
+    .box-left-9-lg {
+        @media only screen and (min-width: 992px) {
+            width: calc(75% - .5rem);
+        }
+    }
+
+    .box-right-3-md {
+        @media only screen and (min-width: 768px) {
+            width: calc(25% - .5rem);
+        }
+    }
+
+    .box-right-3-lg {
+        @media only screen and (min-width: 992px) {
+            width: calc(25% - .5rem);
+        }
+    }
+    
+
+    .box-left-8-md {
+        @media only screen and (min-width: 768px) {
+            width: calc(66.6% - .5rem);
+        }
+    }
+
+    .box-right-4-md {
+        @media only screen and (min-width: 768px) {
+            width: calc(33.3% - .5rem);
+        }
+    }
+}
+
+/*=================================================================================*/
+/* 12. dlist
+/*=================================================================================*/
+.dlist-align {
+    display: flex;
+    justify-content: space-between;
 }

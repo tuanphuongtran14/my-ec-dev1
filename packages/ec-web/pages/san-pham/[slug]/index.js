@@ -3,8 +3,8 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
-import { graphqlClient, gql } from "../../../lib/apollo-client";
-import { useAuth } from "../../../lib/auth";
+import { graphqlClient, gql } from "../../../helpers/apollo-client";
+import { useAuth } from "../../../helpers/auth";
 import Modal from "../../../components/Modal/Modal";
 import Review from "../../../components/Review/Review";
 import axios from 'axios';
@@ -30,6 +30,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
                 salesPercentage
             }
             product: searchProducts(filter: $filter) {
+                _id
                 name
                 salesPercentage
                 slug
@@ -111,7 +112,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     };
 });
 
-export default function product({
+export default function Product({
     product,
     reviewList,
     isSignedIn,
@@ -120,11 +121,13 @@ export default function product({
     relatedProducts
 }) {
     const [stars, setStars] = useState(5);
+    const [selectedColor, setSelectedColor] = useState(product.options[0].color);
     const [userReview, setUserReview] = useState(reviewList.userReview);
     const [reviews, setReviews] = useState(reviewList.reviews);
     const [overviews, setOverviews] = useState(reviewList.overviews);
     const [isEditing, setIsEditing] = useState(false);
     const [displayNumber, setDisplayNumber] = useState(1);
+    const [reload, setReload] = useState();
 
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
@@ -143,8 +146,8 @@ export default function product({
                     className="product__img mb-4"
                 />
                 <Link
-                    href="/product/[slugProduct]"
-                    as={`/product/${product.slug}`}
+                    href="/san-pham/[slugProduct]"
+                    as={`/san-pham/${product.slug}`}
                 >
                     <span
                         className="product__title"
@@ -236,7 +239,10 @@ export default function product({
         if (product.options) {
             return product.options.map((option, index) => {
                 return (
-                    <div className={index === 0 ? "version active" : "version"}>
+                    <div 
+                        className={index === 0 ? "version active" : "version"}
+                        onClick={() => setSelectedColor(option.color)}
+                    >
                         {option.color}
                         <span className="version__price">
                             {index >= 2 ? regularPrice : finalPrice}
@@ -296,8 +302,8 @@ export default function product({
                                 id="deleteConfirm"
                                 title="Bạn có chắc muốn xóa bài đánh giá này?"
                                 body="Bài đánh giá sau khi xóa sẽ không thể khôi phục được. Bạn có chắc muốn thực hiện điều này?"
-                                yes="danger"
-                                no="secondary"
+                                confirmStyle="danger"
+                                cancelStyle="secondary"
                                 callback={handleSubmitDeleteReview}
                             />
                         </>
@@ -574,20 +580,6 @@ export default function product({
                 },
             });
 
-            console.log(data.reviewList);
-
-            // setReviews([]);
-            // setUserReview(null);
-            // setOverviews({
-            //     oneStar: 0,
-            //     twoStar: 0,
-            //     threeStar: 0,
-            //     fourStar: 0,
-            //     fiveStar: 0,
-            //     total: 0,
-            //     average: 0
-            // });
-
             setReviews(data.reviewList.reviews);
             setUserReview(data.reviewList.userReview);
             setOverviews(data.reviewList.overviews);
@@ -714,7 +706,7 @@ export default function product({
         try {
             btnEle.setAttribute("disabled", true);
             btnEle.innerHTML = `
-                <span className="spinner-border spinner-border-sm"></span>
+                <span class="spinner-border spinner-border-sm"></span>
                 Đang gửi... 
             `;
 
@@ -745,7 +737,7 @@ export default function product({
         try {
             yesBtn.setAttribute("disabled", true);
             yesBtn.innerHTML = `
-                <span className="spinner-border spinner-border-sm"></span>
+                <span class="spinner-border spinner-border-sm"></span>
                 Đang xóa... 
             `;
 
@@ -778,7 +770,7 @@ export default function product({
         try {
             btnEle.setAttribute("disabled", true);
             btnEle.innerHTML = `
-                <span className="spinner-border spinner-border-sm"></span>
+                <span class="spinner-border spinner-border-sm"></span>
                 Đang gửi... 
             `;
 
@@ -848,12 +840,70 @@ export default function product({
                     variables
                 },
             });
-            console.log(data);
 
             return setReviews(data.reviewList.reviews);
         } catch {
             return undefined;
         }
+    }
+
+    const addToCart = async () => {
+        try {
+            const btnEle = document.getElementById("addToCartBtn");
+            btnEle.setAttribute("disabled", true);
+            btnEle.innerHTML = `
+                <span class="spinner-border spinner-border-sm"></span>
+                &nbsp; Thêm vào giỏ hàng
+            `;
+
+            const mutation = `
+                mutation($cartId: ID!, $newItem: CartItemInput!) {
+                    cart: addItemToCart(
+                        cartId: $cartId,
+                        newItem: $newItem
+                    ) {
+                        _id
+                        items {
+                            _id
+                        }
+                    }
+                }
+            `;
+
+            const variables = {
+                cartId: localStorage.getItem("cartId"),
+                newItem: {
+                    product: product._id,
+                    qty: 1,
+                    color: selectedColor
+                }
+            };
+
+            const { data } = await axios({
+                method: 'POST',
+                url: '/api/mutation',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    mutation,
+                    variables
+                },
+            });
+
+            localStorage.setItem("cartId", data.cart._id);
+            localStorage.setItem('cartItems', data.cart.items.length);
+            setReload(data.cart.items.length);
+
+            btnEle.removeAttribute("disabled");
+            btnEle.innerHTML = `
+                <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                &nbsp; Thêm vào giỏ hàng
+            `;
+
+        } catch(error) {
+            console.log(error);
+        } 
     }
 
     const loadMore = e => {
@@ -862,7 +912,6 @@ export default function product({
     }
 
     const handleSelectStars = (event, i) => {
-        console.log(i);
         setStars(i);
     };
 
@@ -890,6 +939,17 @@ export default function product({
         return result;
     };
 
+    function selectVersions(id) {
+        var versions = document.querySelectorAll(`#${id} .version`);
+    
+        for (let i = 0; i < versions.length; i++) {
+            versions[i].onclick = function () {
+                document.querySelector(`#${id} .version.active`).classList.remove("active");
+                this.classList.add("active");
+            }
+        }
+    }
+
     const flickityOptions = {
         freeScroll: false,
         wrapAround: false,
@@ -914,7 +974,11 @@ export default function product({
                 flkty.select(i, true, false)
             }
         }
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        selectVersions('colors');
+    }, []);
 
     return (
         <>
@@ -922,25 +986,25 @@ export default function product({
                 {" "}
                 <title>{product.name}</title>
                 {/* <!-- CSS --> */}
-                <link
+                {/* <link
                     rel="stylesheet"
                     href="https://unpkg.com/flickity@2/dist/flickity.min.css"
                 />
                 {/* <!-- JavaScript --> */}
-                <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+                {/* <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script> */}
             </Head>
             <Header />
 
             <div id="root">
                 <nav className="breadcrumb breadcrumb--custom my-1">
                     <div className="container px-0">
-                        <a className="breadcrumb-item" href="/">
+                        <a className="breadcrumb-item d-inline-block" href="/">
                             Trang chủ
                         </a>
-                        <a className="breadcrumb-item" href="/category">
+                        <a className="breadcrumb-item d-inline-block" href="/san-pham">
                             Cửa hàng
                         </a>
-                        <span className="breadcrumb-item active">
+                        <span className="breadcrumb-item  d-inline-block active">
                             {product.name}
                         </span>
                     </div>
@@ -1008,11 +1072,8 @@ export default function product({
                                     &nbsp; Mua ngay
                                 </button>
                                 <div className="col-6 pl-0 pr-1">
-                                    <button className="btn btn-success w-100">
-                                        <i
-                                            className="fa fa-cart-plus"
-                                            aria-hidden="true"
-                                        />
+                                    <button className="btn btn-success w-100" id="addToCartBtn" onClick={addToCart}>
+                                        <i className="fa fa-cart-plus" aria-hidden="true" />
                                         &nbsp; Thêm vào giỏ hàng
                                     </button>
                                 </div>
