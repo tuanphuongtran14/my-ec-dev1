@@ -706,7 +706,7 @@ export default function Product({
         try {
             btnEle.setAttribute("disabled", true);
             btnEle.innerHTML = `
-                <span className="spinner-border spinner-border-sm"></span>
+                <span class="spinner-border spinner-border-sm"></span>
                 Đang gửi... 
             `;
 
@@ -737,7 +737,7 @@ export default function Product({
         try {
             yesBtn.setAttribute("disabled", true);
             yesBtn.innerHTML = `
-                <span className="spinner-border spinner-border-sm"></span>
+                <span class="spinner-border spinner-border-sm"></span>
                 Đang xóa... 
             `;
 
@@ -770,7 +770,7 @@ export default function Product({
         try {
             btnEle.setAttribute("disabled", true);
             btnEle.innerHTML = `
-                <span className="spinner-border spinner-border-sm"></span>
+                <span class="spinner-border spinner-border-sm"></span>
                 Đang gửi... 
             `;
 
