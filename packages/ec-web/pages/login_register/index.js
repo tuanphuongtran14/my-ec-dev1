@@ -37,7 +37,7 @@ export default function(){
                       <a href="#" className="social"><i className="fab fa-linkedin-in" /></a>
                     </div>
                     <span>Hoặc sử dụng tài khoản của bạn</span>
-                    <input type="email" placeholder="Email" required name="Email" />
+                    <input type="text" placeholder="Email" required name="Email" />
                     <input type="password" placeholder="Mật khẩu" required name="MatKhau" />
                     <a href="#">Quên mật khẩu?</a>
                     <button>Đăng nhập </button>
