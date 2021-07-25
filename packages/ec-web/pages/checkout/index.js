@@ -132,7 +132,7 @@ const payment = ({itemList, total})=>
                                 <input type="text" class="form-control" name="address" placeholder=""></input>
                             </div>
                         </div>
-                    <button type="button" class="btn btn-success w-100 my-3">Đặt hàng</button>
+                    <button type="button" class="btn btn-success w-100 my-3">Tiến hành thanh toán</button>
                     </div>
                 </div>
                 <div class="payment__product col-12 col-lg-4">

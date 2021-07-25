@@ -73,6 +73,7 @@ export default function Index({ products }) {
 
     const handleSearch = e => {
         e.preventDefault();
+        // sessionStorage.clear();
         const brand = document.getElementById('brand').value;
         const platform = document.getElementById('platform').value;  
         

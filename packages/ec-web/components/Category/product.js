@@ -35,6 +35,26 @@ const pro = ({ currentProducts, filter }) => {
         return currentProducts
     }
 
+    const displayStars = (stars) => {
+        const result = [];
+        for (let index = 0; index < stars; index++) {
+          result.push(
+            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
+          )
+        }
+        if ((stars - Math.floor(stars)) > 0) {
+          result.push(
+            <i className="fa product__rating-icon fa-star-half" aria-hidden="true"></i>
+          )
+        }
+        for (let index = result.length; index < 5; index++) {
+          result.push(
+            <i className="fa product__rating-icon fa-star-o" aria-hidden="true"></i>
+          )
+        }
+        return result;
+      }
+
     const products = productsFilter()
 
     var product = products.map((product, index) => {
@@ -59,13 +79,9 @@ const pro = ({ currentProducts, filter }) => {
 
                     <span className="regular-price">{regularPrice}₫</span>
                 </div>
-                <div className="product__rating">
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-                    <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
-                    <span>(442 đánh giá)</span>
+                <div className="product__rating"> 
+                    {displayStars(product.stars)}
+            <span>({product.votes} đánh giá)</span>
                 </div>
                 {product.salesPercentage === 0 ?
                     "" :

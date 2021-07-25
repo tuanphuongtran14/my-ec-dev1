@@ -15,6 +15,8 @@ export default function query() {
                 },
                 ram,
                 rom,
+                votes,
+                stars,
                 brand{
                     name,
                     slug

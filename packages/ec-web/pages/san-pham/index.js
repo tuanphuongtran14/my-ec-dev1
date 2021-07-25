@@ -84,7 +84,7 @@ export default function Category({ products }) {
                 <div id="root">
                     <Banner />
                     <div className="container">
-                        <div className="bg-white mb-5 filter p-3">
+                        <div className="bg-white mb-5 filter p-3 border">
                             <div className="d-block py-3">
                                 <select className="filter__option mr-2 my-2" onChange={handleFilterBrand}>
                                     <option value="0" selected>Hãng...</option>

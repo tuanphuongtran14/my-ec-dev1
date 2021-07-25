@@ -2,7 +2,8 @@
   "kind": "collectionType",
   "collectionName": "products",
   "info": {
-    "name": "Product"
+    "name": "Product",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -178,6 +179,9 @@
       "type": "richtext",
       "default": "Nguyên hộp, đầy đủ phụ kiện từ nhà sản xuất",
       "required": true
+    },
+    "promotion": {
+      "type": "richtext"
     }
   }
 }
