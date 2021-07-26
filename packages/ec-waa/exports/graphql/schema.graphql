@@ -1453,6 +1453,7 @@ type WishList {
   updatedAt: DateTime!
   user: UsersPermissionsUser
   published_at: DateTime
+  products(sort: String, limit: Int, start: Int, where: JSON): [Product]
 }
 
 type WishListConnection {
@@ -1507,6 +1508,7 @@ type WishListConnectionPublished_at {
 
 input WishListInput {
   user: ID
+  products: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -1514,6 +1516,7 @@ input WishListInput {
 
 input editWishListInput {
   user: ID
+  products: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
