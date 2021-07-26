@@ -54,12 +54,71 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
+.bodyIndex {
+  background-color: #f0f0f0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url(https://images.unsplash.com/photo-1500817487388-039e623edc21?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1870&q=80); }
+
 body {
   background-color: #f0f0f0; }
 
 /*-------------------------*/
 /* 2.1. #root & #overlaybody
 /*-------------------------*/
+/* Preloder */
+#preloder {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 999999;
+  background: #000; }
+
+.loader {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -13px;
+  margin-left: -13px;
+  border-radius: 60px;
+  animation: loader 0.8s linear infinite;
+  -webkit-animation: loader 0.8s linear infinite; }
+
+@keyframes loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    border: 4px solid #f44336;
+    border-left-color: transparent; }
+  50% {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+    border: 4px solid #673ab7;
+    border-left-color: transparent; }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+    border: 4px solid #f44336;
+    border-left-color: transparent; } }
+
+@-webkit-keyframes loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    border: 4px solid #f44336;
+    border-left-color: transparent; }
+  50% {
+    -webkit-transform: rotate(180deg);
+    border: 4px solid #673ab7;
+    border-left-color: transparent; }
+  100% {
+    -webkit-transform: rotate(360deg);
+    border: 4px solid #f44336;
+    border-left-color: transparent; } }
+
 #root {
   transition: 0.4s;
   transition-delay: 0.05s; }
@@ -95,6 +154,7 @@ body {
   border-top: 20px solid #f0f0f0; }
 
 .bd-top-left--fake-bg {
+  padding: 0 0;
   border-left: 20px solid #f0f0f0; }
   @media only screen and (max-width: 991px) {
     .bd-top-left--fake-bg {
@@ -317,7 +377,10 @@ body {
 /* 3.2. Breadcrumb
 /*-------------------------*/
 .breadcrumb--custom {
-  background-color: transparent !important; }
+  background-color: #FFFFFF !important;
+  padding: 15px 0;
+  border-radius: 0;
+  border-bottom: 1px solid #F0F0F0; }
   .breadcrumb--custom .breadcrumb-item {
     color: #d70018 !important;
     display: inline-block !important; }
@@ -618,6 +681,8 @@ ul.product-details__bonus {
   background-color: #fff;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 10px;
   padding-bottom: 2.5rem; }
   .box .box-title {
     display: flex;

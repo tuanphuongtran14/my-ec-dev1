@@ -1,29 +1,3 @@
-const {
-    parseCookies,
-    setCookie,
-    destroyCookie
-} = require('nookies');
-import Cookies from 'cookies';
-
-// export default async function handler(req, res) {
-
-//     destroyCookie({ res }, 'jwt', {
-//         path: '/',
-//         sameSite: true,
-//         httpOnly: true
-//     });
-//     // const cookies = new Cookies(req, res);
-
-//     // cookies.set('jwt', null, {
-//     //     sameSite: 'strict',
-//     //     path: '/',
-//     //     maxAge: new Date(0),
-//     // });
-
-//     return res.redirect('/');
-
-// }
-
 import {
     withIronSession
 } from "next-iron-session";

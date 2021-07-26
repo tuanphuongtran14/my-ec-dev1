@@ -1,6 +1,3 @@
-window.onload = function () {
-}
-
 window.onclick = function () {
     if (document.getElementById('login_container'))
         changeLoginToRegister();

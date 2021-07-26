@@ -1,5 +1,3 @@
-import nookies from 'nookies';
-import Cookies from 'cookies';
 import {
     withIronSession
 } from "next-iron-session";
@@ -12,12 +10,8 @@ export const isSignIn = ctx => {
         res
     } = ctx;
 
-    const cookies = new Cookies(req, res);
-
-    const jwt = cookies.get('jwt');
-
     // Check if user logged in or not
-    return (!jwt) ? false : true;
+    return;
 }
 
 export const getJwt = ctx => {
@@ -26,10 +20,7 @@ export const getJwt = ctx => {
         req,
         res
     } = ctx;
-
-    const cookies = new Cookies(req, res);
-
-    return cookies.get('jwt');
+    return;
 }
 
 export const signIn = async (username, password) => {
