@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-//import '../_app'
-//import '../_document'
+import '../_app'
+import '../_document'
 
 export default function Customer() {
 
