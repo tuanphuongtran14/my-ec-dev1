@@ -69,9 +69,28 @@ export const signOut = async () => {
 
     return ok;
 };
+// export const forgotPassword = async (email) => {
+//     // Send request to login API
+//     const response = await fetch('/api/forgot-password', {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         // body: JSON.stringify({
+//         //     email
+            
+//         // }),
+//     });
 
+//     // Retrieve data from response and return it
+//     const {
+//         ok
+//     } = await response.json();
+
+//     return ok;
+// };
 export const useAuth = handler => withIronSession(handler, {
-    password: process.env.APPLICATION_SECRET,
+    password: 'DkAi0P2Aixgs9FWo66UMV3YdmksspNrW',
     cookieName: process.env.APPLICATION_COOKIE_NAME,
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {

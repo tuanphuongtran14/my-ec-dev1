@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import {ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 function graphqlClient(authToken) {
     const options = {
