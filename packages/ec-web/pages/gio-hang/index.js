@@ -24,12 +24,12 @@ const index = () => {
     });
     let deleleItemId = '';
 
-    // Fetch cart first time
+    // ************* START: Fetch cart first time ************** //
     useEffect(() => {
         fetchCart();
     }, []);
 
-    // Track selection to turn on select all
+    // ********* START: Track selection to turn on select all ********* //
     useEffect(() => {
         const selectedItems = items.filter(item => {
             return item.selected;
@@ -47,6 +47,7 @@ const index = () => {
             
     },[items]);
 
+    // ************* START: Set state for new cart ************** //
     const setNewCart = (newCart) => {
         localStorage.setItem("cartId", newCart._id);
         setItems([]);
@@ -61,7 +62,7 @@ const index = () => {
         setItems(newCart.items);
     }
 
-    // Fetch cart function
+    // ************** START: Fetch cart first time  *************** //
     const fetchCart = async () => {
         try {
             const data = await cartApi.getCart(localStorage.getItem("cartId"));
@@ -73,6 +74,7 @@ const index = () => {
         }
     };
 
+    // *********** START: Process toggle select items  ************ //
     const toggleSelectItem = async (e, itemId) => {
         const value = e.target.checked;
 
@@ -85,6 +87,7 @@ const index = () => {
         }
     }
 
+    // ********** START: Process toggle select all items  ********** //
     const toggleSelectAll = async e => {
         const value = e.target.checked;
 
@@ -103,7 +106,7 @@ const index = () => {
         }
     }
 
-    // ********** START: Processing delete selected items  *********** //
+    // ********** START: Process delete selected items  *********** //
     const removeSelectedItems = async () => {
         try {
             const data = await cartApi.removeSelectedItems(localStorage.getItem('cartId'));
