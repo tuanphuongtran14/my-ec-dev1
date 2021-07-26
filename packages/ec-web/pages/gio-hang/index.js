@@ -472,13 +472,15 @@ const index = () => {
                                     </dd>
                                 </dl>
                                 <hr />
+                                <Link href="/checkout">
                                 <a
-                                    href="#"
+                                    href=""
                                     className="btn btn--buy-now  btn-block"
                                 >
                                     {" "}
                                     Thanh toán{" "}
                                 </a>
+                                </Link>
                                 <Link href="/"> 
                                     <a className="btn btn-light btn-block">
                                         Tiếp tục mua sắm
