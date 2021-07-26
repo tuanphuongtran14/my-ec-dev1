@@ -12,6 +12,8 @@ const itemList = () => {
 
   useEffect(async () => {
     const cartId = localStorage.getItem('cartId');
+    try
+    { 
         const query = `
             query($cartId: ID!) {
                 cart: getCart(cartId: $cartId) {
@@ -50,6 +52,10 @@ const itemList = () => {
         });
         setItems(data.cart.items);
         setTotals(data.cart.finalAmount)
+      }
+      catch{
+        
+      }
 });
 
   return (
