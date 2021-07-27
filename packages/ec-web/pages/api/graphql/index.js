@@ -11,9 +11,8 @@ async function handler(req, res) {
         } = req.body;
 
         // Check jwt and set header authorization
-        const jwt = (req.session.get("user")) ? req.session.get("user").jwt : null; 
-        const options = {};
-        if(jwt)  options.headers = { Authorization: `Bearer ${jwt}`, }
+        const jwt = (req.session.get("user")) ? req.session.get("user").jwt : null;
+        const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
         
         // Excute query based on query's type
         if(type === 'query') {
@@ -21,7 +20,7 @@ async function handler(req, res) {
                 query: gql`${query}`,
                 variables,
                 context: {
-                    options
+                    headers
                 },
             });
 
@@ -37,7 +36,7 @@ async function handler(req, res) {
                 mutation: gql`${query}`,
                 variables,
                 context: {
-                    options
+                    headers
                 },
             });
 
