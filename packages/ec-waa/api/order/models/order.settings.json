@@ -70,6 +70,9 @@
     },
     "coupon": {
       "model": "coupon"
+    },
+    "orderId": {
+      "type": "uid"
     }
   }
 }

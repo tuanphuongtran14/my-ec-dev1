@@ -41,6 +41,13 @@ type UserPermissionsPasswordPayload {
   ok: Boolean!
 }
 
+input CustomUsersPermissionsRegisterInput {
+  username: String!
+  email: String!
+  password: String!
+  name: String!
+}
+
 input CartItemInput {
   product: ID!
   color: String!
@@ -136,6 +143,140 @@ type ReviewsBySlugPayload {
   reviews: [Review]!
   userReview: Review
   overviews: Overview!
+}
+
+type Blog {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  slug: String!
+  description: String!
+  thumbnail: UploadFile
+  category: Category
+  published_at: DateTime
+}
+
+type BlogConnection {
+  values: [Blog]
+  groupBy: BlogGroupBy
+  aggregate: BlogAggregator
+}
+
+type BlogAggregator {
+  count: Int
+  totalCount: Int
+}
+
+type BlogGroupBy {
+  id: [BlogConnectionId]
+  _id: [BlogConnection_id]
+  createdAt: [BlogConnectionCreatedAt]
+  updatedAt: [BlogConnectionUpdatedAt]
+  title: [BlogConnectionTitle]
+  slug: [BlogConnectionSlug]
+  description: [BlogConnectionDescription]
+  thumbnail: [BlogConnectionThumbnail]
+  category: [BlogConnectionCategory]
+  published_at: [BlogConnectionPublished_at]
+}
+
+type BlogConnectionId {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnection_id {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnectionCreatedAt {
+  key: DateTime
+  connection: BlogConnection
+}
+
+type BlogConnectionUpdatedAt {
+  key: DateTime
+  connection: BlogConnection
+}
+
+type BlogConnectionTitle {
+  key: String
+  connection: BlogConnection
+}
+
+type BlogConnectionSlug {
+  key: String
+  connection: BlogConnection
+}
+
+type BlogConnectionDescription {
+  key: String
+  connection: BlogConnection
+}
+
+type BlogConnectionThumbnail {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnectionCategory {
+  key: ID
+  connection: BlogConnection
+}
+
+type BlogConnectionPublished_at {
+  key: DateTime
+  connection: BlogConnection
+}
+
+input BlogInput {
+  title: String!
+  slug: String!
+  description: String!
+  thumbnail: ID
+  category: ID
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editBlogInput {
+  title: String
+  slug: String
+  description: String
+  thumbnail: ID
+  category: ID
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createBlogInput {
+  data: BlogInput
+}
+
+type createBlogPayload {
+  blog: Blog
+}
+
+input updateBlogInput {
+  where: InputID
+  data: editBlogInput
+}
+
+type updateBlogPayload {
+  blog: Blog
+}
+
+input deleteBlogInput {
+  where: InputID
+}
+
+type deleteBlogPayload {
+  blog: Blog
 }
 
 type Brand {
@@ -346,6 +487,113 @@ type deleteCartPayload {
   cart: Cart
 }
 
+type Category {
+  id: ID!
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  slug: String
+  published_at: DateTime
+}
+
+type CategoryConnection {
+  values: [Category]
+  groupBy: CategoryGroupBy
+  aggregate: CategoryAggregator
+}
+
+type CategoryAggregator {
+  count: Int
+  totalCount: Int
+}
+
+type CategoryGroupBy {
+  id: [CategoryConnectionId]
+  _id: [CategoryConnection_id]
+  createdAt: [CategoryConnectionCreatedAt]
+  updatedAt: [CategoryConnectionUpdatedAt]
+  name: [CategoryConnectionName]
+  slug: [CategoryConnectionSlug]
+  published_at: [CategoryConnectionPublished_at]
+}
+
+type CategoryConnectionId {
+  key: ID
+  connection: CategoryConnection
+}
+
+type CategoryConnection_id {
+  key: ID
+  connection: CategoryConnection
+}
+
+type CategoryConnectionCreatedAt {
+  key: DateTime
+  connection: CategoryConnection
+}
+
+type CategoryConnectionUpdatedAt {
+  key: DateTime
+  connection: CategoryConnection
+}
+
+type CategoryConnectionName {
+  key: String
+  connection: CategoryConnection
+}
+
+type CategoryConnectionSlug {
+  key: String
+  connection: CategoryConnection
+}
+
+type CategoryConnectionPublished_at {
+  key: DateTime
+  connection: CategoryConnection
+}
+
+input CategoryInput {
+  name: String!
+  slug: String
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input editCategoryInput {
+  name: String
+  slug: String
+  published_at: DateTime
+  created_by: ID
+  updated_by: ID
+}
+
+input createCategoryInput {
+  data: CategoryInput
+}
+
+type createCategoryPayload {
+  category: Category
+}
+
+input updateCategoryInput {
+  where: InputID
+  data: editCategoryInput
+}
+
+type updateCategoryPayload {
+  category: Category
+}
+
+input deleteCategoryInput {
+  where: InputID
+}
+
+type deleteCategoryPayload {
+  category: Category
+}
+
 type Coupon {
   id: ID!
   _id: ID!
@@ -524,6 +772,7 @@ type Order {
   user: UsersPermissionsUser
   finalAmount: Long
   coupon: Coupon
+  orderId: String
   items(sort: String, limit: Int, start: Int, where: JSON): [OrderedItem]
 }
 
@@ -556,6 +805,7 @@ type OrderGroupBy {
   user: [OrderConnectionUser]
   finalAmount: [OrderConnectionFinalAmount]
   coupon: [OrderConnectionCoupon]
+  orderId: [OrderConnectionOrderId]
 }
 
 type OrderConnectionId {
@@ -643,6 +893,11 @@ type OrderConnectionCoupon {
   connection: OrderConnection
 }
 
+type OrderConnectionOrderId {
+  key: String
+  connection: OrderConnection
+}
+
 input OrderInput {
   items: [ID]
   consigneeName: String!
@@ -658,6 +913,7 @@ input OrderInput {
   user: ID
   finalAmount: Long
   coupon: ID
+  orderId: String
   created_by: ID
   updated_by: ID
 }
@@ -677,6 +933,7 @@ input editOrderInput {
   user: ID
   finalAmount: Long
   coupon: ID
+  orderId: String
   created_by: ID
   updated_by: ID
 }
@@ -1909,6 +2166,7 @@ type UsersPermissionsUser {
   blocked: Boolean
   role: UsersPermissionsRole
   wish_list: WishList
+  name: String
 }
 
 type UsersPermissionsUserConnection {
@@ -1934,6 +2192,7 @@ type UsersPermissionsUserGroupBy {
   blocked: [UsersPermissionsUserConnectionBlocked]
   role: [UsersPermissionsUserConnectionRole]
   wish_list: [UsersPermissionsUserConnectionWish_list]
+  name: [UsersPermissionsUserConnectionName]
 }
 
 type UsersPermissionsUserConnectionId {
@@ -1991,6 +2250,11 @@ type UsersPermissionsUserConnectionWish_list {
   connection: UsersPermissionsUserConnection
 }
 
+type UsersPermissionsUserConnectionName {
+  key: String
+  connection: UsersPermissionsUserConnection
+}
+
 input UserInput {
   username: String!
   email: String!
@@ -2002,6 +2266,7 @@ input UserInput {
   blocked: Boolean
   role: ID
   wish_list: ID
+  name: String
   created_by: ID
   updated_by: ID
 }
@@ -2017,6 +2282,7 @@ input editUserInput {
   blocked: Boolean
   role: ID
   wish_list: ID
+  name: String
   created_by: ID
   updated_by: ID
 }
@@ -2070,7 +2336,7 @@ input editComponentProductOptionInput {
   soldQuantity: Int
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ProductOption | ProductItem | CartItem | UserCart | Overview | ReviewsBySlugPayload | Brand | BrandConnection | BrandAggregator | BrandGroupBy | BrandConnectionId | BrandConnection_id | BrandConnectionCreatedAt | BrandConnectionUpdatedAt | BrandConnectionName | BrandConnectionSlug | BrandConnectionPublished_at | createBrandPayload | updateBrandPayload | deleteBrandPayload | Cart | CartConnection | CartAggregator | CartGroupBy | CartConnectionId | CartConnection_id | CartConnectionCreatedAt | CartConnectionUpdatedAt | CartConnectionCoupon | CartConnectionUser | createCartPayload | updateCartPayload | deleteCartPayload | Coupon | CouponConnection | CouponAggregator | CouponAggregatorSum | CouponAggregatorAvg | CouponAggregatorMin | CouponAggregatorMax | CouponGroupBy | CouponConnectionId | CouponConnection_id | CouponConnectionCreatedAt | CouponConnectionUpdatedAt | CouponConnectionCode | CouponConnectionExpiryDate | CouponConnectionDiscountPercentage | CouponConnectionDiscountAmount | CouponConnectionPublished_at | createCouponPayload | updateCouponPayload | deleteCouponPayload | Order | OrderConnection | OrderAggregator | OrderGroupBy | OrderConnectionId | OrderConnection_id | OrderConnectionCreatedAt | OrderConnectionUpdatedAt | OrderConnectionConsigneeName | OrderConnectionConsigneePhone | OrderConnectionEmail | OrderConnectionAddressLine1 | OrderConnectionDistrict | OrderConnectionCity | OrderConnectionStatus | OrderConnectionIsPaid | OrderConnectionPaymentMethod | OrderConnectionTotalAmount | OrderConnectionUser | OrderConnectionFinalAmount | OrderConnectionCoupon | createOrderPayload | updateOrderPayload | deleteOrderPayload | OrderedItem | OrderedItemConnection | OrderedItemAggregator | OrderedItemAggregatorSum | OrderedItemAggregatorAvg | OrderedItemAggregatorMin | OrderedItemAggregatorMax | OrderedItemGroupBy | OrderedItemConnectionId | OrderedItemConnection_id | OrderedItemConnectionCreatedAt | OrderedItemConnectionUpdatedAt | OrderedItemConnectionColor | OrderedItemConnectionQty | OrderedItemConnectionUnitPrice | OrderedItemConnectionTotalPrice | OrderedItemConnectionSelected | OrderedItemConnectionProduct | createOrderedItemPayload | updateOrderedItemPayload | deleteOrderedItemPayload | Product | ProductConnection | ProductAggregator | ProductAggregatorSum | ProductAggregatorAvg | ProductAggregatorMin | ProductAggregatorMax | ProductGroupBy | ProductConnectionId | ProductConnection_id | ProductConnectionCreatedAt | ProductConnectionUpdatedAt | ProductConnectionName | ProductConnectionSlug | ProductConnectionRegularPrice | ProductConnectionFinalPrice | ProductConnectionSalesPercentage | ProductConnectionStars | ProductConnectionVotes | ProductConnectionBrand | ProductConnectionCpu | ProductConnectionGpu | ProductConnectionScreenSize | ProductConnectionScreenPanel | ProductConnectionScreenResolution | ProductConnectionHeight | ProductConnectionWidth | ProductConnectionDepth | ProductConnectionWeight | ProductConnectionRam | ProductConnectionRom | ProductConnectionPlatformName | ProductConnectionPlatformVersion | ProductConnectionBatteryCapacity | ProductConnectionBatteryType | ProductConnectionShortDesc | ProductConnectionThumbnail | ProductConnectionFullDesc | ProductConnectionInclusionBox | ProductConnectionWarranty | ProductConnectionCondition | ProductConnectionPromotion | ProductConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | Review | ReviewConnection | ReviewAggregator | ReviewAggregatorSum | ReviewAggregatorAvg | ReviewAggregatorMin | ReviewAggregatorMax | ReviewGroupBy | ReviewConnectionId | ReviewConnection_id | ReviewConnectionCreatedAt | ReviewConnectionUpdatedAt | ReviewConnectionUser | ReviewConnectionComment | ReviewConnectionStars | ReviewConnectionIsBought | ReviewConnectionProduct | ReviewConnectionPublished_at | createReviewPayload | updateReviewPayload | deleteReviewPayload | WishList | WishListConnection | WishListAggregator | WishListGroupBy | WishListConnectionId | WishListConnection_id | WishListConnectionCreatedAt | WishListConnectionUpdatedAt | WishListConnectionUser | WishListConnectionPublished_at | createWishListPayload | updateWishListPayload | deleteWishListPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionWish_list | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductOption
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | ProductOption | ProductItem | CartItem | UserCart | Overview | ReviewsBySlugPayload | Blog | BlogConnection | BlogAggregator | BlogGroupBy | BlogConnectionId | BlogConnection_id | BlogConnectionCreatedAt | BlogConnectionUpdatedAt | BlogConnectionTitle | BlogConnectionSlug | BlogConnectionDescription | BlogConnectionThumbnail | BlogConnectionCategory | BlogConnectionPublished_at | createBlogPayload | updateBlogPayload | deleteBlogPayload | Brand | BrandConnection | BrandAggregator | BrandGroupBy | BrandConnectionId | BrandConnection_id | BrandConnectionCreatedAt | BrandConnectionUpdatedAt | BrandConnectionName | BrandConnectionSlug | BrandConnectionPublished_at | createBrandPayload | updateBrandPayload | deleteBrandPayload | Cart | CartConnection | CartAggregator | CartGroupBy | CartConnectionId | CartConnection_id | CartConnectionCreatedAt | CartConnectionUpdatedAt | CartConnectionCoupon | CartConnectionUser | createCartPayload | updateCartPayload | deleteCartPayload | Category | CategoryConnection | CategoryAggregator | CategoryGroupBy | CategoryConnectionId | CategoryConnection_id | CategoryConnectionCreatedAt | CategoryConnectionUpdatedAt | CategoryConnectionName | CategoryConnectionSlug | CategoryConnectionPublished_at | createCategoryPayload | updateCategoryPayload | deleteCategoryPayload | Coupon | CouponConnection | CouponAggregator | CouponAggregatorSum | CouponAggregatorAvg | CouponAggregatorMin | CouponAggregatorMax | CouponGroupBy | CouponConnectionId | CouponConnection_id | CouponConnectionCreatedAt | CouponConnectionUpdatedAt | CouponConnectionCode | CouponConnectionExpiryDate | CouponConnectionDiscountPercentage | CouponConnectionDiscountAmount | CouponConnectionPublished_at | createCouponPayload | updateCouponPayload | deleteCouponPayload | Order | OrderConnection | OrderAggregator | OrderGroupBy | OrderConnectionId | OrderConnection_id | OrderConnectionCreatedAt | OrderConnectionUpdatedAt | OrderConnectionConsigneeName | OrderConnectionConsigneePhone | OrderConnectionEmail | OrderConnectionAddressLine1 | OrderConnectionDistrict | OrderConnectionCity | OrderConnectionStatus | OrderConnectionIsPaid | OrderConnectionPaymentMethod | OrderConnectionTotalAmount | OrderConnectionUser | OrderConnectionFinalAmount | OrderConnectionCoupon | OrderConnectionOrderId | createOrderPayload | updateOrderPayload | deleteOrderPayload | OrderedItem | OrderedItemConnection | OrderedItemAggregator | OrderedItemAggregatorSum | OrderedItemAggregatorAvg | OrderedItemAggregatorMin | OrderedItemAggregatorMax | OrderedItemGroupBy | OrderedItemConnectionId | OrderedItemConnection_id | OrderedItemConnectionCreatedAt | OrderedItemConnectionUpdatedAt | OrderedItemConnectionColor | OrderedItemConnectionQty | OrderedItemConnectionUnitPrice | OrderedItemConnectionTotalPrice | OrderedItemConnectionSelected | OrderedItemConnectionProduct | createOrderedItemPayload | updateOrderedItemPayload | deleteOrderedItemPayload | Product | ProductConnection | ProductAggregator | ProductAggregatorSum | ProductAggregatorAvg | ProductAggregatorMin | ProductAggregatorMax | ProductGroupBy | ProductConnectionId | ProductConnection_id | ProductConnectionCreatedAt | ProductConnectionUpdatedAt | ProductConnectionName | ProductConnectionSlug | ProductConnectionRegularPrice | ProductConnectionFinalPrice | ProductConnectionSalesPercentage | ProductConnectionStars | ProductConnectionVotes | ProductConnectionBrand | ProductConnectionCpu | ProductConnectionGpu | ProductConnectionScreenSize | ProductConnectionScreenPanel | ProductConnectionScreenResolution | ProductConnectionHeight | ProductConnectionWidth | ProductConnectionDepth | ProductConnectionWeight | ProductConnectionRam | ProductConnectionRom | ProductConnectionPlatformName | ProductConnectionPlatformVersion | ProductConnectionBatteryCapacity | ProductConnectionBatteryType | ProductConnectionShortDesc | ProductConnectionThumbnail | ProductConnectionFullDesc | ProductConnectionInclusionBox | ProductConnectionWarranty | ProductConnectionCondition | ProductConnectionPromotion | ProductConnectionPublished_at | createProductPayload | updateProductPayload | deleteProductPayload | Review | ReviewConnection | ReviewAggregator | ReviewAggregatorSum | ReviewAggregatorAvg | ReviewAggregatorMin | ReviewAggregatorMax | ReviewGroupBy | ReviewConnectionId | ReviewConnection_id | ReviewConnectionCreatedAt | ReviewConnectionUpdatedAt | ReviewConnectionUser | ReviewConnectionComment | ReviewConnectionStars | ReviewConnectionIsBought | ReviewConnectionProduct | ReviewConnectionPublished_at | createReviewPayload | updateReviewPayload | deleteReviewPayload | WishList | WishListConnection | WishListAggregator | WishListGroupBy | WishListConnectionId | WishListConnection_id | WishListConnectionCreatedAt | WishListConnectionUpdatedAt | WishListConnectionUser | WishListConnectionPublished_at | createWishListPayload | updateWishListPayload | deleteWishListPayload | I18NLocale | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionCreatedAt | UsersPermissionsUserConnectionUpdatedAt | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionWish_list | UsersPermissionsUserConnectionName | createUserPayload | updateUserPayload | deleteUserPayload | ComponentProductOption
 
 input InputID {
   id: ID!
@@ -2089,12 +2355,18 @@ type AdminUser {
 }
 
 type Query {
+  blog(id: ID!, publicationState: PublicationState): Blog
+  blogs(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Blog]
+  blogsConnection(sort: String, limit: Int, start: Int, where: JSON): BlogConnection
   brand(id: ID!, publicationState: PublicationState): Brand
   brands(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Brand]
   brandsConnection(sort: String, limit: Int, start: Int, where: JSON): BrandConnection
   cart(id: ID!, publicationState: PublicationState): Cart
   carts(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Cart]
   cartsConnection(sort: String, limit: Int, start: Int, where: JSON): CartConnection
+  category(id: ID!, publicationState: PublicationState): Category
+  categories(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Category]
+  categoriesConnection(sort: String, limit: Int, start: Int, where: JSON): CategoryConnection
   coupon(id: ID!, publicationState: PublicationState): Coupon
   coupons(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [Coupon]
   couponsConnection(sort: String, limit: Int, start: Int, where: JSON): CouponConnection
@@ -2126,6 +2398,7 @@ type Query {
   users(sort: String, limit: Int, start: Int, where: JSON, publicationState: PublicationState): [UsersPermissionsUser]
   usersConnection(sort: String, limit: Int, start: Int, where: JSON): UsersPermissionsUserConnection
   me: UsersPermissionsMe
+  getBlogBySlug(slug: String!): Blog!
   getCart(cartId: ID): UserCart!
   getOrders: [Order]!
   searchProducts(filter: ProductFilter, limit: Int, skip: Int, sort: [String]): [Product]!
@@ -2138,12 +2411,18 @@ type Query {
 }
 
 type Mutation {
+  createBlog(input: createBlogInput): createBlogPayload
+  updateBlog(input: updateBlogInput): updateBlogPayload
+  deleteBlog(input: deleteBlogInput): deleteBlogPayload
   createBrand(input: createBrandInput): createBrandPayload
   updateBrand(input: updateBrandInput): updateBrandPayload
   deleteBrand(input: deleteBrandInput): deleteBrandPayload
   createCart(input: createCartInput): createCartPayload
   updateCart(input: updateCartInput): updateCartPayload
   deleteCart(input: deleteCartInput): deleteCartPayload
+  createCategory(input: createCategoryInput): createCategoryPayload
+  updateCategory(input: updateCategoryInput): updateCategoryPayload
+  deleteCategory(input: deleteCategoryInput): deleteCategoryPayload
   createCoupon(input: createCouponInput): createCouponPayload
   updateCoupon(input: updateCouponInput): updateCouponPayload
   deleteCoupon(input: deleteCouponInput): deleteCouponPayload
@@ -2191,6 +2470,7 @@ type Mutation {
   forgotPassword(email: String!): UserPermissionsPasswordPayload
   resetPassword(password: String!, passwordConfirmation: String!, code: String!): UsersPermissionsLoginPayload
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
+  customRegister(input: CustomUsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
   addItemToCart(cartId: ID!, newItem: CartItemInput!): UserCart!
   removeItemFromCart(cartId: ID!, itemId: ID!): UserCart!
   changeItemColor(cartId: ID!, itemId: ID!, color: String!): UserCart!
