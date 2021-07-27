@@ -1,45 +1,4 @@
 import React from "react";
-import { graphqlClient, gql } from "../../helpers/apollo-client";
-import { useAuth } from "../../helpers/auth";
-
-export const getServerSideProps = useAuth(async ({ req, res, params }) => {
-    const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
-
-    const client = graphqlClient(jwt);
-
-    const { data } = await client.query({
-        query: gql`
-        query {
-            wishLists:
-            getWishLists {
-              products {
-                id,
-                name,
-                thumbnail{
-                  url
-                }
-                finalPrice
-                options{
-                  quantityInStock
-                }
-                
-              }
-            }
-          }
-          
-          `,
-    });
-    console.log(data)
-    return {
-        props: {
-            wishLists: data.wishLists,
-            // products: data.wishLists.products,
-            isSignedIn: jwt ? true : false,
-            jwt,
-            params,
-        },
-    };
-});
 
 export default function Wishlist({
     wishLists,
@@ -49,13 +8,13 @@ export default function Wishlist({
     // products,
 }) {
   
-    const product = wishLists.products.map(product=>{
+    return wishLists.products.map(product=>{
         
       const image = product.thumbnail.url;
       const name = product.name;
       const price = product.finalPrice;
       let status = "" ;
-      if (product.options.finalPrice = 0 )
+      if (product.options[0].quantityInStock === 0 )
         status = "Hết hàng";
       else 
         status = "Còn hàng";
@@ -93,7 +52,7 @@ export default function Wishlist({
                 <div className="col l-4 wishlist-item md-6 c-6 d-flex">
                   <div>
                     <img
-                      src={image}
+                      src={process.env.NEXT_PUBLIC_API_URL+image}
                       alt={name}
                       className="wishlist-item_img"
                     />
