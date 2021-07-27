@@ -8,31 +8,27 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react';
 import client from '../components/Category/apolloClient';
 import getProductsQuery from '../components/Category/getProductsQuery';
-import Flickity from 'react-flickity-component'
+import Flickity from 'react-flickity-component';
+import { productApi } from '../apis';
 
 export async function getStaticProps() {
-  const { data } = await client.query({
-    query: getProductsQuery()
-  });
+  const {
+    productHotSale,
+    productsBestSell,
+    productsBestNew
+  } = await productApi.getForHome();
 
   return {
     props: {
-      products: data.products,
-      productsBestSell: data.productsBestSell,
-      productsBestNew: data.productsBestNew
+      productHotSale,
+      productsBestSell,
+      productsBestNew
     },
   };
 }
 
 
-export default function Home({ products, productsBestSell, productsBestNew }) {
-
-  const productHotSale = products.filter(product => product.salesPercentage > 0)
-
-  productHotSale.sort(function (a, b) {
-    return b.salesPercentage - a.salesPercentage;
-  });
-
+export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
   const displayStars = (stars) => {
     const result = [];
     for (let index = 0; index < stars; index++) {

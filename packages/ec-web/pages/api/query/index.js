@@ -1,15 +1,5 @@
-// import {
-//     ApolloClient,
-//     InMemoryCache,
-//     HttpLink,
-//     gql
-// } from '@apollo/client';
-import { graphqlClient, gql } from '../../../helpers/apollo-client';
-import fetchgql from '../../../helpers/fetchgql';
-
-import {
-    withIronSession
-} from "next-iron-session";
+import { apolloClient, gql } from '../../../apis/clients/apolloClient';
+import { withIronSession } from "next-iron-session";
 
 async function handler(req, res) {
     if (req.method === 'POST') {
@@ -26,7 +16,13 @@ async function handler(req, res) {
                 Authorization: `Bearer ${jwt}`,
             }
 
-        const { data } = await fetchgql('query', query, variables, options);
+        const { data } = await apolloClient.query({
+            query: gql`${query}`,
+            variables,
+            context: {
+                options
+            },
+        })
 
         return res.json(data);
     } else {

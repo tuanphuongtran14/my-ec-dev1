@@ -1,25 +1,11 @@
 import Head from 'next/head'
+import Link from 'next/dist/client/link';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer'
-import { GET_ALL_ITEMS_CART } from '../../components/Checkout/queries';
+import { GET_ALL_ITEMS_CART } from '../../components/Checkout/ItemList';
 import { ApolloClient, InMemoryCache} from '@apollo/client';
+import Queries from '../../components/Checkout/ItemList';
 
-export const getStaticProps = async() =>
-{
-    const client = new ApolloClient({
-        uri: `http://localhost:1337/graphql`,
-        cache: new InMemoryCache(),
-    });
-
-    const {data } = await client.query({query: GET_ALL_ITEMS_CART});
-
-    return {
-        props: {
-            itemList: data.getCart.items,
-            total: data.getCart
-        }
-    }
-}
 
 const payment = ({itemList, total})=>
 {
@@ -38,7 +24,9 @@ const payment = ({itemList, total})=>
             <Header></Header>
             <nav class="breadcrumb breadcrumb--custom my-1">
             <div class="container px-0">
-                <a href="/" class="breadcrumb-item">Trang chủ</a>
+                <Link href="/">
+                <a class="breadcrumb-item">Trang chủ</a>
+                </Link>
                 <span class="breadcrumb-item active">Thanh toán</span>
             </div>
             </nav>
@@ -132,40 +120,16 @@ const payment = ({itemList, total})=>
                                 <input type="text" class="form-control" name="address" placeholder=""></input>
                             </div>
                         </div>
+                        <Link href="/payment">
+                     
                     <button type="button" class="btn btn-success w-100 my-3">Tiến hành thanh toán</button>
+                    </Link>
                     </div>
                 </div>
                 <div class="payment__product col-12 col-lg-4">
                     <div class=" bg-white p-3"> 
                         <h2 class="title">Chi tiết đơn hàng</h2>
-                        {itemList.map((item) =>(
-                                <div class="form-group w-100">
-                                    <div class="card text-white bg-white text-dark my-3 p-3"> 
-                                     <div class="row no-gutters"> 
-                                        <div class="col-4 item-thumbnail"> 
-                                            <img class="img-fluid"
-                                            src={process.env.NEXT_PUBLIC_API_URL + item.product.thumbnail.url}
-                                            alt=""></img>
-                                        </div>
-                                        <div class="col-8"> 
-                                            <div class="card-body py-0 pr-0"> 
-                                                <span class="card-text font-weight-bold">{item.product.name}</span>
-                                                <div class="card-text my-2 payment__quantity">
-                                                    Số lượng:
-                                                    <input class="ml-2 quantity__input" disabled="true" value={item.qty} min="0"/>
-                                                </div>
-                                                Đơn giá:<span id="price1" class="card-text item-price"> {item.amount.toLocaleString("DE-de")} VND</span> 
-                                            </div>
-                                        </div>
-                                     </div>
-                                    </div>
-                                </div>
-                            ))
-                        }
-                        <div class="d-flex justify-content-around mt-5">
-                            <span>Tổng tiền:</span>
-                            <span class="total-price">{total.finalAmount.toLocaleString("DE-de")} VND   </span>
-                        </div>
+                        <Queries></Queries>
                     </div>
                 </div>
             </div>

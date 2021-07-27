@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 
+import DropdownUser from './DropdownUser';
 export default function Header() {
     const [itemsNumber, setItemsNumber] = useState();
 
@@ -88,8 +89,6 @@ export default function Header() {
     const toggleMenuAndSearch = () => {
         let menu = document.getElementById("menu--nav");
         let menuParent = document.getElementById("navbar-menu");
-
-
         let searchBar = document.getElementById("search-bar");
         let searchBtn = document.getElementById("search-btn");
         let searchIcon = document.getElementById("search-icon");
@@ -208,8 +207,9 @@ export default function Header() {
                             </button>
                         </li>
                         <li className="menu__item">
+                          
                             <button type="button" className="text-white btn btn--no-outline">
-                                <i className="fa fa-user  fa--md" aria-hidden="true"></i>
+                                <DropdownUser></DropdownUser>
                             </button>
                         </li>
                     </ul>
