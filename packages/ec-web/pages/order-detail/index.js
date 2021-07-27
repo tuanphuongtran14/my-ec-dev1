@@ -36,6 +36,7 @@ export default function OrderDetail() {
                                   <tr>
                                       <th>Sản phẩm</th>
                                       <th>Giá</th>
+                                      <th>Trạng thái</th>
                                       <th>Số lượng</th>
                                       <th>Giảm giá</th>
                                       <th>Tạm tính</th>
@@ -53,6 +54,7 @@ export default function OrderDetail() {
                                           </div>
                                       </td>
                                       <td class="price">708.900 ₫</td>
+                                      <td>Đã giao</td>
                                       <td class="quantity">1</td>
                                       <td class="discount-amount">0 ₫</td>
                                       <td class="raw-total">708.900 ₫</td>

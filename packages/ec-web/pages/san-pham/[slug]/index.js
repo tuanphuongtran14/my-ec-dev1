@@ -9,6 +9,7 @@ import Modal from "../../../components/Modal/Modal";
 import Review from "../../../components/Review/Review";
 import axios from 'axios';
 import Flickity from "react-flickity-component";
+import { reviewApi } from "../../../apis";
 
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
@@ -101,10 +102,16 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
         }
     });
 
+    const { reviewList } = await reviewApi.getProductReviews(params.slug, {
+        useAxiosClient: false,
+        jwt,
+    });
+    console.log(reviewList);
+
     return {
         props: {
             product: data.product[0],
-            reviewList: data.reviewList,
+            reviewList: reviewList,
             isSignedIn: jwt ? true : false,
             jwt,
             params,
