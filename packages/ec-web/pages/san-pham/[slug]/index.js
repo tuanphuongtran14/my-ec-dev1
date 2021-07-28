@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import { graphqlClient, gql } from "../../../helpers/apollo-client";
@@ -990,6 +990,11 @@ export default function Product({
         }
     }, []);
 
+    const reviewTab = useRef();
+    const handleScroll = () => {
+        reviewTab.current.click();
+    };
+
     useEffect(() => {
         selectVersions('colors');
     }, []);
@@ -1009,7 +1014,7 @@ export default function Product({
             </Head>
             <Header />
 
-            <div id="root">
+            <div className="bodyIndex" id="root">
                 <article className="container product-details bg-white border">
                     <nav className="breadcrumb breadcrumb--custom mb-1">
                         <div className="container px-0">
@@ -1034,7 +1039,7 @@ export default function Product({
                                 {displayStars(overviews.average)}
                             </span>
                             <span>
-                                {overviews.total} Đánh giá | <a href>Nhận xét ngay</a>
+                                {overviews.total} Đánh giá | <a href="#menuTab" onClick={handleScroll}>Nhận xét ngay</a>
                             </span>
                         </div>
                     </section>
@@ -1146,7 +1151,7 @@ export default function Product({
                         </div>
                     </section>
                 </article>
-                <article className="container row mx-auto px-0">
+                <article className="container row mx-auto px-0" id="menuTab">
                     <div className="col-12 col-lg-8 bg-white bd-top--fake-bg px-0">
                         <div className="border">
                             <ul
@@ -1189,6 +1194,7 @@ export default function Product({
                                         role="tab"
                                         aria-controls="pills-reviews"
                                         aria-selected="false"
+                                        ref={reviewTab}
                                     >
                                         Đánh giá
                                     </a>
