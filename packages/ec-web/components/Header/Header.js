@@ -266,6 +266,9 @@ export default function Header() {
                 </form>
                 <div id="overlaybody"></div>
             </div>
+            <a href="#" className="goTopBtn border" id="backToTopID">
+                <i class="fas fa-angle-up fa-lg"></i>
+            </a>
         </>
     )
 }
