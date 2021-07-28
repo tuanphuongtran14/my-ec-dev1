@@ -177,9 +177,8 @@ module.exports = {
                   "$lookup": {
                     "from": "ordered_items",
                     "let": { "itemIds": "$items" },
-                    "pipeline": [
+                    "pipeline": [ 
                       { "$match": { "$expr": { "$in": ["$_id", "$$itemIds"] } } },
-
                       // Get cart's items product information by joining with order-items table
                       { 
                         "$lookup": {
@@ -264,6 +263,9 @@ module.exports = {
                       "totalAmount": { "$sum": "$items.amount" }
                 }},
             ]);
+
+        console.log(userId);
+        console.log(cart);
         
         // Calc final price of user's cart
         cart.couponIsValid = true;

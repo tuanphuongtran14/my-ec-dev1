@@ -22,7 +22,7 @@ export async function getServerSideProps() {
 
 export default function Category({ products }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(25);
+    const [productsPerPage] = useState(15);
     const [filter, setFilter] = useState({
         brand: "0",
         price: "0",
@@ -80,18 +80,18 @@ export default function Category({ products }) {
                 <link rel="stylesheet" href="./css/style.css" />
             </Head>
             <Header></Header>
-            <body id="body">
+            <body className="bodyIndex" id="body">
                 <div id="root">
                     <Banner />
                     <div className="container">
                         <div className="bg-white mb-5 filter p-3 border">
-                            <div className="d-block py-3">
-                                <select className="filter__option mr-2 my-2" onChange={handleFilterBrand}>
+                            <div className="d-block py-3 row container-fluid">
+                                <select className="filter__option mr-2 my-2 col-3" onChange={handleFilterBrand}>
                                     <option value="0" selected>Hãng...</option>
                                     {brandName}
                                 </select>
 
-                                <select className="filter__option mr-2 my-2" onChange={handleFilterPrice}>
+                                <select className="filter__option mr-2 my-2 col-3" onChange={handleFilterPrice}>
                                     <option value="0" selected>Giá...</option>
                                     <option value="duoi-5-trieu">Dưới 5 triệu</option>
                                     <option value="tu-5-den-10-trieu">Từ 5 đến 10 triệu</option>
@@ -99,14 +99,14 @@ export default function Category({ products }) {
                                     <option value="tren-15-trieu">Trên 15 triệu</option>
                                 </select>
 
-                                <select className="filter__option mr-2 my-2" onChange={handleFilterRam}>
+                                <select className="filter__option mr-2 my-2 col-2" onChange={handleFilterRam}>
                                     <option value="0" selected>Ram...</option>
                                     <option value="duoi-4">Dưới 4 GB</option>
                                     <option value="4-den-6">4 - 6 GB</option>
                                     <option value="tren-8">8 GB trở lên</option>
 
                                 </select>
-                                <select className="filter__option mr-2 my-2" onChange={handleFilterRom}>
+                                <select className="filter__option mr-2 my-2 col-3" onChange={handleFilterRom}>
                                     <option value="0" selected>Bộ nhớ trong...</option>
                                     <option value="duoi-32">Dưới 32 GB</option>
                                     <option value="32-den-64">32 - 64 GB</option>

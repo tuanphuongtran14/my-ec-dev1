@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import { graphqlClient, gql } from "../../../helpers/apollo-client";
@@ -9,106 +9,29 @@ import Modal from "../../../components/Modal/Modal";
 import Review from "../../../components/Review/Review";
 import axios from 'axios';
 import Flickity from "react-flickity-component";
+import { productApi, reviewApi } from '../../../apis';
 
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
-    const client = graphqlClient(jwt);
-
-    const { data } = await client.query({
-        query: gql`
-        query($filter: ProductFilter!, $slug: String!) {
-            relatedProducts: findRelatedBySlug(slug: $slug){
-                id,
-                name,
-                slug,
-                thumbnail{
-                    url
-                }
-                regularPrice,
-                finalPrice,
-                salesPercentage
-            }
-            product: searchProducts(filter: $filter) {
-                _id
-                name
-                salesPercentage
-                slug
-                regularPrice
-                finalPrice
-                id
-                ram
-                thumbnail {
-                    url
-                }
-                fullDesc
-                condition
-                warranty
-                inclusionBox
-                promotion
-                height
-                width
-                depth
-                platformName
-                platformVersion
-                screenSize
-                screenPanel
-                screenResolution
-                cpu
-                gpu
-                options {
-                    images {
-                        url
-                    }
-                    color,
-                }
-            }
-            reviewList: getReviewsByProductSlug(slug: $slug) {
-                reviews {
-                    _id
-                    user {
-                        username
-                    }
-                    comment
-                    stars
-                    createdAt
-                }
-                userReview {
-                    _id
-                    user {
-                        username
-                    }
-                    comment
-                    stars
-                    createdAt
-                }
-                overviews {
-                    oneStar
-                    twoStar
-                    threeStar
-                    fourStar
-                    fiveStar
-                    total,
-                    average
-                }
-            }
-        }`,
-        variables: {
-            "filter": {
-                "slug": `${params.slug}`
-            },
-            "slug": `${params.slug}`
-        }
+    const { product, relatedProducts, reviewList } = await productApi.getForProductPage(params.slug, {
+        useAxiosClient: false,
+        jwt,
     });
+
+    const { reviewList } = await reviewApi.getProductReviews(params.slug, {
+        useAxiosClient: false,
+        jwt,
+    });
+    console.log(reviewList);
 
     return {
         props: {
-            product: data.product[0],
-            reviewList: data.reviewList,
+            product: product[0],
+            reviewList: reviewList,
             isSignedIn: jwt ? true : false,
-            jwt,
-            params,
-            relatedProducts: data.relatedProducts
+            slug: params.slug,
+            relatedProducts: relatedProducts
         },
     };
 });
@@ -117,8 +40,7 @@ export default function Product({
     product,
     reviewList,
     isSignedIn,
-    jwt,
-    params,
+    slug,
     relatedProducts
 }) {
     const [stars, setStars] = useState(5);
@@ -399,10 +321,10 @@ export default function Product({
                 {(displayNumber < reviewList.reviews.length) ? (
                     <p className="text-center">
                         <button type="button" class="btn btn-success mt-3" onClick={loadMore}>Tải thêm...</button>
-                    </p>) : (
+                    </p>) : ""}
+                {(reviewList.reviews.length === 0) ? (
                     <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này</p>
-                )
-                }
+                ) : ""}
             </>
         )
     }
@@ -525,65 +447,15 @@ export default function Product({
         );
     }
 
-    const refreshReviews = async slug => {
+    const refreshReviews = async () => {
         try {
             // Declare query & its variables
-            const query = `
-                query($slug: String!) {
-                    reviewList: getReviewsByProductSlug(slug: $slug) {
-                        reviews {
-                            _id
-                            user {
-                                username
-                            }
-                            comment
-                            stars
-                            createdAt
-                        }
-                        userReview {
-                            _id
-                            user {
-                                username
-                            }
-                            comment
-                            stars
-                            createdAt
-                        }
-                        overviews {
-                            oneStar
-                            twoStar
-                            threeStar
-                            fourStar
-                            fiveStar
-                            total
-                            average
-                        }
-                    }
-                }
-            `;
-
-            const variables = {
-                filter: {
-                    slug
-                },
-                slug
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/query',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    query,
-                    variables
-                },
-            });
-
-            setReviews(data.reviewList.reviews);
-            setUserReview(data.reviewList.userReview);
-            setOverviews(data.reviewList.overviews);
+            const { reviewList } = await reviewApi.getProductReviews(slug);
+            setReviews([]);
+            setUserReview(null);
+            setReviews(reviewList.reviews);
+            setUserReview(reviewList.userReview);
+            setOverviews(reviewList.overviews);
 
             return true;
 
@@ -591,111 +463,6 @@ export default function Product({
             return false;
         }
     }
-
-    const createReview = async (comment, stars) => {
-        try {
-            const mutation = `
-                mutation($input: createProductReviewInput!) {
-                    newReview: createReviewForProduct(
-                        createReviewInput: $input
-                    ) {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                }
-            `;
-
-            const variables = {
-                input: {
-                    productSlug: `${params.slug}`,
-                    comment,
-                    stars,
-                },
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            return data.newReview;
-        } catch {
-            return undefined;
-        }
-    };
-
-    const editReview = async (reviewId, comment, stars) => {
-        const editReviewInput = {};
-
-        if (comment) editReviewInput.comment = comment;
-
-        if (stars) editReviewInput.stars = stars;
-
-        const client = graphqlClient(jwt);
-
-        const { data } = await client.mutate({
-            mutation: gql`
-                mutation($reviewId: ID!, $editReviewInput: editReviewInput!) {
-                    review: editReviewById(
-                        reviewId: $reviewId
-                        editReviewInput: $editReviewInput
-                    ) {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                }
-            `,
-            variables: {
-                reviewId: reviewId,
-                editReviewInput: editReviewInput,
-            },
-        });
-
-        return data.review;
-    };
-
-    const deleteReview = async (reviewId) => {
-        const client = graphqlClient(jwt);
-
-        const { data } = await client.mutate({
-            mutation: gql`
-                mutation($reviewId: ID!) {
-                    deletedReview: deleteReviewById(reviewId: $reviewId) {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                }
-            `,
-            variables: {
-                reviewId: reviewId,
-            },
-        });
-
-        return data.deletedReview;
-    };
-
     const handleSubmitCreateReview = async (e) => {
         e.preventDefault();
         const comment = document.getElementById("comment").value;
@@ -711,14 +478,12 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const newReview = await createReview(comment, stars);
+            const { newReview } = await reviewApi.createReview(slug, comment, stars);
 
-            await refreshReviews(params.slug);
+            await refreshReviews();
 
             btnEle.removeAttribute("disabled");
-            btnEle.innerHTML = `
-                Gửi ngay 
-            `;
+            btnEle.innerHTML = "Gửi ngay";
 
             if (!newReview) return alert("Có lỗi xảy ra, vui lòng thử lại sau");
 
@@ -730,7 +495,7 @@ export default function Product({
         }
     };
 
-    const handleSubmitDeleteReview = async (e) => {
+    const handleSubmitDeleteReview = async e => {
         e.preventDefault();
         const modal = document.getElementById("deleteConfirm");
         const yesBtn = modal.querySelector("#yesBtn");
@@ -742,11 +507,11 @@ export default function Product({
                 Đang xóa... 
             `;
 
-            const deletedReview = await deleteReview(userReview._id);
+            const { deletedReview } = await reviewApi.deleteReview(userReview._id);
 
             if (deletedReview) {
                 $(`#deleteConfirm`).modal("hide");
-                await refreshReviews(params.slug);
+                await refreshReviews();
                 setStars(5);
             }
 
@@ -760,7 +525,7 @@ export default function Product({
         }
     };
 
-    const handleSubmitEditReview = async (e) => {
+    const handleSubmitEditReview = async e => {
         e.preventDefault();
         const comment = document.getElementById("comment").value;
         const btnEle = document.getElementById("editReviewBtn");
@@ -775,9 +540,9 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const review = await editReview(userReview._id, comment, stars);
+            const { review } = await reviewApi.editReview(userReview._id, comment, stars);
 
-            await refreshReviews(params.slug);
+            await refreshReviews();
 
             btnEle.removeAttribute("disabled");
             btnEle.innerHTML = `
@@ -826,7 +591,7 @@ export default function Product({
             `;
 
             const variables = {
-                slug: `${params.slug}`,
+                slug: `${slug}`,
                 sort: [value],
             };
 
@@ -983,6 +748,11 @@ export default function Product({
         }
     }, []);
 
+    const reviewTab = useRef();
+    const handleScroll = () => {
+        reviewTab.current.click();
+    };
+
     useEffect(() => {
         selectVersions('colors');
     }, []);
@@ -1002,7 +772,7 @@ export default function Product({
             </Head>
             <Header />
 
-            <div id="root">
+            <div className="bodyIndex" id="root">
                 <article className="container product-details bg-white border">
                     <nav className="breadcrumb breadcrumb--custom mb-1">
                         <div className="container px-0">
@@ -1027,7 +797,7 @@ export default function Product({
                                 {displayStars(overviews.average)}
                             </span>
                             <span>
-                                {overviews.total} Đánh giá | <a href>Nhận xét ngay</a>
+                                {overviews.total} Đánh giá | <a href="#menuTab" onClick={handleScroll}>Nhận xét ngay</a>
                             </span>
                         </div>
                     </section>
@@ -1139,9 +909,9 @@ export default function Product({
                         </div>
                     </section>
                 </article>
-                <article className="container row mx-auto px-0">
+                <article className="container row mx-auto px-0" id="menuTab">
                     <div className="col-12 col-lg-8 bg-white bd-top--fake-bg px-0">
-                        <div className="border">
+                        <div>
                             <ul
                                 className="nav--custom nav nav-pills my-2"
                                 id="pills-tab"
@@ -1182,6 +952,7 @@ export default function Product({
                                         role="tab"
                                         aria-controls="pills-reviews"
                                         aria-selected="false"
+                                        ref={reviewTab}
                                     >
                                         Đánh giá
                                     </a>
@@ -1356,66 +1127,4 @@ export default function Product({
             ></script>
         </>
     );
-}
-
-const refreshReviews = async slug => {
-    try {
-        // Declare query & its variables
-        const query = `
-            query($slug: String!) {
-                reviewList: getReviewsByProductSlug(slug: $slug) {
-                    reviews {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                    userReview {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                    overviews {
-                        oneStar
-                        twoStar
-                        threeStar
-                        fourStar
-                        fiveStar
-                        total
-                    }
-                }
-            }
-        `;
-
-        const variables = {
-            filter: {
-                slug
-            },
-            slug
-        };
-
-        const { data } = await axios({
-            method: 'POST',
-            url: '/api/query',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: {
-                query,
-                variables
-            },
-        });
-
-        return data.reviewList;
-
-    } catch {
-        return null;
-    }
 }

@@ -3,6 +3,8 @@ import Header from "../../components/Header/Header";
 import Banner from "../../components/Banner/Banner";
 import Footer from "../../components/Footer/Footer";
 import Head from "next/head";
+import ItemList  from "../../components/Checkout/ItemList";
+import Link from "next/link";
 
 export default function Login() {
 
@@ -241,52 +243,15 @@ export default function Login() {
                                 </div>
                             </div>
                         </div>
-                        <button type="button" className="btn btn-success w-100 my-3">Xác nhận đơn hàng</button>
+                        <Link href="/payment/success">
+                            <button type="button" className="btn btn-success w-100 my-3">Xác nhận đơn hàng</button>
+                        </Link>
                     </div>
                 </div>
                 <div className="payment__product col-12 col-lg-4">
                     <div className=" bg-white p-3">
                         <h2 className="title">Chi tiết đơn hàng</h2>
-                        <div className="form-group w-100">
-                            <div className="card text-white bg-white text-dark my-3 p-3">
-                                <div className="row no-gutters" style={{ height: '160px' }}>
-                                    <div className="col-4 item-thumbnail">
-                                        <img className="img-fluid" src="img/products/thumb_IP12Pro_VN_1-300x300.jpg" alt="" />
-                                    </div>
-                                    <div className="col-8">
-                                        <div className="card-body py-0 pr-0">
-                                            <span className="card-text font-weight-bold">Apple iPhone 12 Pro 128GB Chính hãng VN/A0</span>
-                                            <div className="card-text my-2 payment__quantity">
-                                                Số lượng:
-                                                <input type="number" className="ml-2 quantity__input" defaultValue={1} min={0} />
-                                            </div>
-                                            Đơn giá:<span className="card-text item-price" id="giatien"> 0₫</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card text-white bg-white text-dark my-3 p-3">
-                                <div className="row no-gutters" style={{ height: '160px' }}>
-                                    <div className="col-4 item-thumbnail">
-                                        <img className="img-fluid" src="img/products/thumb_11-ProMAX_2-300x300.jpg" alt="" />
-                                    </div>
-                                    <div className="col-8">
-                                        <div className="card-body py-0 pr-0">
-                                            <span className="card-text font-weight-bold">Apple iPhone 11 Pro MAX 64GB cũ 99%</span>
-                                            <div className="card-text my-2 payment__quantity">
-                                                Số lượng:
-                                                <input type="number" className="ml-2 quantity__input" defaultValue={1} min={0} />
-                                            </div>
-                                            Đơn giá:<span id="price1" className="card-text item-price"> 8.990.000₫</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="d-flex justify-content-around mt-5">
-                                <span>Tổng tiền</span>
-                                <span className="total-price">29.750.000 VND</span>
-                            </div>
-                        </div>
+                        <ItemList></ItemList>
                     </div>
                 </div>
             </div>

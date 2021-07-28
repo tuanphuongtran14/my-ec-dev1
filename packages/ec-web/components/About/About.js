@@ -2,17 +2,17 @@ import React from 'react'
 
 const About = () => {
     return (
-        <div>
-            <div class="tab">
-                <ul class="tab__list">
-                    <li class="active">
+        <div className="container" style={{backgroundColor:"#fff",marginTop:"-30px"}}>
+            <div className="tab">
+                <ul className="tab__list">
+                    <li className="active">
                         <a href="/cong-ty/gioi-thieu-chung">Giới thiệu chung</a>
                     </li>
                 </ul>
             </div>
 
-            <div class="showtab">
-                <div class="box01">
+            <div className="showtab">
+                <div className="box01">
                     <p>
                         <span><b>Công ty Cổ phần Đầu tư DVR </b></span>DVR là nhà bán lẻ số 1 Việt Nam về doanh thu và lợi nhuận,DVR với mạng lưới hơn 4.500 cửa hàng trên toàn quốc. vận hành các chuỗi bán lẻ DVR.com
                     </p>
@@ -35,16 +35,16 @@ const About = () => {
                     </ul>
                 </div>
 
-                <div class="box02">
-                    <div class="block tgdd">
-                        <div class="block__top">
-                            <div class="main-img">
-                                <img class="lazy" src="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" data-original="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" />
+                <div className="box02">
+                    <div className="block tgdd">
+                        <div className="block__top">
+                            <div className="main-img">
+                                <img className="lazy" src="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" data-original="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" />
                             </div>
-                            <div class="main-text">
-                                <div class="main-text-ct">
+                            <div className="main-text">
+                                <div className="main-text-ct">
                                     <div>
-                                        <span class="sitename">DVR.com </span>
+                                        <span className="sitename">DVR.com </span>
                                         <p>
                                             được thành lập từ năm 20021, là chuỗi bán lẻ <b>thiết bị di động</b> (điện thoại di động, máy tính bảng, laptop và phụ kiện) có <b>thị phần số 10 Việt Nam</b> với hơn 2.500 điểm bán thiết bị di động (bao gồm
                                             gần 1.000 cửa hàng Di Động ) hiện diện tại 63 tỉnh thành trên khắp Việt Nam.<br />
@@ -53,41 +53,41 @@ const About = () => {
                                 </div>
                             </div>
                         </div>
-                        <ul class="block__number">
+                        <ul className="block__number">
                             <li>
-                                <i class="icon-store"></i>
-                                <div class="li-txt">
-                                    <p class="txt01">2.173</p>
-                                    <p class="txt02">
+                                <i className="icon-store"></i>
+                                <div className="li-txt">
+                                    <p className="txt01">2.173</p>
+                                    <p className="txt02">
                                         CỬA HÀNG TRÊN<br />
                                         TOÀN QUỐC
                                     </p>
                                 </div>
                             </li>
                             <li>
-                                <i class="icon-people"></i>
-                                <div class="li-txt">
-                                    <p class="txt01">520.000</p>
-                                    <p class="txt02">
+                                <i className="icon-people"></i>
+                                <div className="li-txt">
+                                    <p className="txt01">520.000</p>
+                                    <p className="txt02">
                                         KHÁCH ĐƯỢC<br />
                                         PHỤC VỤ MỖI NGÀY
                                     </p>
                                 </div>
                             </li>
                             <li>
-                                <i class="icon-time"></i>
-                                <div class="li-txt">
-                                    <p class="txt01">08:00 - 22:00</p>
-                                    <p class="txt02">
+                                <i className="icon-time"></i>
+                                <div className="li-txt">
+                                    <p className="txt01">08:00 - 22:00</p>
+                                    <p className="txt02">
                                         KỂ CẢ CHỦ NHẬT &<br />
                                         NGÀY LỄ
                                     </p>
                                 </div>
                             </li>
                         </ul>
-                        <div class="block__website">
-                            <a href="https://www.thegioididong.com" class="block__website__item" target="_blank">
-                                <i class="icon-website"></i>
+                        <div className="block__website">
+                            <a href="https://www.thegioididong.com" className="block__website__item" target="_blank">
+                                <i className="icon-website"></i>
                                 Website: <span>www.DVR.com</span>
                             </a>
                         </div>

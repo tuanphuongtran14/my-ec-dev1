@@ -1,88 +1,221 @@
 import React from "react";
-
-export default function Wishlist({
-    wishLists,
-    isSignedIn,
-    jwt,
-    params,
-    // products,
-}) {
+import Router from 'next/router'
+import { useState,useEffect } from "react";
+import { graphqlClient, gql } from "../../helpers/apollo-client";
+import Modal from "../../components/Modal/Modal";
+export default function Wishlist({ currentProducts, jwt }) {
   
-    return wishLists.products.map(product=>{
-        
-      const image = product.thumbnail.url;
-      const name = product.name;
-      const price = product.finalPrice;
-      let status = "" ;
-      if (product.options[0].quantityInStock === 0 )
-        status = "Hết hàng";
-      else 
-        status = "Còn hàng";
-      return (
-        <div>
-          <nav aria-label="breadcrumb">
-            <ol className="breadcrumb mb-0">
-            <div className="grid wide d-flex">
-                    <li className="breadcrumb-item">
-                        <h6>Home</h6>
-                    </li>
-                    <li className="breadcrumb-item">
-                        <h6>Wishlist</h6>
-                    </li>
-                  </div>
-            </ol>
-          </nav>
-          <div className="wishlist">
-            <div className="wishlist-row grid wide">
-              <div className="row wishlist-row-f8-header">
-                <div className="col l-4 md-6 c-6">
-                  <h5>Tên sản phẩm</h5>
-                </div>
-                <div className="col l-2 md-3 c-0">
-                  <h5>Giá</h5>
-                </div>
-                <div className="col l-2 md-3 c-0">
-                  <h5>Trạng thái</h5>
-                </div>
-                <div className="col l-4 md-0 c-0">
-                  <h5>Chỉnh Sửa</h5>
-                </div>
-              </div>
-              <div className="row wishlist-row-item mb-2">
-                <div className="col l-4 wishlist-item md-6 c-6 d-flex">
-                  <div>
-                    <img
-                      src={process.env.NEXT_PUBLIC_API_URL+image}
-                      alt={name}
-                      className="wishlist-item_img"
-                    />
-                  </div>
-                  <div>
-                    <span className="wishlist-item_text">
-                      {name}
-                    </span>
-                  </div>
-                </div>
-                <div className="col l-2 md-3 c-3">
-                  <span>{price}</span>
-                </div>
-                <div className="col l-2 md-3 c-3">
-                  <span>{status}</span>
-                </div>
-                <div className="col c-o-4 l-4 md-o-4">
-                  <button type="button" className="btn btn-outline-danger">
-                    Xóa
-                  </button>
-                  <button type="button" className="btn btn-outline-info ml-2">
-                    Thêm vào giỏ hàng
-                  </button>
-                </div>
-              </div>
+  const [refreshProducts, setRefreshProducts] = useState(currentProducts);
+  
+  const refreshWishList = async () =>{
+    alert('chay roi')
+    try{ const client = graphqlClient(jwt);
+    
+    const {data} = await client.query({
+        query: gql`
+        query {
+            wishLists:
+            getWishLists {
+              products {
+                id,
+                name,
+                thumbnail{
+                  url
+                }
+                finalPrice
+                options{
+                  quantityInStock
+                }
+                
+              }
+            }
+          }
           
-              
-              </div>
-            </div>
+          `,
+    });
+    console.log(data)
+    setRefreshProducts([])
+    setRefreshProducts(data.wishLists.products)
+    return true
+  }
+  catch{
+      return false 
+    }
+  }
+  
+  const deleteWishList = async (productId) => {
+    const client = graphqlClient(jwt);
+
+    const { dataDeleted } = await client.mutate({
+      mutation: gql`
+        mutation removeItemsInWishList($productId: ID!) {
+          removeItemsInWishList(productId: $productId) {
+            user {
+              username
+            }
+            products {
+              id
+              name
+              finalPrice
+            }
+          }
+        }
+      `,
+      variables: {
+        productId: productId,
+      },
+    });
+
+    return dataDeleted ? true: false;
+  };
+  
+  return refreshProducts.map((product) => {
+    const id = product.id;
+    const image = product.thumbnail.url;
+    const name = product.name;
+    const price = product.finalPrice.toLocaleString("DE-de");
+    let status = "";
+    if (product.options[0].quantityInStock === 0) status = "Hết hàng";
+    else status = "Còn hàng";
+
+    /*************************  remove product from wishList *******************************************/
+    const handleSubmitDeleteWishList = async () => {
+      // e.preventDefault();
+      const modal = document.getElementById("deleteConfirm");
+      const yesBtn = modal.querySelector("#yesBtn");
+  
+      try {
+        yesBtn.setAttribute("disabled", true);
+        yesBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Đang xóa... 
+        `;
+  
+        const deleteWishList1 = await deleteWishList(id);
+  
+        if (deleteWishList1) {
+      //    $(`#deleteConfirm`).modal("hide");
+          alert("alo alo")
+          console.log("alo alo")
+          await refreshWishList()
+          
+        }
+  
+        yesBtn.removeAttribute("disabled");
+        yesBtn.innerHTML = "Đồng ý";
+      } catch (error) {
+        yesBtn.removeAttribute("disabled");
+        yesBtn.innerHTML = `
+            Đồng ý 
+        `;
+      }
+    };
+
+   /*************************   Add product to cart *******************************************/
+    const addToCart = async () => {
+      try {
+          const btnEle = document.getElementById("addToCartBtn");
+          btnEle.setAttribute("disabled", true);
+          btnEle.innerHTML = `
+              <span class="spinner-border spinner-border-sm"></span>
+              &nbsp; Thêm vào giỏ hàng
+          `;
+
+          const mutation = `
+              mutation($cartId: ID!, $newItem: CartItemInput!) {
+                  cart: addItemToCart(
+                      cartId: $cartId,
+                      newItem: $newItem
+                  ) {
+                      _id
+                      items {
+                          _id
+                      }
+                  }
+              }
+          `;
+
+          const variables = {
+              cartId: localStorage.getItem("cartId"),
+              newItem: {
+                  product: product._id,
+                  qty: 1,
+                  color: selectedColor
+              }
+          };
+
+          const { data } = await axios({
+              method: 'POST',
+              url: '/api/mutation',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              data: {
+                  mutation,
+                  variables
+              },
+          });
+
+          localStorage.setItem("cartId", data.cart._id);
+          localStorage.setItem('cartItems', data.cart.items.length);
+          setReload(data.cart.items.length);
+
+          btnEle.removeAttribute("disabled");
+          btnEle.innerHTML = `
+              <i class="fa fa-cart-plus" aria-hidden="true"></i>
+              &nbsp; Thêm vào giỏ hàng
+          `;
+
+      } catch (error) {
+          console.log(error);
+      }
+  }
+    return (
+      <div
+        key={id}
+        className="container rounded shadow row wishlist-row-item mt-2 mb-3 ml-2 pt-2 pb-2 text-center"
+      >
+        <div className="col l-4 wishlist-item md-6 c-6 d-flex">
+          <div>
+            <img
+              src={process.env.NEXT_PUBLIC_API_URL + image}
+              alt={name}
+              className="wishlist-item_img"
+            />
           </div>
-      );
-      })
+          <div>
+            <span className="wishlist-item_text">{name}</span>
+          </div>
+        </div>
+        <div className="col l-2 md-3 c-3 d-flex align-items-center justify-content-center">
+          <span>{price} VND</span>
+        </div>
+        <div className="col l-2 md-3 c-3 d-flex align-items-center justify-content-center">
+          <span>{status}</span>
+        </div>
+        <div className="col c-o-4 l-4 md-o-4 d-flex align-items-center justify-content-center">
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={() => {
+              $(`#deleteConfirm`).modal();
+            }}
+          >
+            Xóa
+          </button>
+          <Modal
+            id="deleteConfirm"
+            title="Bạn có chắc muốn xóa sản phẩm này ra khỏi sản phẩm yêu thích của bạn không?"
+            body="Sản phẩm này sau khi xóa sẽ không thể khôi phục được. Bạn có chắc muốn thực hiện điều này?"
+            confirmStyle="danger"
+            cancelStyle="secondary"
+            callback={handleSubmitDeleteWishList}
+          />
+          <button type="button" className="btn btn-outline-info ml-2"id="addToCartBtn" onClick={addToCart}>
+            Thêm vào giỏ hàng
+          </button>
+        </div>
+      </div>
+    );
+  });
 }
