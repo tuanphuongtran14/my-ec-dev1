@@ -1,8 +1,6 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
-import { graphqlClient, gql } from "../../helpers/apollo-client";
-import { useAuth } from "../../helpers/auth";
 import axios from "axios";
 
 function classNames(...classes) {
@@ -43,7 +41,9 @@ export default function DropdownUser() {
             } catch {
                 return false;
             }
-        });
+        },
+        []
+        );
         if (user) {
             return (
                 <Menu as="div" className="relative inline-block text-left">

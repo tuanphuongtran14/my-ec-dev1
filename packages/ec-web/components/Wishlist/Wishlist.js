@@ -8,7 +8,8 @@ export default function Wishlist({ currentProducts, jwt }) {
   const [refreshProducts, setRefreshProducts] = useState(currentProducts);
   
   const refreshWishList = async () =>{
-   try{ const client = graphqlClient(jwt);
+    alert('chay roi')
+    try{ const client = graphqlClient(jwt);
     
     const {data} = await client.query({
         query: gql`
@@ -32,11 +33,9 @@ export default function Wishlist({ currentProducts, jwt }) {
           
           `,
     });
-    useEffect(() => {
-      setRefreshProducts(data.wishLists.products)
-      
-    }, [refreshProducts])
-   
+    console.log(data)
+    setRefreshProducts([])
+    setRefreshProducts(data.wishLists.products)
     return true
   }
   catch{
@@ -95,8 +94,10 @@ export default function Wishlist({ currentProducts, jwt }) {
         const deleteWishList1 = await deleteWishList(id);
   
         if (deleteWishList1) {
-          $(`#deleteConfirm`).modal("hide");
-          refreshWishList()
+      //    $(`#deleteConfirm`).modal("hide");
+          alert("alo alo")
+          console.log("alo alo")
+          await refreshWishList()
           
         }
   
