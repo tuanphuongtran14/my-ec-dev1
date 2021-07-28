@@ -13,7 +13,7 @@
   "pluginOptions": {},
   "attributes": {
     "user": {
-      "autoPopulate": true,
+      "via": "wish_list",
       "plugin": "users-permissions",
       "model": "user",
       "via": "wish_list"

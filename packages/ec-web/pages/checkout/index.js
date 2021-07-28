@@ -5,10 +5,18 @@ import Footer from '../../components/Footer/Footer'
 import { GET_ALL_ITEMS_CART } from '../../components/Checkout/ItemList';
 import { ApolloClient, InMemoryCache} from '@apollo/client';
 import Queries from '../../components/Checkout/ItemList';
+import { useAuth } from "../../helpers/auth";
 
+// export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+//     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
+//     return {
+//         props: 
+//     }
+// });
 
 const payment = ({itemList, total})=>
 {
+    // if(isSignedIn)
     return (
         <div>
             <Head>

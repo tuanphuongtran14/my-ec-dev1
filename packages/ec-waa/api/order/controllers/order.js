@@ -79,6 +79,10 @@ module.exports = {
                         idItemToKeep.push(item._id);
                     }
                 });
+                
+                // If user's cart is not exist or has no items, throw an error
+                if(idItemToBuy.length < 1) 
+                    throw new Error('Cannot checkout because no selected item in your cart');
 
                 // Create order
                 const order = await strapi.query('order').create({
@@ -96,7 +100,8 @@ module.exports = {
                     paymentMethod,
                     user: userId,
                     coupon: userCart.coupon,
-                    itemDetails: itemToBuy
+                    itemDetails: itemToBuy,
+                    orderId: Date.now(),
                 });
                 
                 // After creating order, remove items that is bought from cart
