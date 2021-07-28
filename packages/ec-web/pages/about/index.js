@@ -9,7 +9,7 @@ const index = () => {
     return (
         <>
             <Head>
-                <title>Tin Tức</title>
+                <title>Về Chúng Tôi</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <link rel="stylesheet" href="./css/about.css"/>
             </Head>
