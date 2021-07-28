@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import { graphqlClient, gql } from "../../../helpers/apollo-client";
@@ -9,105 +9,23 @@ import Modal from "../../../components/Modal/Modal";
 import Review from "../../../components/Review/Review";
 import axios from 'axios';
 import Flickity from "react-flickity-component";
+import { productApi, reviewApi } from '../../../apis';
 
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
-    const client = graphqlClient(jwt);
-
-    const { data } = await client.query({
-        query: gql`
-        query($filter: ProductFilter!, $slug: String!) {
-            relatedProducts: findRelatedBySlug(slug: $slug){
-                id,
-                name,
-                slug,
-                thumbnail{
-                    url
-                }
-                regularPrice,
-                finalPrice,
-                salesPercentage
-            }
-            product: searchProducts(filter: $filter) {
-                _id
-                name
-                salesPercentage
-                slug
-                regularPrice
-                finalPrice
-                id
-                ram
-                thumbnail {
-                    url
-                }
-                fullDesc
-                condition
-                warranty
-                inclusionBox
-                height
-                width
-                depth
-                platformName
-                platformVersion
-                screenSize
-                screenPanel
-                screenResolution
-                cpu
-                gpu
-                options {
-                    images {
-                        url
-                    }
-                    color,
-                }
-            }
-            reviewList: getReviewsByProductSlug(slug: $slug) {
-                reviews {
-                    _id
-                    user {
-                        username
-                    }
-                    comment
-                    stars
-                    createdAt
-                }
-                userReview {
-                    _id
-                    user {
-                        username
-                    }
-                    comment
-                    stars
-                    createdAt
-                }
-                overviews {
-                    oneStar
-                    twoStar
-                    threeStar
-                    fourStar
-                    fiveStar
-                    total,
-                    average
-                }
-            }
-        }`,
-        variables: {
-            "filter": {
-                "slug": `${params.slug}`
-            },
-            "slug": `${params.slug}`
-        }
+    const { product, relatedProducts, reviewList } = await productApi.getForProductPage(params.slug, {
+        useAxiosClient: false,
+        jwt,
     });
 
     return {
         props: {
-            product: data.product[0],
-            reviewList: data.reviewList,
+            product: product[0],
+            reviewList: reviewList,
             isSignedIn: jwt ? true : false,
-            jwt,
-            params,
-            relatedProducts: data.relatedProducts
+            slug: params.slug,
+            relatedProducts: relatedProducts
         },
     };
 });
@@ -116,8 +34,7 @@ export default function Product({
     product,
     reviewList,
     isSignedIn,
-    jwt,
-    params,
+    slug,
     relatedProducts
 }) {
     const [stars, setStars] = useState(5);
@@ -239,7 +156,7 @@ export default function Product({
         if (product.options) {
             return product.options.map((option, index) => {
                 return (
-                    <div 
+                    <div
                         className={index === 0 ? "version active" : "version"}
                         onClick={() => setSelectedColor(option.color)}
                     >
@@ -398,17 +315,17 @@ export default function Product({
                 {(displayNumber < reviewList.reviews.length) ? (
                     <p className="text-center">
                         <button type="button" class="btn btn-success mt-3" onClick={loadMore}>Tải thêm...</button>
-                    </p>) : (
-                        <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này</p>
-                    )
-                }
+                    </p>) : ""}
+                {(reviewList.reviews.length === 0) ? (
+                    <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này</p>
+                ) : ""}
             </>
         )
     }
 
     const displayOverviews = () => {
         let oneStarPercentage = 0, twoStarPercentage = 0, threeStarPercentage = 0, fourStarPercentage = 0, fiveStarPercentage = 0;
-        if(overviews.total) {
+        if (overviews.total) {
             oneStarPercentage = ((overviews.oneStar / overviews.total) * 100).toFixed(2);
             twoStarPercentage = ((overviews.twoStar / overviews.total) * 100).toFixed(2);
             threeStarPercentage = ((overviews.threeStar / overviews.total) * 100).toFixed(2);
@@ -422,7 +339,7 @@ export default function Product({
                         {overviews.average}/5
                     </span>
                     <span className="rating-result">
-                        { displayStars(overviews.average) }
+                        {displayStars(overviews.average)}
                     </span>
                     <span className="overviews__quantity-reviews mt-1">
                         {overviews.total} Đánh giá
@@ -524,65 +441,15 @@ export default function Product({
         );
     }
 
-    const refreshReviews = async slug => {
+    const refreshReviews = async () => {
         try {
             // Declare query & its variables
-            const query = `
-                query($slug: String!) {
-                    reviewList: getReviewsByProductSlug(slug: $slug) {
-                        reviews {
-                            _id
-                            user {
-                                username
-                            }
-                            comment
-                            stars
-                            createdAt
-                        }
-                        userReview {
-                            _id
-                            user {
-                                username
-                            }
-                            comment
-                            stars
-                            createdAt
-                        }
-                        overviews {
-                            oneStar
-                            twoStar
-                            threeStar
-                            fourStar
-                            fiveStar
-                            total
-                            average
-                        }
-                    }
-                }
-            `;
-
-            const variables = {
-                filter: {
-                    slug
-                },
-                slug
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/query',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    query,
-                    variables
-                },
-            });
-
-            setReviews(data.reviewList.reviews);
-            setUserReview(data.reviewList.userReview);
-            setOverviews(data.reviewList.overviews);
+            const { reviewList } = await reviewApi.getProductReviews(slug);
+            setReviews([]);
+            setUserReview(null);
+            setReviews(reviewList.reviews);
+            setUserReview(reviewList.userReview);
+            setOverviews(reviewList.overviews);
 
             return true;
 
@@ -590,111 +457,6 @@ export default function Product({
             return false;
         }
     }
-
-    const createReview = async (comment, stars) => {
-        try {
-            const mutation = `
-                mutation($input: createProductReviewInput!) {
-                    newReview: createReviewForProduct(
-                        createReviewInput: $input
-                    ) {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                }
-            `;
-
-            const variables = {
-                input: {
-                    productSlug: `${params.slug}`,
-                    comment,
-                    stars,
-                },
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            return data.newReview;
-        } catch {
-            return undefined;
-        }
-    };
-
-    const editReview = async (reviewId, comment, stars) => {
-        const editReviewInput = {};
-
-        if (comment) editReviewInput.comment = comment;
-
-        if (stars) editReviewInput.stars = stars;
-
-        const client = graphqlClient(jwt);
-
-        const { data } = await client.mutate({
-            mutation: gql`
-                mutation($reviewId: ID!, $editReviewInput: editReviewInput!) {
-                    review: editReviewById(
-                        reviewId: $reviewId
-                        editReviewInput: $editReviewInput
-                    ) {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                }
-            `,
-            variables: {
-                reviewId: reviewId,
-                editReviewInput: editReviewInput,
-            },
-        });
-
-        return data.review;
-    };
-
-    const deleteReview = async (reviewId) => {
-        const client = graphqlClient(jwt);
-
-        const { data } = await client.mutate({
-            mutation: gql`
-                mutation($reviewId: ID!) {
-                    deletedReview: deleteReviewById(reviewId: $reviewId) {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                }
-            `,
-            variables: {
-                reviewId: reviewId,
-            },
-        });
-
-        return data.deletedReview;
-    };
-
     const handleSubmitCreateReview = async (e) => {
         e.preventDefault();
         const comment = document.getElementById("comment").value;
@@ -710,14 +472,12 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const newReview = await createReview(comment, stars);
+            const { newReview } = await reviewApi.createReview(slug, comment, stars);
 
-            await refreshReviews(params.slug);
+            await refreshReviews();
 
             btnEle.removeAttribute("disabled");
-            btnEle.innerHTML = `
-                Gửi ngay 
-            `;
+            btnEle.innerHTML = "Gửi ngay";
 
             if (!newReview) return alert("Có lỗi xảy ra, vui lòng thử lại sau");
 
@@ -729,7 +489,7 @@ export default function Product({
         }
     };
 
-    const handleSubmitDeleteReview = async (e) => {
+    const handleSubmitDeleteReview = async e => {
         e.preventDefault();
         const modal = document.getElementById("deleteConfirm");
         const yesBtn = modal.querySelector("#yesBtn");
@@ -741,11 +501,11 @@ export default function Product({
                 Đang xóa... 
             `;
 
-            const deletedReview = await deleteReview(userReview._id);
+            const { deletedReview } = await reviewApi.deleteReview(userReview._id);
 
             if (deletedReview) {
                 $(`#deleteConfirm`).modal("hide");
-                await refreshReviews(params.slug);
+                await refreshReviews();
                 setStars(5);
             }
 
@@ -759,7 +519,7 @@ export default function Product({
         }
     };
 
-    const handleSubmitEditReview = async (e) => {
+    const handleSubmitEditReview = async e => {
         e.preventDefault();
         const comment = document.getElementById("comment").value;
         const btnEle = document.getElementById("editReviewBtn");
@@ -774,9 +534,9 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const review = await editReview(userReview._id, comment, stars);
+            const { review } = await reviewApi.editReview(userReview._id, comment, stars);
 
-            await refreshReviews(params.slug);
+            await refreshReviews();
 
             btnEle.removeAttribute("disabled");
             btnEle.innerHTML = `
@@ -825,7 +585,7 @@ export default function Product({
             `;
 
             const variables = {
-                slug: `${params.slug}`,
+                slug: `${slug}`,
                 sort: [value],
             };
 
@@ -901,9 +661,9 @@ export default function Product({
                 &nbsp; Thêm vào giỏ hàng
             `;
 
-        } catch(error) {
+        } catch (error) {
             console.log(error);
-        } 
+        }
     }
 
     const loadMore = e => {
@@ -927,7 +687,13 @@ export default function Product({
                 />
             );
 
-        for (let i = Math.floor(stars) + 1; i <= 5; i++)
+        if ((stars - Math.floor(stars)) > 0) {
+            result.push(
+                <i className="fa product__rating-icon fa-star-half" aria-hidden="true"></i>
+            )
+        }
+
+        for (let i = result.length; i < 5; i++)
             result.push(
                 <i
                     className="fa fa-star-o checked"
@@ -941,7 +707,7 @@ export default function Product({
 
     function selectVersions(id) {
         var versions = document.querySelectorAll(`#${id} .version`);
-    
+
         for (let i = 0; i < versions.length; i++) {
             versions[i].onclick = function () {
                 document.querySelector(`#${id} .version.active`).classList.remove("active");
@@ -976,6 +742,11 @@ export default function Product({
         }
     }, []);
 
+    const reviewTab = useRef();
+    const handleScroll = () => {
+        reviewTab.current.click();
+    };
+
     useEffect(() => {
         selectVersions('colors');
     }, []);
@@ -995,21 +766,22 @@ export default function Product({
             </Head>
             <Header />
 
-            <div id="root">
-                <nav className="breadcrumb breadcrumb--custom my-1">
-                    <div className="container px-0">
-                        <a className="breadcrumb-item d-inline-block" href="/">
-                            Trang chủ
-                        </a>
-                        <a className="breadcrumb-item d-inline-block" href="/san-pham">
-                            Cửa hàng
-                        </a>
-                        <span className="breadcrumb-item  d-inline-block active">
-                            {product.name}
-                        </span>
-                    </div>
-                </nav>
-                <article className="container product-details bg-white">
+            <div className="bodyIndex" id="root">
+                <article className="container product-details bg-white border">
+                    <nav className="breadcrumb breadcrumb--custom mb-1">
+                        <div className="container px-0">
+                            <a className="breadcrumb-item d-inline-block" href="/">
+                                Trang chủ
+                            </a>
+                            <a className="breadcrumb-item d-inline-block" href="/san-pham">
+                                Cửa hàng
+                            </a>
+                            <span className="breadcrumb-item  d-inline-block active">
+                                {product.name}
+                            </span>
+                        </div>
+                    </nav>
+
                     <section className="row mx-0 py-2">
                         <h1 className="col-12 col-lg-6 product-details__name">
                             {product.name}
@@ -1019,7 +791,7 @@ export default function Product({
                                 {displayStars(overviews.average)}
                             </span>
                             <span>
-                                {overviews.total} Đánh giá | <a href>Nhận xét ngay</a>
+                                {overviews.total} Đánh giá | <a href="#menuTab" onClick={handleScroll}>Nhận xét ngay</a>
                             </span>
                         </div>
                     </section>
@@ -1056,13 +828,13 @@ export default function Product({
                             </div>
                             <p className="my-2">
                                 <b>Khuyến mãi: </b>
-                                <ul class="product-details__bonus">
-                                    <li>Tặng voucher mua hàng trị giá 2000.000đ</li>
-                                    <li>Tặng voucher sửa chữa trị giá 500.000</li>
-                                    <li>Tặng sạc chính hãng 18W trị giá 550.000đ</li>
-                                    <li>Tặng sim ghép Fix full lỗi trị giá 120.000đ</li>
-                                    <li>Tặng nón bảo hiểm cao cấp</li>
-                                </ul></p>
+                                <ul
+                                    className="product-details__bonus"
+                                    dangerouslySetInnerHTML={{
+                                        __html: product.promotion,
+                                    }}
+                                ></ul>
+                            </p>
                             <div className="row px-0 mx-0">
                                 <button className="btn btn--buy-now col-12 px-0 mb-2">
                                     <i
@@ -1131,172 +903,175 @@ export default function Product({
                         </div>
                     </section>
                 </article>
-                <article className="container row mx-auto px-0">
-                    <div className="col-12 col-lg-8 bg-white bd-top--fake-bg px-0 ">
-                        <ul
-                            className="nav--custom nav nav-pills my-2"
-                            id="pills-tab"
-                            role="tablist"
-                        >
-                            <li className="nav-item" role="presentation">
-                                <a
-                                    className="nav-link"
-                                    id="pills-home-tab"
-                                    data-toggle="pill"
-                                    href="#pills-desc"
-                                    role="tab"
-                                    aria-controls="pills-desc"
-                                    aria-selected="true"
-                                >
-                                    Mô tả
-                                </a>
-                            </li>
-                            <li className="nav-item" role="presentation">
-                                <a
-                                    className="nav-link"
-                                    id="pills-profile-tab"
-                                    data-toggle="pill"
-                                    href="#pills-specification"
-                                    role="tab"
-                                    aria-controls="pills-specification"
-                                    aria-selected="false"
-                                >
-                                    Thông số
-                                </a>
-                            </li>
-                            <li className="nav-item" role="presentation">
-                                <a
-                                    className="nav-link"
-                                    id="pills-contact-tab"
-                                    data-toggle="pill"
-                                    href="#pills-reviews"
-                                    role="tab"
-                                    aria-controls="pills-reviews"
-                                    aria-selected="false"
-                                >
-                                    Đánh giá
-                                </a>
-                            </li>
-                        </ul>
-                        <div
-                            className="tab-content container"
-                            id="pills-tabContent"
-                        >
-                            <div
-                                className="tablist_content tab-pane fade show active"
-                                id="pills-desc"
-                                role="tabpanel"
-                                aria-labelledby="pills-desc-tab"
-                                dangerouslySetInnerHTML={{
-                                    __html: product.fullDesc,
-                                }}
-                            ></div>
-
-                            <div
-                                className="tablist_content tab-pane fade"
-                                id="pills-specification"
-                                role="tabpanel"
-                                aria-labelledby="pills-specification-tab"
+                <article className="container row mx-auto px-0" id="menuTab">
+                    <div className="col-12 col-lg-8 bg-white bd-top--fake-bg px-0">
+                        <div>
+                            <ul
+                                className="nav--custom nav nav-pills my-2"
+                                id="pills-tab"
+                                role="tablist"
                             >
-                                <h4>
-                                    Thông số kỹ thuật chi tiết {product.name}
-                                </h4>
-                                <img
-                                    src={
-                                        process.env.NEXT_PUBLIC_API_URL +
-                                        product.thumbnail.url
-                                    }
-                                    className="img_product img_product-specification"
-                                    alt=""
-                                />
-                                <table className="table table-specification">
-                                    <thead>
-                                        <tr>
-                                            <th colSpan={2}>Kích thước</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td scope="row">Chiều dài</td>
-                                            <td>{product.height}mm</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope="row">Chiều rộng</td>
-                                            <td>{product.width}mm</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope="row">Độ dày</td>
-                                            <td>{product.depth}mm</td>
-                                        </tr>
-                                    </tbody>
-                                    <thead>
-                                        <tr>
-                                            <th colSpan={2}>Màn hình</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td scope="row">
-                                                Kích thước màn hình
-                                            </td>
-                                            <td>{product.screenSize}</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope="row">
-                                                Công nghệ màn hình
-                                            </td>
-                                            <td>{product.screenPanel}</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope="row">Độ phân giải</td>
-                                            <td>{product.screenResolution}</td>
-                                        </tr>
-                                    </tbody>
-                                    <thead>
-                                        <tr>
-                                            <th colSpan={2}>Nền tảng</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td scope="row">Hệ điều hành</td>
-                                            <td>{product.platformName}</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope="row">Phiên bản</td>
-                                            <td>{product.platformVersion}</td>
-                                        </tr>
-                                    </tbody>
-                                    <thead>
-                                        <tr>
-                                            <th colSpan={2}>Cấu hình</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td scope="row">CPU</td>
-                                            <td>{product.cpu}</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope="row">GPU</td>
-                                            <td>{product.gpu}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
+                                <li className="nav-item" role="presentation">
+                                    <a
+                                        className="nav-link"
+                                        id="pills-home-tab"
+                                        data-toggle="pill"
+                                        href="#pills-desc"
+                                        role="tab"
+                                        aria-controls="pills-desc"
+                                        aria-selected="true"
+                                    >
+                                        Mô tả
+                                    </a>
+                                </li>
+                                <li className="nav-item" role="presentation">
+                                    <a
+                                        className="nav-link"
+                                        id="pills-profile-tab"
+                                        data-toggle="pill"
+                                        href="#pills-specification"
+                                        role="tab"
+                                        aria-controls="pills-specification"
+                                        aria-selected="false"
+                                    >
+                                        Thông số
+                                    </a>
+                                </li>
+                                <li className="nav-item" role="presentation">
+                                    <a
+                                        className="nav-link"
+                                        id="pills-contact-tab"
+                                        data-toggle="pill"
+                                        href="#pills-reviews"
+                                        role="tab"
+                                        aria-controls="pills-reviews"
+                                        aria-selected="false"
+                                        ref={reviewTab}
+                                    >
+                                        Đánh giá
+                                    </a>
+                                </li>
+                            </ul>
                             <div
-                                className="customer-reviews tablist_content tab-pane fade"
-                                id="pills-reviews"
-                                role="tabpanel"
-                                aria-labelledby="pills-reviews-tab"
+                                className="tab-content container"
+                                id="pills-tabContent"
                             >
-                                {displayOverviews()}
+                                <div
+                                    className="tablist_content tab-pane fade show active"
+                                    id="pills-desc"
+                                    role="tabpanel"
+                                    aria-labelledby="pills-desc-tab"
+                                    dangerouslySetInnerHTML={{
+                                        __html: product.fullDesc,
+                                    }}
+                                ></div>
 
-                                {displayReviewingForm()}
+                                <div
+                                    className="tablist_content tab-pane fade"
+                                    id="pills-specification"
+                                    role="tabpanel"
+                                    aria-labelledby="pills-specification-tab"
+                                >
+                                    <h4>
+                                        Thông số kỹ thuật chi tiết {product.name}
+                                    </h4>
+                                    <img
+                                        src={
+                                            process.env.NEXT_PUBLIC_API_URL +
+                                            product.thumbnail.url
+                                        }
+                                        className="img_product img_product-specification"
+                                        alt=""
+                                    />
+                                    <table className="table table-specification">
+                                        <thead>
+                                            <tr>
+                                                <th colSpan={2}>Kích thước</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td scope="row">Chiều dài</td>
+                                                <td>{product.height}mm</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row">Chiều rộng</td>
+                                                <td>{product.width}mm</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row">Độ dày</td>
+                                                <td>{product.depth}mm</td>
+                                            </tr>
+                                        </tbody>
+                                        <thead>
+                                            <tr>
+                                                <th colSpan={2}>Màn hình</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td scope="row">
+                                                    Kích thước màn hình
+                                                </td>
+                                                <td>{product.screenSize}</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row">
+                                                    Công nghệ màn hình
+                                                </td>
+                                                <td>{product.screenPanel}</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row">Độ phân giải</td>
+                                                <td>{product.screenResolution}</td>
+                                            </tr>
+                                        </tbody>
+                                        <thead>
+                                            <tr>
+                                                <th colSpan={2}>Nền tảng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td scope="row">Hệ điều hành</td>
+                                                <td>{product.platformName}</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row">Phiên bản</td>
+                                                <td>{product.platformVersion}</td>
+                                            </tr>
+                                        </tbody>
+                                        <thead>
+                                            <tr>
+                                                <th colSpan={2}>Cấu hình</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td scope="row">CPU</td>
+                                                <td>{product.cpu}</td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row">GPU</td>
+                                                <td>{product.gpu}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                                {displayReviews()}
+                                <div
+                                    className="customer-reviews tablist_content tab-pane fade"
+                                    id="pills-reviews"
+                                    role="tabpanel"
+                                    aria-labelledby="pills-reviews-tab"
+                                >
+                                    {displayOverviews()}
 
+                                    {displayReviewingForm()}
+
+                                    {displayReviews()}
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1346,66 +1121,4 @@ export default function Product({
             ></script>
         </>
     );
-}
-
-const refreshReviews = async slug => {
-    try {
-        // Declare query & its variables
-        const query = `
-            query($slug: String!) {
-                reviewList: getReviewsByProductSlug(slug: $slug) {
-                    reviews {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                    userReview {
-                        _id
-                        user {
-                            username
-                        }
-                        comment
-                        stars
-                        createdAt
-                    }
-                    overviews {
-                        oneStar
-                        twoStar
-                        threeStar
-                        fourStar
-                        fiveStar
-                        total
-                    }
-                }
-            }
-        `;
-
-        const variables = {
-            filter: {
-                slug
-            },
-            slug
-        };
-
-        const { data } = await axios({
-            method: 'POST',
-            url: '/api/query',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: {
-                query,
-                variables
-            },
-        });
-
-        return data.reviewList;
-
-    } catch {
-        return null;
-    }
 }

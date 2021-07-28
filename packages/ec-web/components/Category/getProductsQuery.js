@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export default function query() {
     const query = gql`  
-        query{
+        query{ 
             products: searchProducts {
                 name,
                 slug,
@@ -15,6 +15,8 @@ export default function query() {
                 },
                 ram,
                 rom,
+                votes,
+                stars,
                 brand{
                     name,
                     slug

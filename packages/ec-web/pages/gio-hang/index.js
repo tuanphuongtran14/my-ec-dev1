@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from "react";
 import Head from "next/head";
 import Link from "next/link"
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-import Modal from "../../components/Modal/Modal";
 import { useAuth } from '../../helpers/auth';
-import axios from "axios";
+import { cartApi } from '../../apis';
+import { Header, Footer, Modal } from '../../components';
 
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const user = req.session.get("user");
@@ -26,12 +24,12 @@ const index = () => {
     });
     let deleleItemId = '';
 
-    // Fetch cart first time
+    // ************* START: Fetch cart first time ************** //
     useEffect(() => {
         fetchCart();
     }, []);
 
-    // Track selection to turn on select all
+    // ********* START: Track selection to turn on select all ********* //
     useEffect(() => {
         const selectedItems = items.filter(item => {
             return item.selected;
@@ -49,218 +47,56 @@ const index = () => {
             
     },[items]);
 
-    // Fetch cart function
+    // ************* START: Set state for new cart ************** //
+    const setNewCart = (newCart) => {
+        localStorage.setItem("cartId", newCart._id);
+        setItems([]);
+        setAmount({
+            totalAmount: newCart.totalAmount,
+            finalAmount: newCart.finalAmount,
+        });
+        setCoupon({
+            code: (newCart.coupon) ? newCart.coupon.code : null,
+            couponIsValid: newCart.couponIsValid
+        });
+        setItems(newCart.items);
+    }
+
+    // ************** START: Fetch cart first time  *************** //
     const fetchCart = async () => {
         try {
-            const query = `
-                query($cartId: ID!) {
-                    cart: getCart(cartId: $cartId) {
-                        _id
-                        items {
-                            _id
-                            product {
-                                name
-                                thumbnail {
-                                  url
-                                }
-                                options {
-                                color
-                                quantityInStock
-                                }
-                                finalPrice
-                            }
-                            color
-                            qty
-                            amount
-                            selected
-                        }
-                        totalAmount
-                        finalAmount
-                        coupon {
-                        code
-                        }
-                        couponIsValid
-                    }
-                }
-            `;
+            const data = await cartApi.getCart(localStorage.getItem("cartId"));
 
-            const variables = {
-                cartId: localStorage.getItem("cartId")
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/query',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    query,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems(data.cart.items);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
+            setNewCart(data.cart);
 
         } catch(error) {
             console.log(error);
         }
     };
 
+    // *********** START: Process toggle select items  ************ //
     const toggleSelectItem = async (e, itemId) => {
         const value = e.target.checked;
 
         try {
-            const mutation = `
-            mutation($cartId: ID!, $itemId: ID!, $value: Boolean!) {
-                cart: toggleSelectItem(
-                  cartId: $cartId,
-                  itemId: $itemId,
-                  value: $value
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
+            const data = await cartApi.toggleSelectItem(localStorage.getItem("cartId"), itemId, value);
 
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                itemId,
-                value
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            
-            setItems(data.cart.items);
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         }
     }
 
+    // ********** START: Process toggle select all items  ********** //
     const toggleSelectAll = async e => {
         const value = e.target.checked;
 
         try {
-            const mutation = `
-            mutation($cartId: ID!, $value: Boolean!) {
-                cart: toggleSelectAll(
-                  cartId: $cartId,
-                  value: $value
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
+            const data = await cartApi.toggleSelectAllItems(localStorage.getItem("cartId"), value);
 
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                value
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            setNewCart(data.cart);
 
             const selects = document.querySelectorAll(".custom-checkbox input[type=checkbox]");
-
             for(let i = 0; i <= selects.length; i++) {
                 selects[i].checked = value;
             }
@@ -269,70 +105,13 @@ const index = () => {
             console.log(error);
         }
     }
-    // ********** START: Processing delete selected items  *********** //
+
+    // ********** START: Process delete selected items  *********** //
     const removeSelectedItems = async () => {
         try {
-            const mutation = `
-            mutation($cartId: ID!) {
-                cart: removeSelectedItems(
-                  cartId: $cartId
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
+            const data = await cartApi.removeSelectedItems(localStorage.getItem('cartId'));
 
-            const variables = {
-                cartId: localStorage.getItem("cartId")
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         }
@@ -345,71 +124,9 @@ const index = () => {
     // ************* START: Process delete an item  ************** //
     const removeItem = async itemId => {
         try {
-            const mutation = `
-            mutation($cartId: ID!, $itemId: ID!) {
-                cart: removeItemFromCart(
-                  cartId: $cartId,
-                  itemId: $itemId
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
-
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                itemId
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            console.log(data);
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            const data = await cartApi.removeItem(localStorage.getItem('cartId'), itemId);
+            
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         }
@@ -427,73 +144,9 @@ const index = () => {
             return warnIncrementQty(qtyInStock);
 
         try {
-            const mutation = `
-            mutation($cartId: ID!, $itemId: ID!, $by: Int!) {
-                cart: incrementItemQuantity(
-                  cartId: $cartId,
-                  itemId: $itemId,
-                  by: $by
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
+            const data = await cartApi.incrementQuantity(localStorage.getItem('cartId'), itemId, 1);
 
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                itemId,
-                by: 1
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            console.log(data);
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         }
@@ -511,71 +164,8 @@ const index = () => {
             return warnDecrementQty(itemId);
 
         try {
-            const mutation = `
-            mutation($cartId: ID!, $itemId: ID!, $by: Int!) {
-                cart: decrementItemQuantity(
-                  cartId: $cartId,
-                  itemId: $itemId,
-                  by: $by
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
-
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                itemId,
-                by: 1
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            const data = await cartApi.decrementQuantity(localStorage.getItem('cartId'), itemId, 1);
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         }
@@ -587,70 +177,10 @@ const index = () => {
 
     // *************** START: Process apply coupon *************** //
     const applyCoupon = async () => {
+        const couponCode = document.getElementById('couponInput').value;
         try {
-            const mutation = `
-            mutation($cartId: ID!, $couponCode: String!) {
-                cart: applyCoupon(
-                  cartId: $cartId,
-                  couponCode: $couponCode
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
-
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                couponCode: document.getElementById('couponInput').value
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid,
-            });
-            setItems(data.cart.items);
+            const data = await cartApi.applyCoupon(localStorage.getItem('cartId'), couponCode);
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
             setCoupon({
@@ -662,144 +192,23 @@ const index = () => {
     // *************** START: Process remove coupon *************** //
     const removeCoupon = async () => {
         try {
-            const mutation = `
-            mutation($cartId: ID!) {
-                cart: removeCoupon(
-                  cartId: $cartId
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
-
-            const variables = {
-                cartId: localStorage.getItem("cartId")
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            const data = await cartApi.removeCoupon(localStorage.getItem('cartId'));
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
+            setCoupon({
+                wrong: true
+            });
         } 
     }
 
     // ************* START: Process change item color ************* //
     const changeItemColor = async (e, itemId) => {
-        const value = e.target.value;
+        const color = e.target.value;
 
         try {
-            const mutation = `
-            mutation($cartId: ID!, $itemId: ID!, $color: String!) {
-                cart: changeItemColor(
-                  cartId: $cartId,
-                  itemId: $itemId,
-                  color: $color
-                ) {
-                  _id
-                  items {
-                    _id
-                    product {
-                      name
-                      thumbnail {
-                        url
-                      }
-                      options {
-                        color
-                        quantityInStock
-                      }
-                      finalPrice
-                    }
-                    color
-                    qty
-                    amount
-                    selected
-                  }
-                  totalAmount
-                  finalAmount
-                  coupon {
-                    code
-                  }
-                  couponIsValid
-                }
-              }
-            `;
-
-            const variables = {
-                cartId: localStorage.getItem("cartId"),
-                itemId,
-                color: value
-            };
-
-            console.log(variables);
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/mutation',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    mutation,
-                    variables
-                },
-            });
-
-            localStorage.setItem("cartId", data.cart._id);
-            setItems([]);
-            setAmount({
-                totalAmount: data.cart.totalAmount,
-                finalAmount: data.cart.finalAmount,
-            });
-            setCoupon({
-                code: (data.cart.coupon) ? data.cart.coupon.code : null,
-                couponIsValid: data.cart.couponIsValid
-            });
-            setItems(data.cart.items);
+            const data = await cartApi.changeItemColor(localStorage.getItem('cartId'), itemId, color);
+            setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         } 
@@ -1066,13 +475,15 @@ const index = () => {
                                     </dd>
                                 </dl>
                                 <hr />
+                                <Link href="/checkout">
                                 <a
-                                    href="#"
+                                    href=""
                                     className="btn btn--buy-now  btn-block"
                                 >
                                     {" "}
                                     Thanh toán{" "}
                                 </a>
+                                </Link>
                                 <Link href="/"> 
                                     <a className="btn btn-light btn-block">
                                         Tiếp tục mua sắm

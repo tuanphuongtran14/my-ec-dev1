@@ -8,31 +8,46 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react';
 import client from '../components/Category/apolloClient';
 import getProductsQuery from '../components/Category/getProductsQuery';
-import Flickity from 'react-flickity-component'
+import Flickity from 'react-flickity-component';
+import { productApi } from '../apis';
 
 export async function getStaticProps() {
-  const { data } = await client.query({
-    query: getProductsQuery()
-  });
+  const {
+    productHotSale,
+    productsBestSell,
+    productsBestNew
+  } = await productApi.getForHome();
 
   return {
     props: {
-      products: data.products,
-      productsBestSell: data.productsBestSell,
-      productsBestNew:data.productsBestNew
+      productHotSale,
+      productsBestSell,
+      productsBestNew
     },
   };
 }
 
 
-export default function Home({ products,productsBestSell,productsBestNew }) {
-
-  const productHotSale = products.filter(product => product.salesPercentage > 0)
-  
-  productHotSale.sort(function (a, b) {
-    return b.salesPercentage - a.salesPercentage;
-  });
-
+export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
+  const displayStars = (stars) => {
+    const result = [];
+    for (let index = 0; index < stars; index++) {
+      result.push(
+        <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
+      )
+    }
+    if ((stars - Math.floor(stars)) > 0) {
+      result.push(
+        <i className="fa product__rating-icon fa-star-half" aria-hidden="true"></i>
+      )
+    }
+    for (let index = result.length; index < 5; index++) {
+      result.push(
+        <i className="fa product__rating-icon fa-star-o" aria-hidden="true"></i>
+      )
+    }
+    return result;
+  }
 
   const HotSale = productHotSale.map((product) => {
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
@@ -41,7 +56,7 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
     return (
       <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
         <div className="product">
-          <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px"}}/>
+          <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
           <span className="product__title">
             <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
               {product.name}
@@ -55,12 +70,8 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             <span className="regular-price">{regularPrice}₫</span>
           </div>
           <div className="product__rating">
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
-            <span>(472 đánh giá)</span>
+            {displayStars(product.stars)}
+            <span>({product.votes} đánh giá)</span>
           </div>
           {
             product.salesPercentage != 0 ?
@@ -83,7 +94,7 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
     return (
       <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
         <div className="product">
-          <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px"}}/>
+          <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
           <span className="product__title">
             <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
               {product.name}
@@ -97,12 +108,8 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             <span className="regular-price">{regularPrice}₫</span>
           </div>
           <div className="product__rating">
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
-            <span>(472 đánh giá)</span>
+            {displayStars(product.stars)}
+            <span>({product.votes} đánh giá)</span>
           </div>
           {
             product.salesPercentage != 0 ?
@@ -118,14 +125,14 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
   }
   )
 
-  const bestSeller  = productsBestSell.map((product) => {
+  const bestSeller = productsBestSell.map((product) => {
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
     return (
       <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
         <div className="product">
-          <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px"}}/>
+          <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
           <span className="product__title">
             <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
               {product.name}
@@ -139,12 +146,8 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
             <span className="regular-price">{regularPrice}₫</span>
           </div>
           <div className="product__rating">
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            <i className="fa product__rating-icon  fa-star-half" aria-hidden="true"></i>
-            <span>(472 đánh giá)</span>
+            {displayStars(product.stars)}
+            <span>({product.votes} đánh giá)</span>
           </div>
           {
             product.salesPercentage != 0 ?
@@ -161,18 +164,18 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
   )
 
   const flickityOptions = {
-      initialIndex: 2,
-      freeScroll: true,
-      imagesLoaded: true,
-      prevNextButtons: false,
-      pageDots: false,
-      contain: true
+    initialIndex: 2,
+    freeScroll: true,
+    imagesLoaded: true,
+    prevNextButtons: false,
+    pageDots: false,
+    contain: true
   }
 
   const ProductList = (typeCategory) => {
     return (
       <div className="container">
-          <div className="box">
+        <div className="box">
           <div className="box-title px-3">
             <h2 className="title">
               <i className="fa fa-fire" aria-hidden="true"></i> &nbsp; {typeCategory}
@@ -183,17 +186,17 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
           </div>
           <div className="box-body">
             <Flickity
-                className={'product-list border-0'} // default ''
-                elementType={'div'} // default 'div'
-                options={flickityOptions} // takes flickity options {}
-                disableImagesLoaded={false} // default false
-                reloadOnUpdate // default false
-                static // default false
+              className={'product-list border-0'} // default ''
+              elementType={'div'} // default 'div'
+              options={flickityOptions} // takes flickity options {}
+              disableImagesLoaded={false} // default false
+              reloadOnUpdate // default false
+              static // default false
             >
-            {typeCategory === 'Hot sales' ? HotSale :
-              typeCategory === 'Bán chạy' ? bestSeller :
-              typeCategory === 'Mới nhất' ? productsNew :''
-            }
+              {typeCategory === 'Hot sales' ? HotSale :
+                typeCategory === 'Bán chạy' ? bestSeller :
+                  typeCategory === 'Mới nhất' ? productsNew : ''
+              }
             </Flickity>
           </div>
         </div>
@@ -202,8 +205,7 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
   }
 
   return (
-    <body id="body">
-      <div id="root">
+    <body className="bodyIndex" id="root">
         <Head>
           <title>Trang chủ</title>
         </Head>
@@ -213,7 +215,6 @@ export default function Home({ products,productsBestSell,productsBestNew }) {
         {ProductList('Bán chạy')}
         {ProductList('Mới nhất')}
         <Footer />
-      </div>
     </body>
   )
 }

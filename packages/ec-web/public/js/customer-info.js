@@ -1,4 +1,3 @@
-//window.onload = function customerToggle() {
  function customerToggle() {
     var account = document.getElementById("show-account")
     var order = document.getElementById("show-order")
@@ -26,6 +25,7 @@
         }
     });
 }
-customerToggle();
-//window.onload = customerToggle;
 
+window.onload = function () {
+    customerToggle();
+}

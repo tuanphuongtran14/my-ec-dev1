@@ -1,8 +1,6 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-//import '../_app'
-//import '../_document'
 
 export default function Customer() {
 
@@ -211,6 +209,7 @@ export default function Customer() {
           <Head>
             <title>Thông tin tài khoản</title>
             <link rel="stylesheet" href="./css/customer-info.css"/>
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous"/>
           </Head>
           <Header />
           <Customer />
