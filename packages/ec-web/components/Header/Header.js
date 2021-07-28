@@ -138,6 +138,14 @@ export default function Header() {
             searchAdvanced.style.display = "none";
         }
 
+        searchAdvanced.onclick = function () {
+            body.classList.remove('noscroll');
+        }
+
+        searchGo.onclick = function () {
+            body.classList.remove('noscroll');
+        }
+
         searchBar.onclick = function () {
             searchGo.style.display = "block"
             searchAdvanced.style.display = "block";
@@ -159,90 +167,96 @@ export default function Header() {
     }
 
     return (
-        <div className="header__navbar sticky-top">
-            <div className="navbar--custom container">
-                <div className="navbar__logo">
-                    <button type="button" className="text-white ml-3 mr-4 bars-btn btn btn--no-outline" id="bars-btn">
-                        <i className="fa fa-bars fa--md" aria-hidden="true" />
+        <>
+            <div className="top-nav bg-dark">
+                <div className="container d-flex justify-content-between align-items-center">
+                    <button type="button" className="text-white btn btn--no-outline px-0">
+                        <i class="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
                     </button>
-                    <Link href="/" >
-                        <a><img src="/img/logo.png" className="logo" alt="" /></a>
-                    </Link>
-                </div>
-                <div className="navbar__menu" id="navbar-menu">
-                    <ul className="menu menu--nav" id="menu--nav">
-                        <li className="menu__item">
-                            <Link href="/san-pham">
-                                <a className="text-white">Sản phẩm</a>
-                            </Link>
-                        </li>
-                        <li className="menu__item">
-                            <a href="/about" className="text-white">Về chúng tôi</a>
-                        </li>
-                        <li className="menu__item">
-                            <a href="/new" className="text-white">Tin tức</a>
-                        </li>
-                        <li className="menu__item">
-                            <a href="/about" className="text-white">Liên hệ</a>
-                        </li>
-                    </ul>
-                </div>
-                <div className="navbar__others">
-                    <ul className="menu menu--horizontal">
-                        <li className="menu__item">
-                            <button id="search-btn" type="button" className="text-white btn btn--no-outline" id="search-btn">
-                                <i className="fa fa-search fa--md" aria-hidden="true" />
-                            </button>
-                        </li>
-                        {/* <li className="menu__item">
-                            <button type="button" className="text-white btn btn--no-outline">
-                                <i className="fa fa-heart fa--md" aria-hidden="true" data-amount={0} />
-                            </button>
-                        </li> */}
-                        <li className="menu__item">
-                            <button type="button" className="btn btn--no-outline">
-                                <Link href="/gio-hang">
-                                    <a><i className="fa fa-shopping-bag fa--md text-white" data-amount={itemsNumber} aria-hidden="true" /></a>
-                                </Link>
-                            </button>
-                        </li>
-                        <li className="menu__item">
-                          
-                            <button type="button" className="text-white btn btn--no-outline">
-                                <DropdownUser></DropdownUser>
-                            </button>
-                        </li>
-                    </ul>
+                    <button type="button" className="text-white btn btn--no-outline px-0">
+                        <DropdownUser></DropdownUser>
+                    </button>
                 </div>
             </div>
-            <form action className="search-bar" id="search-bar" action="/result" method='GET'>
-                <div className="container position-relative">
-                    <input
-                        type="text"
-                        name="name"
-                        id="search"
-                        className="search-input container "
-                        placeholder="Search"
-                        style={{ width: '100%' }}
-                    />
-                    <button type="submit" className="btn btn--searchGo" id="search-go"
-                    >
-                        <div className="searchGo_text" href="./san-pham">
-                            Go
-                        </div>
-                    </button>
-                    <button type="submit" className="btn btn--search" id="search-advanced">
-                        <div className="searchGo_text">
-                            <Link href="/advancedSearch">Advanced
-                            </Link>
-                        </div>
-                    </button>
-                    <button type="submit" className="btn btn--search" id="search-icon">
-                        <i className="fa fa-search " aria-hidden="true" />
-                    </button>
+            <div className="header__navbar sticky-top">
+                <div className="navbar--custom container">
+                    <div className="navbar__logo">
+                        <button type="button" className="text-white ml-3 mr-4 bars-btn btn btn--no-outline" id="bars-btn">
+                            <i className="fa fa-bars fa--md" aria-hidden="true" />
+                        </button>
+                        <Link href="/" >
+                            <a><img src="/img/logo.png" className="logo" alt="" /></a>
+                        </Link>
+                    </div>
+                    <div className="navbar__menu" id="navbar-menu">
+                        <ul className="menu menu--nav" id="menu--nav">
+                            <li className="menu__item">
+                                <Link href="/san-pham">
+                                    <a className="text-white">Sản phẩm</a>
+                                </Link>
+                            </li>
+                            <li className="menu__item">
+                                <a href="/about" className="text-white">Về chúng tôi</a>
+                            </li>
+                            <li className="menu__item">
+                                <a href="/new" className="text-white">Tin tức</a>
+                            </li>
+                            <li className="menu__item">
+                                <a href="/about" className="text-white">Liên hệ</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="navbar__others">
+                        <ul className="menu menu--horizontal">
+                            <li className="menu__item">
+                                <button id="search-btn" type="button" className="text-white btn btn--no-outline" id="search-btn">
+                                    <i className="fa fa-search fa--md" aria-hidden="true" />
+                                </button>
+                            </li>
+                            {/* <li className="menu__item">
+                                <button type="button" className="text-white btn btn--no-outline">
+                                    <i className="fa fa-heart fa--md" aria-hidden="true" data-amount={0} />
+                                </button>
+                            </li> */}
+                            <li className="menu__item">
+                                <button type="button" className="btn btn--no-outline">
+                                    <Link href="/gio-hang">
+                                        <a><i className="fa fa-shopping-bag fa--md text-white" data-amount={itemsNumber} aria-hidden="true" /></a>
+                                    </Link>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </form>
-            <div id="overlaybody"></div>
-        </div>
+                <form action className="search-bar" id="search-bar" action="/result" method='GET'>
+                    <div className="container position-relative">
+                        <input
+                            type="text"
+                            name="name"
+                            id="search"
+                            className="search-input container "
+                            placeholder="Search"
+                            style={{ width: '100%' }}
+                        />
+                        <button type="submit" className="btn btn--searchGo" id="search-go"
+                        >
+                            <div className="searchGo_text" href="./san-pham">
+                                Go
+                            </div>
+                        </button>
+                        <button type="submit" className="btn btn--search" id="search-advanced">
+                            <div className="searchGo_text">
+                                <Link href="/advancedSearch">Advanced
+                                </Link>
+                            </div>
+                        </button>
+                        <button type="submit" className="btn btn--search" id="search-icon">
+                            <i className="fa fa-search " aria-hidden="true" />
+                        </button>
+                    </div>
+                </form>
+                <div id="overlaybody"></div>
+            </div>
+        </>
     )
 }

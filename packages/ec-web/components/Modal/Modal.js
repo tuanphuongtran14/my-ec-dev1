@@ -42,9 +42,9 @@ export default function Modal({
                             id="yesBtn"
                             type="button"
                             className={`btn btn-${confirmStyle || "success"}`}
-                            onClick={async () => {
+                            onClick={async e => {
                                 if(typeof callback === 'function')
-                                    await callback();
+                                    await callback(e);
                                     
                                 $(`#${id}`).modal("hide");
                             }}

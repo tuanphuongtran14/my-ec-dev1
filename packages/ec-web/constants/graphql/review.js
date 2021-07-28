@@ -29,3 +29,44 @@ export const GET_PRODUCT_REVIEWS = `
         }
     }
 `;
+
+export const CREATE_REVIEW = `
+    createReviewForProduct(
+        createReviewInput: $input
+    ) {
+        _id
+        user {
+            username
+        }
+        comment
+        stars
+        createdAt
+    }
+`;
+
+export const EDIT_REVIEW = `
+    editReviewById(
+        reviewId: $reviewId
+        editReviewInput: $editReviewInput
+    ) {
+        _id
+        user {
+            username
+        }
+        comment
+        stars
+        createdAt
+    }
+`;
+
+export const DELETE_REVIEW = `
+    deleteReviewById(reviewId: $reviewId) {
+        _id
+        user {
+            username
+        }
+        comment
+        stars
+        createdAt
+    }
+`;
