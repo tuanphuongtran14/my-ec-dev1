@@ -3,13 +3,14 @@ import Link from 'next/link';
 import axios from 'axios';
 
 import DropdownUser from './DropdownUser';
+import Head from 'next/head';
 export default function Header() {
     const [itemsNumber, setItemsNumber] = useState();
 
     useEffect(async () => {
         const cartId = localStorage.getItem('cartId');
-        
-        if(!cartId) {
+
+        if (!cartId) {
             const query = `
                 query {
                     cart: getCart {
@@ -35,7 +36,7 @@ export default function Header() {
                 },
             });
 
-            if(data && data.cart) {
+            if (data && data.cart) {
                 localStorage.setItem('cartId', data.cart._id);
                 localStorage.setItem('cartItems', data.cart.items.length);
                 setItemsNumber(data.cart.items.length);
@@ -71,7 +72,7 @@ export default function Header() {
                 },
             });
 
-            if(data && data.cart) {
+            if (data && data.cart) {
                 localStorage.setItem('cartId', data.cart._id);
                 localStorage.setItem('cartItems', data.cart.items.length);
                 setItemsNumber(data.cart.items.length);
@@ -119,6 +120,14 @@ export default function Header() {
                 menu.style.transform = "translateX(-60vw)";
             }
         }
+
+        window.onscroll = function () {
+            if (window.scrollY >= 150) {
+                document.getElementById('backToTopID').style.display = "block"
+            } else {
+                document.getElementById('backToTopID').style.display = "none"
+            }
+        };
 
         // If bars button is clicked, open menu on left
         document.getElementById("bars-btn").onclick = function () {
