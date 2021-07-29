@@ -12,17 +12,19 @@ class OrderApi {
                 type: "mutation",
                 query: `
                     mutation($info: OrderInfo!) {
-                        cart: ${CHECKOUT}},
+                        order: ${CHECKOUT},
                     }
                 `,
                 variables: {
-                    consigneeName,
-                    consigneePhone,
-                    email,
-                    addressLine1,
-                    district,
-                    city,
-                    paymentMethod,
+                    info: {
+                        consigneeName,
+                        consigneePhone,
+                        email,
+                        addressLine1,
+                        district,
+                        city,
+                        paymentMethod,
+                    }
                 },
             }
         );

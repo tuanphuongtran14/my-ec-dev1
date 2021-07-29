@@ -50,8 +50,8 @@ const payment = () => {
     const [cartLength, setCartLength] = useState(false);
 
     useEffect(() => {
-        const cartLengthSession = sessionStorage.getItem('cartLength');
-        if (cartLengthSession > 0)
+        const cartLengthLocal = localStorage.getItem('cartLength');
+        if (cartLengthLocal > 0)
             setCartLength(true)
     }, [])
 

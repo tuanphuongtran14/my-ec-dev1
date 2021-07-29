@@ -13,11 +13,11 @@ export default function Header() {
 
         if (data && data.cart) {
             localStorage.setItem('cartId', data.cart._id);
-            localStorage.setItem('cartItems', data.cart.items.length);
+            localStorage.setItem('cartLength', data.cart.items.length);
             setItemsNumber(data.cart.items.length);
         } else {
             localStorage.removeItem('cartId');
-            localStorage.setItem('cartItems', 0);
+            localStorage.setItem('cartLength', 0);
         }
     });
 

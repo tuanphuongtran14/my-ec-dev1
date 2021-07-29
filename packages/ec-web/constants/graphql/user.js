@@ -1,3 +1,5 @@
+import userApi from "../../apis/user.api";
+
 export const LOGIN = `
     login(input: $input) {
         jwt
@@ -9,14 +11,13 @@ export const LOGIN = `
 `;
 
 export const REGISTER = `
+`;
+
+export const FORGET_PASSWORD = `
     forgotPassword(email: $email) {
         ok
     }
 `;
-
-export const FORGET_PASSWORD = `
-
-`
 
 export const ME = `
     customMe {
@@ -41,4 +42,6 @@ export const GET_USER_CART = `
         }
     }
 `;
+
+
 
