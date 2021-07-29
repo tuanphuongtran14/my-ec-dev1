@@ -2,10 +2,9 @@ import Head from 'next/head'
 import Link from 'next/dist/client/link';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer'
-import { GET_ALL_ITEMS_CART } from '../../components/Checkout/ItemList';
-import { ApolloClient, InMemoryCache} from '@apollo/client';
 import Queries from '../../components/Checkout/ItemList';
-import { useAuth } from "../../helpers/auth";
+import InfoUser from '../../components/Checkout/infoUser';
+import { useRouter } from 'next/router'
 
 // export const getServerSideProps = useAuth(async ({ req, res, params }) => {
 //     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
@@ -14,8 +13,38 @@ import { useAuth } from "../../helpers/auth";
 //     }
 // });
 
-const payment = ({itemList, total})=>
+const payment = ()=>
 {
+
+    const router = useRouter()
+    
+    const handleClick = (e, path) => {
+        e.preventDefault()
+
+        
+        var fullName=document.getElementById("fullName").value;
+        var phone=document.getElementById("phone").value;
+        var mail=document.getElementById("mail").value;
+        var addressInfo=document.getElementById("addressInfo").value;
+
+        if ((phone!=="") && ( fullName !== "") && (mail !== "") && (addressInfo !== ""))
+        {
+            sessionStorage.setItem("fullname",fullName);
+            sessionStorage.setItem("phone",phone);
+            sessionStorage.setItem("mail",mail);
+            sessionStorage.setItem("addressInfo",addressInfo);
+            router.push(path);
+
+        }
+        else 
+        {
+            var warning = document.getElementById("hiddenWarning")
+            warning.hidden=false;
+        }
+    };
+
+
+    
     // if(isSignedIn)
     return (
         <div>
@@ -43,94 +72,12 @@ const payment = ({itemList, total})=>
                     <div class="bg-white p-3"> 
                         <div class="form-group "> 
                             <h2 class="title">Thông tin giao hàng</h2>
-                            <div class="formItem py-3">
-                                <label for="">Họ và tên</label>
-                                <input type="text" class="form-control" name="name" placeholder=""></input>
-                            </div>
-                            <div class="formItem py-3">
-                                <label for="">Số điện thoại</label>
-                                <input type="text" class="form-control" name="phone" placeholder=""></input>
-                            </div>
-                            <div class="formItem py-3">
-                                <label for="">Email</label>
-                                <input type="text" class="form-control" name="mail" placeholder=""></input>
-                            </div>
-                            <label for="">Tỉnh Thành</label>
-                            <select class="form-control my-2" name="" id="">
-                                <option>Chọn tỉnh / thành phố</option>
-                                <option>An Giang</option>
-                                <option>Bà Rịa - Vũng Tàu</option>
-                                <option>Bạc Liêu</option>
-                                <option>Bắc Kạn</option>
-                                <option>Bắc Giang</option>
-                                <option>Bắc Ninh</option>
-                                <option>Bến Tre</option>
-                                <option>Bình Dương</option>
-                                <option>Bình Định</option>
-                                <option>Bình Phước</option>
-                                <option>Bình Thuận</option>
-                                <option>Cà Mau</option>
-                                <option>Cao Bằng</option>
-                                <option>Cần Thơ</option>
-                                <option>Đà Nẵng</option>
-                                <option>Đắk Lắc</option>
-                                <option>Đắk Nông</option>
-                                <option>Điện Biên</option>
-                                <option>Đồng Nai</option>
-                                <option>Đồng Tháp</option>
-                                <option>Gia Lai</option>
-                                <option>Hà Giang</option>
-                                <option>Hà Nam</option>
-                                <option>Hà Nội</option>
-                                <option>Hà Tây</option>
-                                <option>Hà Tĩnh</option>
-                                <option>Hải Dương</option>
-                                <option>Hải Phòng</option>
-                                <option>Hòa Bình</option>
-                                <option>Hồ Chí Minh</option>
-                                <option>Hậu Giang</option>
-                                <option>Hưng Yên</option>
-                                <option>Khánh Hòa</option>
-                                <option>Kiên Giang</option>
-                                <option>Kon Tum</option>
-                                <option>Lai Châu</option>
-                                <option>Lào Cai</option>
-                                <option>Lạng Sơn</option>
-                                <option>Lâm Đồng</option>
-                                <option>Long An</option>
-                                <option>Nam Định</option>
-                                <option>Nghệ An</option>
-                                <option>Ninh Bình</option>
-                                <option>Ninh Thuận</option>
-                                <option>Phú Thọ</option>
-                                <option>Phú Yên</option>
-                                <option>Quảng Bình</option>
-                                <option>Quảng Nam</option>
-                                <option>Quảng Ngãi</option>
-                                <option>Quảng Ninh</option>
-                                <option>Quảng Trị</option>
-                                <option>Sóc Trăng</option>
-                                <option>Sơn La</option>
-                                <option>Tây Ninh</option>
-                                <option>Thái Bình</option>
-                                <option>Thái Nguyên</option>
-                                <option>Thanh Hóa</option>
-                                <option>Thừa Thiên Huế</option>
-                                <option>Tiền Giang</option>
-                                <option>Trà Vinh</option>
-                                <option>Tuyên Quang</option>
-                                <option>Vĩnh Long</option>
-                                <option>Vĩnh Phúc</option>
-                                <option>Yên Bái</option>
-                            </select>
-                            <div class="formItem py-3">
-                                <label for="">Địa chỉ chi tiết</label>
-                                <input type="text" class="form-control" name="address" placeholder=""></input>
-                            </div>
+                            <InfoUser></InfoUser>
                         </div>
-                        <Link href="/payment">
+                        <p className="text-danger" hidden id="hiddenWarning" >*Chưa điền đủ thông tin</p>
+                        <Link href="/">
                      
-                    <button type="button" class="btn btn-success w-100 my-3">Tiến hành thanh toán</button>
+                    <button onClick={(e) => handleClick (e,"/payment")} type="button" id="completeButton" class="btn btn-success w-100 my-3">Tiến hành thanh toán</button>
                     </Link>
                     </div>
                 </div>
