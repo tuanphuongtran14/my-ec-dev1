@@ -269,7 +269,7 @@ const index = () => {
                                         <div className="form-group mb-0">
                                             {/* <label for=""></label> */}
                                             <select
-                                                className="form-control form-control-sm bg-grey border-0"
+                                                className="form-control form-control-sm bg-grey border"
                                                 onChange={e => changeItemColor(e, item._id)}
                                             >
                                                 { optionSelect }
@@ -323,7 +323,7 @@ const index = () => {
                                                 aria-label="Example text with button addon"
                                                 aria-describedby="button-addon1"
                                             />
-                                            <div class="input-group-append">
+                                            <div className="input-group-append">
                                                 <button
                                                     className="btn btn-quantity-control border rounded-0"
                                                     type="button"
@@ -357,7 +357,7 @@ const index = () => {
             </Head>
             <Header />
             {/* <Cart/> */}
-            <nav className="breadcrumb breadcrumb--custom my-1">
+            <nav className="breadcrumb breadcrumb--custom pb-1">
                 <div className="container">
                     <a className="breadcrumb-item" href="/">
                         Trang chủ
@@ -365,6 +365,7 @@ const index = () => {
                     <span className="breadcrumb-item active">Giỏ hàng</span>
                 </div>
             </nav>
+            <div style={{backgroundColor: "#F8F9FA"}}>
             <div className="container mb-3">
                 <div className="box-2-column">
                     <div className="box-left-12 box-left-9-lg">
@@ -524,6 +525,7 @@ const index = () => {
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            </div>
         </>
     );
 };

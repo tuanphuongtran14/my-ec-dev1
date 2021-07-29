@@ -21,7 +21,7 @@ export default function Login() {
             <Header></Header>
             {/* <Banner /> */}
             <div className="text-center text-successful my-4">
-                <div className="container d-inline-block border border-dark p-3" style={{ backgroundColor: "#F7F7F7", borderRadius: "20px" }}>
+                <div className="container d-inline-block border shadow p-3" style={{ backgroundColor: "#F7F7F7", borderRadius: "20px" }}>
                     <img
                         src="https://www.pngitem.com/pimgs/m/479-4796343_free-shipping-png-fast-shipping-icon-png-transparent.png"
                         style={{ maxWidth: "300px" }}
