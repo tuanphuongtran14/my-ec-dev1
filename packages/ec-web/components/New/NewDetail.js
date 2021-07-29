@@ -1,9 +1,88 @@
 import React from 'react'
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    useQuery,
+    gql
+} from "@apollo/client";
+
+const client = new ApolloClient({
+    uri: 'http://localhost:1337/graphql',
+    cache: new InMemoryCache()
+});
+
+const getBlog = gql`
+    query{
+        blogs(limit:1){
+        id
+        title
+        slug
+        thumbnail{
+            url
+        }
+        createdAt
+        }
+    }
+`;
+
+const getFourBlogs = gql`
+query{
+    blogs(limit:4){
+    id
+    title
+    slug
+    thumbnail{
+        url
+    }
+    createdAt
+    }
+}
+`
+
+const NewsHot = () =>{
+    const { loading, error, data } = useQuery(getBlog);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :</p>;
+    return data.blogs.map(blog=>(
+        <div className="list-news-new__item">
+                    <div className="col-lg-12 list-news-new__item-img">
+                        <img src={process.env.NEXT_PUBLIC_API_URL + blog.thumbnail.url}/>
+                    </div>
+                    <div className="col-lg-12 list-news-new__item-detail">
+                        <h5>
+                            <a href={`/new/`+blog.slug}>{blog.title}</a>
+                        </h5>
+                        <span>18 Tháng Bảy, 2021</span>
+                    </div>
+        </div>
+    ))
+}
+
+const ListNews = () => {
+    const { loading, error, data } = useQuery(getFourBlogs);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :</p>;
+    return data.blogs.map(blog =>(
+        <div className="list-news-hot__item">
+                    <div className="col-lg-4 list-news-hot__item-img">
+                        <img src={process.env.NEXT_PUBLIC_API_URL + blog.thumbnail.url}/>
+                    </div>
+                    <div className="col-lg-8 list-news-hot__item-detail">
+                        <h5>
+                            <a href={`/new/`+blog.slug}>{blog.title}</a>
+                        </h5>
+                        <span className="category">Tin hot</span>
+                        <span>18 Tháng Bảy, 2021</span>
+                    </div>
+        </div>
+    ))
+}
 
 const NewDetail = (props) => {
     return (
-        <>
-            <nav className="breadcrumb breadcrumb--custom my-1">
+        <ApolloProvider client={client}>
+        <nav className="breadcrumb breadcrumb--custom my-1">
             <div className="container px-0 d-flex">
                 <a className="breadcrumb-item" href="#">Trang chủ</a>
                 <span className="breadcrumb-item active">Tin tức</span>
@@ -23,80 +102,22 @@ const NewDetail = (props) => {
         <div className="container mt-4  px-0 mb-4 news">
             <div className="col-lg-8 news-detail">
                 <div className="news-detail__image">
-                    <img src="../../img/News/690x300_Buds_.webp"/>
+                    <img src={process.env.NEXT_PUBLIC_API_URL+props.url}/>
                 </div>
                 <div id="news-detail__description" dangerouslySetInnerHTML={{
                                         __html: props.description,
-                                    }}>
+                }}>
                 </div>
             </div>
             <div className="col-lg-4 list-news-hot">
                 <h4 className="list-news-hot__title">
                     <span>Bài viết mới</span>
                 </h4>
-                <div className="list-news-new__item">
-                    <div className="col-lg-12 list-news-new__item-img">
-                        <img src="../../img/News/690x300_Buds_.webp"/>
-                    </div>
-                    <div className="col-lg-12 list-news-new__item-detail">
-                        <h5>
-                            <a href="">IPhone 12 Pro Max và iPhone 11 là 2 model giúp cổ phiếu Apple...</a>
-                        </h5>
-                        <span>18 Tháng Bảy, 2021</span>
-                        <p>Rò rỉ thương hiệu phụ của Xiaomi là Redmi đang chuẩn bị giới thiệu mẫu Redmi K40 Ultra. Thông tin chi tiết về pin...</p>
-                    </div>
-                </div>
-                <div className="list-news-hot__item">
-                    <div className="col-lg-4 list-news-hot__item-img">
-                        <img src="../../img/News/690x300_Buds_.webp"/>
-                    </div>
-                    <div className="col-lg-8 list-news-hot__item-detail">
-                        <h5>
-                            <a href="">iPhone 12 Pro Max và iPhone 11 là 2 model giúp cổ phiếu Apple...</a>
-                        </h5>
-                        <span className="category">Tin hot</span>
-                        <span>18 Tháng Bảy, 2021</span>
-                    </div>
-                </div>
-                <div className="list-news-hot__item">
-                    <div className="col-lg-4 list-news-hot__item-img">
-                        <img src="../../img/News/690x300_Buds_.webp"/>
-                    </div>
-                    <div className="col-lg-8 list-news-hot__item-detail">
-                        <h5>
-                            <a href="">iPhone 12 Pro Max và iPhone 11 là 2 model giúp cổ phiếu Apple...</a>
-                        </h5>
-                        <span className="category">Tin hot</span>
-                        <span>18 Tháng Bảy, 2021</span>
-                    </div>
-                </div>
-                <div className="list-news-hot__item">
-                    <div className="col-lg-4 list-news-hot__item-img">
-                        <img src="../../img/News/690x300_Buds_.webp"/>
-                    </div>
-                    <div className="col-lg-8 list-news-hot__item-detail">
-                        <h5>
-                            <a href="">iPhone 12 Pro Max và iPhone 11 là 2 model giúp cổ phiếu Apple...</a>
-                        </h5>
-                        <span className="category">Tin hot</span>
-                        <span>18 Tháng Bảy, 2021</span>
-                    </div>
-                </div>
-                <div className="list-news-hot__item">
-                    <div className="col-lg-4 list-news-hot__item-img">
-                        <img src="../../img/News/690x300_Buds_.webp"/>
-                    </div>
-                    <div className="col-lg-8 list-news-hot__item-detail">
-                        <h5>
-                            <a href="">iPhone 12 Pro Max và iPhone 11 là 2 model giúp cổ phiếu Apple...</a>
-                        </h5>
-                        <span className="category">Tin hot</span>
-                        <span>18 Tháng Bảy, 2021</span>
-                    </div>
-                </div>
+                <NewsHot/>
+                <ListNews/>     
             </div>
         </div>
-        </>
+        </ApolloProvider>
     )
 }
 

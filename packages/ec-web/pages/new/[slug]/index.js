@@ -33,7 +33,6 @@ export async function getStaticPaths() {
   
     // We'll pre-render only these paths at build time.
     // { fallback: false } means other routes should 404.
-    console.log(paths)
     return { paths, fallback: false }
   }
 
@@ -61,7 +60,6 @@ export async function getStaticPaths() {
     return { props: blog }
   }
 const index = (props) => {
-    console.log(props)
     return (
         <>
             <Head>
@@ -77,7 +75,7 @@ const index = (props) => {
                 <link rel="stylesheet" href="../../css/grid.css"/>
             </Head>
             <Header/>
-            <NewDetail title={props.title} description={props.description}/>
+            <NewDetail title={props.title} description={props.description} url={props.thumbnail.url}/>
             <Footer/>         
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
