@@ -20,6 +20,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
             getWishLists {
               products {
                 id,
+                slug,
                 name,
                 thumbnail{
                   url
@@ -54,7 +55,7 @@ const index = ({products,isSignedIn,jwt}) => {
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-   // console.log(currentProducts);
+    console.log(products);
    //const temp = {}
 
     const paginate = pageNumber => (setCurrentPage(pageNumber))
@@ -75,7 +76,7 @@ const index = ({products,isSignedIn,jwt}) => {
                 <ol className="breadcrumb mb-0 bg-white">
                 <div className="grid wide d-flex">
                      <li className="breadcrumb-item">
-                        <h6><a href="/">Home</a></h6>
+                        <h6 ><a href="/"className = "text-danger">Home</a></h6>
                      </li>
                 <li className="breadcrumb-item">
                     <h6>Wishlist</h6>

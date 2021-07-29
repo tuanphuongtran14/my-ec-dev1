@@ -1,8 +1,8 @@
 import React from "react";
-import Router from 'next/router'
 import { useState,useEffect } from "react";
 import { graphqlClient, gql } from "../../helpers/apollo-client";
 import Modal from "../../components/Modal/Modal";
+import Link from "next/link";
 export default function Wishlist({ currentProducts, jwt }) {
   
   const [refreshProducts, setRefreshProducts] = useState(currentProducts);
@@ -18,6 +18,7 @@ export default function Wishlist({ currentProducts, jwt }) {
             getWishLists {
               products {
                 id,
+                slug,
                 name,
                 thumbnail{
                   url
@@ -54,9 +55,9 @@ export default function Wishlist({ currentProducts, jwt }) {
               username
             }
             products {
-              id
-              name
-              finalPrice
+              id,
+              name,
+              finalPrice,
             }
           }
         }
@@ -71,6 +72,7 @@ export default function Wishlist({ currentProducts, jwt }) {
   
   return refreshProducts.map((product) => {
     const id = product.id;
+    const slug = '/san-pham/' + product.slug;
     const image = product.thumbnail.url;
     const name = product.name;
     const price = product.finalPrice.toLocaleString("DE-de");
@@ -119,7 +121,7 @@ export default function Wishlist({ currentProducts, jwt }) {
         <div className="col l-4 wishlist-item md-6 c-6 d-flex">
           <div>
             <img
-              // src={process.env.NEXT_PUBLIC_API_URL + image}
+              src={process.env.NEXT_PUBLIC_API_URL + image}
               alt={name}
               className="wishlist-item_img"
             />
@@ -152,9 +154,11 @@ export default function Wishlist({ currentProducts, jwt }) {
             cancelStyle="secondary"
             callback={handleSubmitDeleteWishList}
           />
+          <Link href = {slug} >
           <button type="button" className="btn btn-outline-info ml-2"id="addToCartBtn">
             Thêm vào giỏ hàng
           </button>
+          </Link>
         </div>
       </div>
     );

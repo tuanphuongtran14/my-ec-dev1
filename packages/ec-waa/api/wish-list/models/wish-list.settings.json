@@ -13,10 +13,13 @@
   "pluginOptions": {},
   "attributes": {
     "user": {
+      "autoPopulate": true,
       "via": "wish_list",
       "plugin": "users-permissions",
-      "autoPopulate": true,
       "model": "user"
+    },
+    "products": {
+      "collection": "product"
     }
   }
 }

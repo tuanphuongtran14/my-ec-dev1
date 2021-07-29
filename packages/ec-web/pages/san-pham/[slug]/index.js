@@ -10,7 +10,6 @@ import Review from "../../../components/Review/Review";
 import axios from 'axios';
 import Flickity from "react-flickity-component";
 import { productApi, reviewApi } from '../../../apis';
-
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
@@ -35,7 +34,8 @@ export default function Product({
     reviewList,
     isSignedIn,
     slug,
-    relatedProducts
+    relatedProducts,
+    jwt
 }) {
     const [stars, setStars] = useState(5);
     const [selectedColor, setSelectedColor] = useState(product.options[0].color);
@@ -45,7 +45,8 @@ export default function Product({
     const [isEditing, setIsEditing] = useState(false);
     const [displayNumber, setDisplayNumber] = useState(1);
     const [reload, setReload] = useState();
-
+    
+    const id = product._id; 
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
@@ -666,6 +667,40 @@ export default function Product({
         }
     }
 
+    const addToWishList = async(productId) => {
+        try {
+            const btnWL = document.ElementByClassName("btnAddToWishList");
+            btnWL.setAttribute("disabled", true);
+            btnWL.innerHTML = `
+                <span class="spinner-border spinner-border-sm"></span>
+                &nbsp; Đang thêm vào sản phẩm yêu thích
+            `;
+
+
+        const client = graphqlClient(jwt);
+
+        const { dataWL } = await client.mutate({
+            mutation: gql`
+                mutation addProductToWishList($productId: ID!) {
+                addProductToWishList(productId: $productId) 
+            }
+        `,
+      variables: {
+        productId: productId,
+      },
+    });
+    alert("dung hay khong " + dataWL.addProductToWishList);
+    if(dataWL.addProductToWishList){
+            btnWL.removeAttribute("disabled");
+            btnWL.innerHTML = `
+                <i class="fa fa-heart" aria-hidden="true"></i>
+                &nbsp Đã thêm vào yêu thích; 
+            `;
+    }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const loadMore = e => {
         e.preventDefault();
         setDisplayNumber(displayNumber + 10);
@@ -751,6 +786,7 @@ export default function Product({
         selectVersions('colors');
     }, []);
 
+   
     return (
         <>
             <Head>
@@ -850,7 +886,7 @@ export default function Product({
                                     </button>
                                 </div>
                                 <div className="col-6 pr-0 pl-1">
-                                    <button className="btn btn-primary w-100">
+                                    <button  className=" btn btn-primary w-100 btnAddToWishList" id="btnAddToWishList" onclick ={addToWishList(id)}>
                                         <i
                                             className="fa fa-heart"
                                             aria-hidden="true"
