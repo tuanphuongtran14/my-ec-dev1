@@ -1,3 +1,4 @@
+import axiosClient from "../apis/clients/axiosClient";
 import {
     withIronSession
 } from "next-iron-session";
@@ -11,15 +12,6 @@ export const isSignIn = ctx => {
     } = ctx;
 
     // Check if user logged in or not
-    return;
-}
-
-export const getJwt = ctx => {
-    // Get jwt from coookies 
-    const {
-        req,
-        res
-    } = ctx;
     return;
 }
 
@@ -45,20 +37,8 @@ export const signIn = async (username, password) => {
 };
 
 export const signOut = async () => {
-    // Send request to login API
-    const response = await fetch('/api/logout', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    // Retrieve data from response and return it
-    const {
-        ok
-    } = await response.json();
-
-    return ok;
+    const { success: signOutSuccessfully } = axiosClient.get("/api/logout");
+    return signOutSuccessfully? true : false;
 };
 // export const forgotPassword = async (email) => {
 //     // Send request to login API
