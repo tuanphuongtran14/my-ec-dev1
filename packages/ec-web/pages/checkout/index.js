@@ -5,52 +5,66 @@ import Footer from '../../components/Footer/Footer'
 import Queries from '../../components/Checkout/ItemList';
 import InfoUser from '../../components/Checkout/infoUser';
 import { useRouter } from 'next/router'
+import { GET_ALL_ITEMS_CART } from '../../components/Checkout/ItemList';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { useAuth } from "../../helpers/auth";
+import { useEffect, useState } from 'react';
+import EmptyCart from '../chua-co-don-hang/index'
 
-// export const getServerSideProps = useAuth(async ({ req, res, params }) => {
-//     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
-//     return {
-//         props: 
-//     }
-// });
+export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+    const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
+    if (!jwt) {
+        res.writeHead(302, {
+            Location: '/'
+        });
+        res.end();
+    }
 
-const payment = ()=>
-{
-
-    const router = useRouter()
-    
-    const handleClick = (e, path) => {
-        e.preventDefault()
-
-        
-        var fullName=document.getElementById("fullName").value;
-        var phone=document.getElementById("phone").value;
-        var mail=document.getElementById("mail").value;
-        var addressInfo=document.getElementById("addressInfo").value;
-
-        if ((phone!=="") && ( fullName !== "") && (mail !== "") && (addressInfo !== ""))
-        {
-            sessionStorage.setItem("fullname",fullName);
-            sessionStorage.setItem("phone",phone);
-            sessionStorage.setItem("mail",mail);
-            sessionStorage.setItem("addressInfo",addressInfo);
-            router.push(path);
-
+    return {
+        props: {
         }
-        else 
-        {
-            var warning = document.getElementById("hiddenWarning")
-            warning.hidden=false;
-        }
-    };
+    }
+});
 
 
-    
-    // if(isSignedIn)
+
+const payment = () => {
+    const router = useRouter();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const mail = document.getElementById('mail').value;
+        const address = document.getElementById('address').value;
+        sessionStorage.setItem('name', name);
+        sessionStorage.setItem('phone', phone);
+        sessionStorage.setItem('mail', mail);
+        sessionStorage.setItem('address', address);
+
+        router.push({
+            pathname: '/payment',
+        })
+    }
+
+    const [cartLength, setCartLength] = useState(false);
+
+    useEffect(() => {
+        const cartLengthSession = sessionStorage.getItem('cartLength');
+        if (cartLengthSession > 0)
+            setCartLength(true)
+    }, [])
+
+    if (!cartLength) {
+        return (
+            <EmptyCart />
+        )
+    }
     return (
-        <div>
+        <>
             <Head>
-                <title>CellPhone Store</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" key="title"/>
+                <title>Thông tin giao hàng</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" key="title" />
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
                 {/* <!-- Bootstrap CSS --> */}
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossOrigin="anonymous" />
@@ -59,38 +73,35 @@ const payment = ()=>
                 <link rel="stylesheet" href="./css/style.css" />
             </Head>
             <Header></Header>
-            <nav class="breadcrumb breadcrumb--custom my-1">
-            <div class="container px-0">
-                <Link href="/">
-                <a class="breadcrumb-item">Trang chủ</a>
-                </Link>
-                <span class="breadcrumb-item active">Thanh toán</span>
-            </div>
+            <nav className="breadcrumb breadcrumb--custom mb-1">
+                <div className="container px-3">
+                    <Link href="/">
+                        <a className="breadcrumb-item">Trang chủ</a>
+                    </Link>
+                    <span className="breadcrumb-item active">Thanh toán</span>
+                </div>
             </nav>
-            <div class="payment container row mx-auto px-0">
-                <div class="payment__bill col-12 col-lg-8"> 
-                    <div class="bg-white p-3"> 
-                        <div class="form-group "> 
-                            <h2 class="title">Thông tin giao hàng</h2>
+            <div className="payment container row mx-auto px-0">
+                <div className="payment__bill col-12 col-lg-8">
+                    <form className="bg-white p-3" action="/payment" method="POST" onSubmit={handleSubmit}>
+                        <div className="form-group ">
+                            <h2 className="title">Thông tin giao hàng</h2>
                             <InfoUser></InfoUser>
                         </div>
-                        <p className="text-danger" hidden id="hiddenWarning" >*Chưa điền đủ thông tin</p>
-                        <Link href="/">
-                     
-                    <button onClick={(e) => handleClick (e,"/payment")} type="button" id="completeButton" class="btn btn-success w-100 my-3">Tiến hành thanh toán</button>
-                    </Link>
-                    </div>
+                        <button type="submit" className="btn btn-success w-100 my-3">
+                            Tiến hành thanh toán
+                        </button>
+                    </form>
                 </div>
-                <div class="payment__product col-12 col-lg-4">
-                    <div class=" bg-white p-3"> 
-                        <h2 class="title">Chi tiết đơn hàng</h2>
+                <div className="payment__product col-12 col-lg-4">
+                    <div className=" bg-white p-3">
+                        <h2 className="title">Chi tiết đơn hàng</h2>
                         <Queries></Queries>
                     </div>
                 </div>
             </div>
-            <Footer></Footer>
-            
-        </div>
+            <Footer />
+        </>
     )
 }
 

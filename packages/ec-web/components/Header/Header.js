@@ -192,10 +192,11 @@ export default function Header() {
                             </div>
                         </button>
                         <button type="submit" className="btn btn--search" id="search-advanced">
-                            <div className="searchGo_text">
-                                <Link href="/advancedSearch">Advanced
-                                </Link>
-                            </div>
+                            <Link href="/advancedSearch">
+                                <div className="searchGo_text">
+                                    Advanced
+                                </div>
+                            </Link>
                         </button>
                         <button type="submit" className="btn btn--search" id="search-icon">
                             <i className="fa fa-search " aria-hidden="true" />

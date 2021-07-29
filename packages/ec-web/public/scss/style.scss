@@ -44,7 +44,7 @@
 /*=================================================================================*/
 $mainColor: #d70018;
 $fontColor: #000;
-$bodyColor: #f0f0f0;
+$bodyColor: #F8F9FA;
 
 @mixin box-sizing-border-box {
     -webkit-box-sizing: border-box;
@@ -257,6 +257,7 @@ html{
         position: absolute;
         top: 0px;
         right: 10px;
+        color: $fontColor;
         z-index: 100000000000000000000000000000000;
         font-size: 1rem;
         padding: 0.5rem 1rem;
@@ -298,6 +299,7 @@ html{
         top: 0px;
         right: 125px;
         font-size: 1rem;
+        color: $fontColor;
         padding: 0.5rem 0.5rem;
         background-color: #FFFFFF;
         border: none;
@@ -312,6 +314,13 @@ html{
           border: 1px solid black;
           padding: 0.05rem 0.5rem;
         }
+            .searchGo_text:hover{
+                text-decoration-line: underline;
+                text-decoration-color: $bodyColor;
+                background-color: $fontColor;
+                color: $bodyColor;
+            }
+            
 }
 
 /*-------------------------*/
@@ -543,10 +552,9 @@ html{
 /*-------------------------*/
 .breadcrumb--custom {
     // background-color: transparent !important;
-    background-color: #FFFFFF !important;
+    background-color: transparent !important;
     padding: 15px 0;
     border-radius: 0;
-    border-bottom: 1px solid #F0F0F0 ;
     .breadcrumb-item {
         color: $mainColor !important;
         display: inline-block!important;
@@ -566,9 +574,9 @@ html{
 /*-------------------------*/
 .search-bar {
     width: 100%;
-    height: 4rem;
+    height: 6.5rem; 
 
-    background-color: $mainColor;
+    background-color: #343A40; 
 
     display: none;
     justify-content: center;
