@@ -43,7 +43,7 @@ export default function DropdownUser() {
             } catch {
                 return false;
             }
-        });
+        },[]);
         if (user) {
             return (
                 <Menu as="div" className="relative inline-block text-left">
