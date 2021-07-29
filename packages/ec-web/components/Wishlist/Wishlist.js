@@ -5,57 +5,25 @@ import Modal from "../../components/Modal/Modal";
 export default function Wishlist({ currentProducts, jwt }) {
   
   const [refreshProducts, setRefreshProducts] = useState(currentProducts);
-  
-  const refreshWishList = async () =>{
-    alert('chay roi')
-    try{ const client = graphqlClient(jwt);
-    
-    const {data} = await client.query({
-        query: gql`
-        query {
-            wishLists:
-            getWishLists {
-              products {
-                id,
-                name,
-                thumbnail{
-                  url
-                }
-                finalPrice
-                options{
-                  quantityInStock
-                }
-                
-              }
-            }
-          }
-          
-          `,
-    });
-    console.log(data)
-    setRefreshProducts([])
-    setRefreshProducts(data.wishLists.products)
-    return true
-  }
-  catch{
-      return false 
-    }
-  }
-  
   const deleteWishList = async (productId) => {
     const client = graphqlClient(jwt);
 
-    const { dataDeleted } = await client.mutate({
+    const { data } = await client.mutate({
       mutation: gql`
         mutation removeItemsInWishList($productId: ID!) {
           removeItemsInWishList(productId: $productId) {
-            user {
-              username
-            }
             products {
-              id
-              name
-              finalPrice
+              id,
+              slug,
+              name,
+              thumbnail{
+                url
+              }
+              finalPrice,
+              options{
+                quantityInStock
+              }
+              
             }
           }
         }
@@ -64,8 +32,9 @@ export default function Wishlist({ currentProducts, jwt }) {
         productId: productId,
       },
     });
+    setRefreshProducts(data.wishLists.products)
 
-    return dataDeleted ? true: false;
+    return data ? true: false;
   };
   
   return refreshProducts.map((product) => {
@@ -91,14 +60,16 @@ export default function Wishlist({ currentProducts, jwt }) {
         `;
   
         const deleteWishList1 = await deleteWishList(id);
-  
-        if (deleteWishList1) {
-      //    $(`#deleteConfirm`).modal("hide");
-          alert("alo alo")
-          console.log("alo alo")
-          await refreshWishList()
-          
+        if(deleteWishList1 == true){
+          alert("Bạn đã xóa thành công sản phẩm: "+ {name});
         }
+      //   if (deleteWishList1) {
+      // //    $(`#deleteConfirm`).modal("hide");
+      //     alert("alo alo")
+      //     console.log("alo alo")
+      //     await refreshWishList()
+          
+      //   }
   
         yesBtn.removeAttribute("disabled");
         yesBtn.innerHTML = "Đồng ý";
