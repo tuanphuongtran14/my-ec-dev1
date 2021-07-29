@@ -1,5 +1,4 @@
 import React from "react";
-import Router from 'next/router'
 import { useState,useEffect } from "react";
 import { graphqlClient, gql } from "../../helpers/apollo-client";
 import Modal from "../../components/Modal/Modal";
