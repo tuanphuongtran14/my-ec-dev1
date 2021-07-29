@@ -9,6 +9,7 @@ import {
     GET_USER_CART,
     ME,
     FORGET_PASSWORD,
+    GET_USER_ORDERS,
 } from "../constants/graphql/user";
 
 class UserApi {
@@ -184,6 +185,22 @@ class UserApi {
                 error
             };
         }
+    }
+    async getUserOrders() {
+        const { data: responseData } = await axiosClient.post(
+            "http://localhost:3000/api/graphql",
+            {
+                type: "query",
+                query: `
+                    query {
+                        orders: ${GET_USER_ORDERS},
+                    }
+                `,
+                variables: {},
+            }
+        );
+        const { data, error, success } = responseData;
+        return success ? data : error;
     }
 }
 

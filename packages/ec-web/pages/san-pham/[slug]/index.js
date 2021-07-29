@@ -1,12 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
-import Header from "../../../components/Header/Header";
-import Footer from "../../../components/Footer/Footer";
-import { graphqlClient, gql } from "../../../helpers/apollo-client";
+import { Header, Footer, Modal, Review, RatingStars } from "../../../components";
 import { useAuth } from "../../../helpers/auth";
-import Modal from "../../../components/Modal/Modal";
-import Review from "../../../components/Review/Review";
 import axios from 'axios';
 import Flickity from "react-flickity-component";
 import { productApi, reviewApi } from '../../../apis';
@@ -339,7 +335,7 @@ export default function Product({
                         {overviews.average}/5
                     </span>
                     <span className="rating-result">
-                        {displayStars(overviews.average)}
+                        <RatingStars stars={overviews.average} />
                     </span>
                     <span className="overviews__quantity-reviews mt-1">
                         {overviews.total} Đánh giá
@@ -687,13 +683,7 @@ export default function Product({
                 />
             );
 
-        if ((stars - Math.floor(stars)) > 0) {
-            result.push(
-                <i className="fa product__rating-icon fa-star-half" aria-hidden="true"></i>
-            )
-        }
-
-        for (let i = result.length; i < 5; i++)
+        for (let i = Math.floor(stars) + 1; i <= 5; i++)
             result.push(
                 <i
                     className="fa fa-star-o checked"
@@ -754,18 +744,9 @@ export default function Product({
     return (
         <>
             <Head>
-                {" "}
                 <title>{product.name}</title>
-                {/* <!-- CSS --> */}
-                {/* <link
-                    rel="stylesheet"
-                    href="https://unpkg.com/flickity@2/dist/flickity.min.css"
-                />
-                {/* <!-- JavaScript --> */}
-                {/* <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script> */}
             </Head>
             <Header />
-
             <div className="bodyIndex" id="root">
                 <article className="container product-details bg-white border">
                     <nav className="breadcrumb breadcrumb--custom mb-1">
@@ -788,7 +769,7 @@ export default function Product({
                         </h1>
                         <div className="col-12 col-lg-6 product-details__rating">
                             <span className="rating-result mr-3">
-                                {displayStars(overviews.average)}
+                                <RatingStars stars={overviews.average} />
                             </span>
                             <span>
                                 {overviews.total} Đánh giá | <a href="#menuTab" onClick={handleScroll}>Nhận xét ngay</a>

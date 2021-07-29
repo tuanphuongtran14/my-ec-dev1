@@ -43,5 +43,36 @@ export const GET_USER_CART = `
     }
 `;
 
-
+export const GET_USER_ORDERS = `
+    getOrders {
+        id
+        orderCode
+        consigneeName
+        consigneePhone
+        email
+        addressLine1
+        district
+        city
+        items {
+            product {
+            name
+            thumbnail {
+                url
+            }
+            }
+            color
+            qty
+            unitPrice
+            totalPrice
+        }
+        coupon {
+            code
+        }
+        totalAmount
+        finalAmount
+        status
+        paymentMethod
+        isPaid
+    }
+`
 

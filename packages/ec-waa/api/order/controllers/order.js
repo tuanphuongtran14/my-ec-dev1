@@ -8,10 +8,10 @@ const { ObjectID } = require('mongodb');
 
 module.exports = {
     async getOrders(ctx) {
-        // If user has already logged in, return user's orders
+        // If user has already logged in, execute
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
-                // Get user's id from request header
+                // Get user's id
                 const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
                 // Return user's orders
@@ -26,13 +26,13 @@ module.exports = {
     },
 
     async checkout(ctx) {
-        // If user has already logged in, execute checkout order
+        // If user has already logged in, checkout order
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
-                // Get user's id from request header
+                // Get user's id
                 const { id: userId } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
-                // Get input from request 
+                // Get input 
                 const {
                     consigneeName,
                     consigneePhone,
@@ -45,7 +45,7 @@ module.exports = {
 
                 const userCart = await strapi.services.cart.checkout(userId);
                 
-                // If user's cart is not exist or has no items, throw an error
+                // If user's cart is not exist or has no items, stop
                 if(!userCart || userCart.items.length === 0) 
                     throw new Error('Cannot checkout because your cart is empty');
 
@@ -80,7 +80,7 @@ module.exports = {
                     }
                 });
                 
-                // If user's cart is not exist or has no items, throw an error
+                // If no selected items, stop
                 if(idItemToBuy.length < 1) 
                     throw new Error('Cannot checkout because no selected item in your cart');
 
@@ -102,6 +102,7 @@ module.exports = {
                     coupon: userCart.coupon,
                     itemDetails: itemToBuy,
                     orderId: Date.now(),
+                    orderCode: Date.now(),
                 });
                 
                 // After creating order, remove items that is bought from cart
@@ -127,27 +128,31 @@ module.exports = {
     },
 
     async cancelOrderById(ctx) {
-        // If user has already logged in, cancel order by id user provided
+        // If user has already logged in, cancel order
         if(ctx.request.header && ctx.request.header.authorization) {
             try {
-                // Get the user's id from request header
+                // Get the user's id
                 const { id: user_id } = await strapi.plugins['users-permissions'].services.jwt.getToken(ctx);
 
-                // Get the order's id which user provided from request
+                // Get the order's id
                 const { orderId } = ctx.request.body;
 
-                // Retrieve the order by id which user provided
+                // Retrieve the order
                 const orderNeedToBeCancelled = await strapi.query('order').model.findById(orderId);
 
-                // If the order need to be cancelled is not exist, throw an error
+                // If status is not "Pending", stop cancelling
+                if(orderNeedToBeCancelled.status !== "Pending")
+                    throw new Error(`Cannot cancel order with id ${orderId} because it has confimed by staff`)
+
+                // If the order not exist, stop cancelling
                 if(!orderNeedToBeCancelled)
                     throw new Error(`Cannot cancel order with id ${orderId} because it is not exist`);
 
-                // If the order to be canceled is not the user's, throw an error
+                // If the order is not the user's,  stop cancelling
                 if(orderNeedToBeCancelled.user != user_id)
                     throw new Error(`Cannot cancel order with id ${orderId} because it is not the one of your order`);
 
-                // Cancel order by setting its status to "Cancelled"
+                // Cancel order
                 return await strapi.query('order').update({ id: orderId }, { 
                     status: 'Cancelled' 
                 });

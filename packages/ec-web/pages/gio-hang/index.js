@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
 import Head from "next/head";
-import Link from "next/link"
-import { useAuth } from '../../helpers/auth';
+import Link from "next/link";
+import withIronSession from "../../helpers/customWithIronSession";
 import { cartApi } from '../../apis';
 import { Header, Footer, Modal } from '../../components';
 
-export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+export const getServerSideProps = withIronSession(async ({ req }) => {
     const user = req.session.get("user");
     return {
         props: {
@@ -522,9 +522,6 @@ const index = () => {
                 onlyConfirm={true}
             />
             <Footer />
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             </div>
         </>
     );

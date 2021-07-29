@@ -24,10 +24,11 @@ export default function DropdownUser() {
     }, []);
 
     // Handle sign out 
-    const handleSignOut = () => {
-        if(signOut())
+    const handleSignOut = async () => {
+        if(await signOut()) {
             router.reload();
             localStorage.clear();
+        }
     }
 
     if (user) {
