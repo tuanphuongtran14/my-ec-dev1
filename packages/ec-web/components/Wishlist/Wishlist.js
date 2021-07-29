@@ -111,65 +111,6 @@ export default function Wishlist({ currentProducts, jwt }) {
       }
     };
 
-   /*************************   Add product to cart *******************************************/
-    const addToCart = async () => {
-      try {
-          const btnEle = document.getElementById("addToCartBtn");
-          btnEle.setAttribute("disabled", true);
-          btnEle.innerHTML = `
-              <span class="spinner-border spinner-border-sm"></span>
-              &nbsp; Thêm vào giỏ hàng
-          `;
-
-          const mutation = `
-              mutation($cartId: ID!, $newItem: CartItemInput!) {
-                  cart: addItemToCart(
-                      cartId: $cartId,
-                      newItem: $newItem
-                  ) {
-                      _id
-                      items {
-                          _id
-                      }
-                  }
-              }
-          `;
-
-          const variables = {
-              cartId: localStorage.getItem("cartId"),
-              newItem: {
-                  product: product._id,
-                  qty: 1,
-                  color: selectedColor
-              }
-          };
-
-          const { data } = await axios({
-              method: 'POST',
-              url: '/api/mutation',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              data: {
-                  mutation,
-                  variables
-              },
-          });
-
-          localStorage.setItem("cartId", data.cart._id);
-          localStorage.setItem('cartItems', data.cart.items.length);
-          setReload(data.cart.items.length);
-
-          btnEle.removeAttribute("disabled");
-          btnEle.innerHTML = `
-              <i class="fa fa-cart-plus" aria-hidden="true"></i>
-              &nbsp; Thêm vào giỏ hàng
-          `;
-
-      } catch (error) {
-          console.log(error);
-      }
-  }
     return (
       <div
         key={id}
@@ -211,7 +152,7 @@ export default function Wishlist({ currentProducts, jwt }) {
             cancelStyle="secondary"
             callback={handleSubmitDeleteWishList}
           />
-          <button type="button" className="btn btn-outline-info ml-2"id="addToCartBtn" onClick={addToCart}>
+          <button type="button" className="btn btn-outline-info ml-2"id="addToCartBtn">
             Thêm vào giỏ hàng
           </button>
         </div>
