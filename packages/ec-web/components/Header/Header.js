@@ -1,85 +1,23 @@
-import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
-
 import DropdownUser from './DropdownUser';
-import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { userApi } from '../../apis';
+
 export default function Header() {
     const [itemsNumber, setItemsNumber] = useState();
 
     useEffect(async () => {
         const cartId = localStorage.getItem('cartId');
 
-        if (!cartId) {
-            const query = `
-                query {
-                    cart: getCart {
-                        _id
-                        items {
-                            _id
-                        }
-                    }
-                }
-            `;
+        const data = await userApi.getUserCart(cartId);
 
-            const variables = {};
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/query',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    query,
-                    variables
-                },
-            });
-
-            if (data && data.cart) {
-                localStorage.setItem('cartId', data.cart._id);
-                localStorage.setItem('cartItems', data.cart.items.length);
-                setItemsNumber(data.cart.items.length);
-            } else {
-                localStorage.removeItem('cartId');
-                localStorage.setItem('cartItems', 0);
-            }
+        if (data && data.cart) {
+            localStorage.setItem('cartId', data.cart._id);
+            localStorage.setItem('cartLength', data.cart.items.length);
+            setItemsNumber(data.cart.items.length);
         } else {
-            const query = `
-                query($cartId: ID!) {
-                    cart: getCart(cartId: $cartId) {
-                        _id
-                        items {
-                            _id
-                        }
-                    }
-                }
-            `;
-
-            const variables = {
-                cartId: localStorage.getItem("cartId")
-            };
-
-            const { data } = await axios({
-                method: 'POST',
-                url: '/api/query',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {
-                    query,
-                    variables
-                },
-            });
-
-            if (data && data.cart) {
-                localStorage.setItem('cartId', data.cart._id);
-                localStorage.setItem('cartItems', data.cart.items.length);
-                setItemsNumber(data.cart.items.length);
-            } else {
-                localStorage.removeItem('cartId');
-                localStorage.setItem('cartItems', 0);
-            }
+            localStorage.removeItem('cartId');
+            localStorage.setItem('cartLength', 0);
         }
     });
 
@@ -230,7 +168,7 @@ export default function Header() {
                             <li className="menu__item">
                                 <button type="button" className="btn btn--no-outline">
                                     <Link href="/gio-hang">
-                                        <a><i className="fa fa-shopping-bag fa--md text-white" data-amount={itemsNumber} aria-hidden="true" /></a>
+                                        <a><i className="fa fa-shopping-bag fa--md text-white" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
                                     </Link>
                                 </button>
                             </li>
@@ -254,10 +192,11 @@ export default function Header() {
                             </div>
                         </button>
                         <button type="submit" className="btn btn--search" id="search-advanced">
-                            <div className="searchGo_text">
-                                <Link href="/advancedSearch">Advanced
-                                </Link>
-                            </div>
+                            <Link href="/advancedSearch">
+                                <div className="searchGo_text">
+                                    Advanced
+                                </div>
+                            </Link>
                         </button>
                         <button type="submit" className="btn btn--search" id="search-icon">
                             <i className="fa fa-search " aria-hidden="true" />

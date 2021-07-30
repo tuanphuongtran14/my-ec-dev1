@@ -104,7 +104,7 @@ const NewDetail = (props) => {
                 <div className="news-detail__image">
                     <img src={process.env.NEXT_PUBLIC_API_URL+props.url}/>
                 </div>
-                <div id="news-detail__description" dangerouslySetInnerHTML={{
+                <div className="overflow-auto" id="news-detail__description" dangerouslySetInnerHTML={{
                                         __html: props.description,
                 }}>
                 </div>

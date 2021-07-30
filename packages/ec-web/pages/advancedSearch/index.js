@@ -76,6 +76,7 @@ export default function Index({ products }) {
         // sessionStorage.clear();
         const brand = document.getElementById('brand').value;
         const platform = document.getElementById('platform').value;  
+        const screenPanel = document.getElementById('screenPanel').value;  
         
         if (brand)
             query.brand = brand;

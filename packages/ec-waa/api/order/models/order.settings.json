@@ -73,6 +73,9 @@
     },
     "orderId": {
       "type": "uid"
+    },
+    "orderCode": {
+      "type": "uid"
     }
   }
 }
