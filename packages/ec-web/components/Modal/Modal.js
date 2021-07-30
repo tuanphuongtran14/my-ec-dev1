@@ -47,6 +47,7 @@ export default function Modal({
                                     await callback(e);
                                     
                                 $(`#${id}`).modal("hide");
+                               
                             }}
                         >
                             Đồng ý

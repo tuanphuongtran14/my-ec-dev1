@@ -1,63 +1,29 @@
 import React from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { graphqlClient, gql } from "../../helpers/apollo-client";
 import Modal from "../../components/Modal/Modal";
-import Link from "next/link";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function Wishlist({ currentProducts, jwt }) {
-  
   const [refreshProducts, setRefreshProducts] = useState(currentProducts);
-  
-  const refreshWishList = async () =>{
-    alert('chay roi')
-    try{ const client = graphqlClient(jwt);
-    
-    const {data} = await client.query({
-        query: gql`
-        query {
-            wishLists:
-            getWishLists {
-              products {
-                id,
-                slug,
-                name,
-                thumbnail{
-                  url
-                }
-                finalPrice
-                options{
-                  quantityInStock
-                }
-                
-              }
-            }
-          }
-          
-          `,
-    });
-    console.log(data)
-    setRefreshProducts([])
-    setRefreshProducts(data.wishLists.products)
-    return true
-  }
-  catch{
-      return false 
-    }
-  }
-  
   const deleteWishList = async (productId) => {
     const client = graphqlClient(jwt);
 
-    const { dataDeleted } = await client.mutate({
+    const { data } = await client.mutate({
       mutation: gql`
         mutation removeItemsInWishList($productId: ID!) {
           removeItemsInWishList(productId: $productId) {
-            user {
-              username
-            }
             products {
-              id,
-              name,
-              finalPrice,
+              id
+              slug
+              name
+              thumbnail {
+                url
+              }
+              finalPrice
+              options {
+                quantityInStock
+              }
             }
           }
         }
@@ -66,13 +32,13 @@ export default function Wishlist({ currentProducts, jwt }) {
         productId: productId,
       },
     });
+    setRefreshProducts(data.removeItemsInWishList.products);
 
-    return dataDeleted ? true: false;
+    return data ? true : false;
   };
-  
+
   return refreshProducts.map((product) => {
     const id = product.id;
-    const slug = '/san-pham/' + product.slug;
     const image = product.thumbnail.url;
     const name = product.name;
     const price = product.finalPrice.toLocaleString("DE-de");
@@ -85,26 +51,26 @@ export default function Wishlist({ currentProducts, jwt }) {
       // e.preventDefault();
       const modal = document.getElementById("deleteConfirm");
       const yesBtn = modal.querySelector("#yesBtn");
-  
+
       try {
         yesBtn.setAttribute("disabled", true);
         yesBtn.innerHTML = `
             <span class="spinner-border spinner-border-sm"></span>
             Đang xóa... 
         `;
-  
-        const deleteWishList1 = await deleteWishList(id);
-  
-        if (deleteWishList1) {
-      //    $(`#deleteConfirm`).modal("hide");
-          alert("alo alo")
-          console.log("alo alo")
-          await refreshWishList()
-          
+        if (deleteWishList(id)) {
+          toast.success(`Bạn đã xóa thành công ${name}`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          yesBtn.removeAttribute("disabled");
+          yesBtn.innerHTML = "Đồng ý";
         }
-  
-        yesBtn.removeAttribute("disabled");
-        yesBtn.innerHTML = "Đồng ý";
       } catch (error) {
         yesBtn.removeAttribute("disabled");
         yesBtn.innerHTML = `
@@ -146,7 +112,19 @@ export default function Wishlist({ currentProducts, jwt }) {
           >
             Xóa
           </button>
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
           <Modal
+            name={name}
             id="deleteConfirm"
             title="Bạn có chắc muốn xóa sản phẩm này ra khỏi sản phẩm yêu thích của bạn không?"
             body="Sản phẩm này sau khi xóa sẽ không thể khôi phục được. Bạn có chắc muốn thực hiện điều này?"
@@ -154,11 +132,13 @@ export default function Wishlist({ currentProducts, jwt }) {
             cancelStyle="secondary"
             callback={handleSubmitDeleteWishList}
           />
-          <Link href = {slug} >
-          <button type="button" className="btn btn-outline-info ml-2"id="addToCartBtn">
+          <button
+            type="button"
+            className="btn btn-outline-info ml-2"
+            id="addToCartBtn"
+          >
             Thêm vào giỏ hàng
           </button>
-          </Link>
         </div>
       </div>
     );
