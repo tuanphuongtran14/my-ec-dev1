@@ -1,6 +1,23 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
+import React from 'react'
+
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql
+} from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: 'http://localhost:1337/graphql',
+  cache: new InMemoryCache()
+});
+
+
+
 
 export default function Customer() {
 
@@ -22,8 +39,9 @@ export default function Customer() {
       <td className="order-moble">{props.trangThaiDonHang}</td>
     </tr>
   )
-
-  const Customer = () => (
+   
+  const Customer = (data) => (
+     
   <div onload="customerToggle()">
       <div className="container-fluid"style={{backgroundColor: '#f0f0f0'}}>
             <div className="container py-4">
@@ -35,7 +53,7 @@ export default function Customer() {
                                 <img className="account__img"src="https://lh4.googleusercontent.com/-HBXyAHCrURI/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucl3I6rOPCyi3anNHc8C8CKj9ItxMA/s96-c-rg-br100/photo.jpg" alt=""/>
                                 <div className="account__info">
                                     Tài khoản của
-                                    <strong>Minh Tâm</strong>
+                                    <strong>MinhTam</strong>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +87,7 @@ export default function Customer() {
                         <div className="shadow">
                             <form className="account-detail__form">
                                 <div className="form-group row account-form-edit">
-                                    <label for="name" className="col-sm-2 col-form-label">Tên tài khoản</label>
+                                    <label for="name" className="col-sm-2 col-form-label">MinhTam</label>
                                     <div className="col-sm-10">
                                         <input type="text" className="form-control" id="name" placeholder="Tên đăng nhập" value="Minh Tâm" disabled/>
                                     </div>
@@ -77,13 +95,13 @@ export default function Customer() {
                                 <div className="form-group row account-form-edit">
                                     <label for="name" className="col-sm-2 col-form-label">Họ tên</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control" id="name" placeholder="Đỗ Văn Sa"/>
+                                        <input type="text" className="form-control" id="name" placeholder="DoVansa"/>
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
                                     <label for="phone" className="col-sm-2 col-form-label">Số điện thoại</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control" id="phone" placeholder="123456789" />
+                                        <input type="text" className="form-control" id="phone" placeholder={data.consigneePhone} />
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
