@@ -13,7 +13,7 @@ import {useMutation} from "@apollo/client";
 //   }
 // }
 // `
-export default function (){
+export default function ForgetPassword(){
 //   const [message, setMessage] = useState();
 //   const router = useRouter();
 //   const onSubmit = async (e) => {

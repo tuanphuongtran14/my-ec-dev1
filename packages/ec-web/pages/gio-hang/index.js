@@ -3,18 +3,27 @@ import Head from "next/head";
 import Link from "next/link";
 import withIronSession from "../../helpers/customWithIronSession";
 import { cartApi } from '../../apis';
-import { Header, Footer, Modal } from '../../components';
+import { Header, Footer, Modal, CartItem } from '../../components';
 
-export const getServerSideProps = withIronSession(async ({ req }) => {
+export const getServerSideProps = withIronSession(async ({ req, res }) => {
     const user = req.session.get("user");
+    const isSignedIn = user ? true : false;
+
+    if (!isSignedIn) {
+        res.writeHead(302, {
+            Location: '/'
+        });
+        return res.end();
+    }
+
     return {
         props: {
-            isSignedIn: user ? true : false,
+            isSignedIn,
         },
     };
 });
 
-const index = () => {
+const index = ({ isSignedIn }) => {
     const [items, setItems] = useState([]);
     const [coupon, setCoupon] = useState({});
     const [enableMutilRemove, setEnableMutilRemove] = useState(false);
@@ -72,20 +81,7 @@ const index = () => {
         } catch(error) {
             console.log(error);
         }
-    };
-
-    // *********** START: Process toggle select items  ************ //
-    const toggleSelectItem = async (e, itemId) => {
-        const value = e.target.checked;
-
-        try {
-            const data = await cartApi.toggleSelectItem(localStorage.getItem("cartId"), itemId, value);
-
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-        }
-    }
+    };  
 
     // ********** START: Process toggle select all items  ********** //
     const toggleSelectAll = async e => {
@@ -119,61 +115,7 @@ const index = () => {
 
     const confirmRemoveItems = () => {
         $(`#removeMutilConfirm`).modal();
-    }
-                    
-    // ************* START: Process delete an item  ************** //
-    const removeItem = async itemId => {
-        try {
-            const data = await cartApi.removeItem(localStorage.getItem('cartId'), itemId);
-            
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-        }
-    };
-
-    const confirmRemoveItem = itemId => {
-        $(`#removeItemConfirm`).modal();
-        deleleItemId = itemId;
     }            
-    
-    // ********** START: Process increment quantity item ********** //
-    const incrementQuantityItemByOne = async (itemId, qtyInStock, qtyInputId) => {
-        const currentQty = Number(document.getElementById(qtyInputId).value);
-        if(currentQty + 1 > qtyInStock) 
-            return warnIncrementQty(qtyInStock);
-
-        try {
-            const data = await cartApi.incrementQuantity(localStorage.getItem('cartId'), itemId, 1);
-
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-        }
-    }
-
-    const warnIncrementQty = qtyInStock => {
-        document.querySelector("#warningIncreQty .modal-title").innerText = `Số lượng tối đa mà bạn có thể mua sản phẩm này là: ${qtyInStock}`;
-        $(`#warningIncreQty`).modal();
-    };
-    
-    // ********** START: Process decrement quantity item ********** //
-    const decrementQuantityItemByOne = async (itemId, qtyInStock, qtyInputId) => {
-        const currentQty = Number(document.getElementById(qtyInputId).value);
-        if(currentQty - 1 < 1) 
-            return warnDecrementQty(itemId);
-
-        try {
-            const data = await cartApi.decrementQuantity(localStorage.getItem('cartId'), itemId, 1);
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-        }
-    };
-
-    const warnDecrementQty = itemId => {
-        $(`#warningDecreQty`).modal();
-    };
 
     // *************** START: Process apply coupon *************** //
     const applyCoupon = async () => {
@@ -201,150 +143,6 @@ const index = () => {
             });
         } 
     }
-
-    // ************* START: Process change item color ************* //
-    const changeItemColor = async (e, itemId) => {
-        const color = e.target.value;
-
-        try {
-            const data = await cartApi.changeItemColor(localStorage.getItem('cartId'), itemId, color);
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-        } 
-    }
-
-    // *************** START: Process display items *************** //
-    const displayItems = () => {
-        return items.map((item, index) => {
-            let qtyInStock = 0;
-            const optionSelect = item.product.options.map(option => {
-                if(option.color === item.color) {
-                    qtyInStock = option.quantityInStock;
-                    return (
-                        <option value={option.color} selected>{ option.color }</option>
-                    )
-                }
-                
-                return (
-                    <option value={option.color}>{ option.color }</option>
-                )
-            });
-
-            return (
-                <div className="card mb-3" key={`checkbox${index}`}>
-                    <div className="card-body">
-                        <div className="row align-items-center">
-                            <div className="col-1">
-                                <div className="form-group">
-                                    <div className="custom-control custom-checkbox">
-                                        <input
-                                            type="checkbox"
-                                            className="custom-control-input"
-                                            id={`customCheck${index}`}
-                                            name={`customCheck${index}`}
-                                            defaultChecked={item.selected}
-                                            onChange={e =>  toggleSelectItem(e, item._id)}
-                                        />
-                                        <label
-                                            className="custom-control-label"
-                                            for={`customCheck${index}`}
-                                        ></label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-5 col-lg-2 pl-0">
-                                <img
-                                    className="img-fluid"
-                                    src={process.env.NEXT_PUBLIC_API_URL + item.product.thumbnail.url}
-                                    alt=""
-                                />
-                            </div>
-                            <div className="col">
-                                <div className="row align-items-center">
-                                    <div className="col-12 col-lg-5 mb-3">
-                                        <p className="font-weight-bold">
-                                            {item.product.name}
-                                        </p>
-                                        <div className="form-group mb-0">
-                                            {/* <label for=""></label> */}
-                                            <select
-                                                className="form-control form-control-sm bg-grey border"
-                                                onChange={e => changeItemColor(e, item._id)}
-                                            >
-                                                { optionSelect }
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-12 col-lg-4 mb-3 text-center">
-                                        <p className="regular-price center">
-                                            {item.product.finalPrice.toLocaleString("DE-de")}đ
-                                        </p>
-                                        <button
-                                            type="button"
-                                            className="btn btn-red mr-2"
-                                        >
-                                            <i
-                                                className="fa fa-heart"
-                                                aria-hidden="true"
-                                            ></i>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-light"
-                                            onClick={() => confirmRemoveItem(item._id)}
-                                        >
-                                            <i
-                                                className="fa fa-trash"
-                                                aria-hidden="true"
-                                            ></i>
-                                        </button>
-                                    </div>
-                                    <div className="col-12 col-lg-3">
-                                        <div className="input-group">
-                                            <div className="input-group-prepend">
-                                                <button
-                                                    className="btn btn-quantity-control border rounded-0"
-                                                    type="button"
-                                                    id="button-addon1"
-                                                    onClick={() => decrementQuantityItemByOne(item._id, qtyInStock, `qtyInput${index}`)}
-                                                >
-                                                    -
-                                                </button>
-                                            </div>
-                                            <input
-                                                type="number"
-                                                className="form-control text-center border rounded-0 pr-0"
-                                                defaultValue={item.qty}
-                                                id={`qtyInput${index}`}
-                                                min={1}
-                                                max={qtyInStock}
-                                                disabled
-                                                aria-label="Example text with button addon"
-                                                aria-describedby="button-addon1"
-                                            />
-                                            <div className="input-group-append">
-                                                <button
-                                                    className="btn btn-quantity-control border rounded-0"
-                                                    type="button"
-                                                    id="button-addon2"
-                                                    onClick={() => incrementQuantityItemByOne(item._id, qtyInStock, `qtyInput${index}`)}
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <p className="text-center mt-3">Còn lại: {qtyInStock}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        })
-    };
-
 
     return (
         <>
@@ -403,7 +201,9 @@ const index = () => {
                                 </div>
                             </div>
                         </div>
-                        { displayItems() }
+                        { 
+                            items.map((item, index) => <CartItem item={item} index={index} setNewCart={setNewCart} />)
+                        }
                     </div>
                     <div className="box-left-12 box-right-3-lg">
                         <div className="card mb-3">
@@ -501,25 +301,6 @@ const index = () => {
                 confirmStyle="danger"
                 cancelStyle="success"
                 callback={removeSelectedItems}
-            />
-            <Modal
-                id="removeItemConfirm"
-                title="Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?"
-                confirmStyle="danger"
-                cancelStyle="success"
-                callback={() => removeItem(deleleItemId)}
-            />
-            <Modal
-                id="warningIncreQty"
-                title={`Số lượng tối đa mà bạn có thể mua với sản phẩm này là: ${0}`}
-                confirmStyle="success"
-                onlyConfirm={true}
-            />
-            <Modal
-                id="warningDecreQty"
-                title={`Số lượng tối thiểu để bạn có thể mua sản phẩm này là: 1`}
-                confirmStyle="success"
-                onlyConfirm={true}
             />
             <Footer />
             </div>
