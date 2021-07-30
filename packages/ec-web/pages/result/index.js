@@ -55,8 +55,7 @@ export async function getServerSideProps({query}) {
     };
 }
 
-export default function ({ products }) {
-    // export default function () {
+export default function Result({ products }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(25);
 

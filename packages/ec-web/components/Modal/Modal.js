@@ -47,7 +47,8 @@ export default function Modal({
                                     await callback(e);
                                     
                                 $(`#${id}`).modal("hide");
-                               
+                                $('body').removeClass('modal-open');
+                                $('.modal-backdrop').remove();
                             }}
                         >
                             Đồng ý

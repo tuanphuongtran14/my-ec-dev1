@@ -1,7 +1,7 @@
+import axiosClient from "../apis/clients/axiosClient";
 import {
     withIronSession
 } from "next-iron-session";
-
 
 export const isSignIn = ctx => {
     // Get jwt from coookies 
@@ -14,52 +14,23 @@ export const isSignIn = ctx => {
     return;
 }
 
-export const getJwt = ctx => {
-    // Get jwt from coookies 
-    const {
-        req,
-        res
-    } = ctx;
-    return;
-}
-
 export const signIn = async (username, password) => {
     // Send request to login API
-    const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username,
-            password
-        }),
+    const { data } = await axiosClient.post("/api/login", {
+        username,
+        password
     });
 
-    // Retrieve data from response and return it
-    const {
-        ok
-    } = await response.json();
-
-    return ok;
+    return data.ok;
 };
 
 export const signOut = async () => {
-    // Send request to login API
-    const response = await fetch('/api/logout', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    // Retrieve data from response and return it
-    const {
-        ok
-    } = await response.json();
-
-    return ok;
+    const { data } = await axiosClient.get("/api/logout");
+    console.log(data);
+    const { success: signOutSuccessfully } = data;
+    return signOutSuccessfully;
 };
+
 // export const forgotPassword = async (email) => {
 //     // Send request to login API
 //     const response = await fetch('/api/forgot-password', {

@@ -37,7 +37,6 @@ module.exports = {
             ]);
         },
         beforeUpdate: async (params, data) => {
-            console.log("Da cap nhat order thanh cong");
         },
     },
 };

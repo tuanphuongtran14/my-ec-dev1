@@ -19,15 +19,37 @@ module.exports = {
     definition: `
         input CustomUsersPermissionsRegisterInput {
             username: String!
-            email: String!
             password: String!
-            name: String!
+            name: String
+            phone: String
+            email: String
         }
+        type CustomUsersPermissionsMe {
+            id: ID!,
+            _id: ID!,
+            username: String!
+            password: String!
+            name: String
+            phone: String
+            email: String
+            confirmed: Boolean!
+            blocked: Boolean!
+            role: UsersPermissionsMeRole!
+        }
+    `,
+    query: `
+        customMe: CustomUsersPermissionsMe! 
     `,
     mutation: `
         customRegister(input: CustomUsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
     `,
     resolver: {
+        Query: {
+            customMe: {
+                description: 'Retrieve account information, only working when use logged in before',
+                resolver: 'plugins::users-permissions.user.customMe',
+            },
+        },
         Mutation: {
             customRegister: {
                 description: "Register a user, but allow for additional User fields.",

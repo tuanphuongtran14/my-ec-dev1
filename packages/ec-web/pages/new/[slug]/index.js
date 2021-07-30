@@ -4,9 +4,62 @@ import Head from 'next/head';
 import Header from '../../../components/Header/Header';
 import Footer from '../../../components/Footer/Footer'
 import NewDetail from '../../../components/New/NewDetail';
+import client from './../../../components/Category/apolloClient';
+import {
+    gql
+} from "@apollo/client";
 
+export async function getStaticPaths() {
+    // Call an external API endpoint to get posts
+    const {data} = await client.query(
+        {
+            query: gql`
+              query  {
+                blogs {
+                  id
+                  slug
+                }
+              }
+            `,
+        }
+    )
+    const blogs = await data.blogs
+    
+  
+    // Get the paths we want to pre-render based on posts
+    const paths = blogs.map((blog) => ({
+      params: { slug: blog.slug },
+    }))
+  
+    // We'll pre-render only these paths at build time.
+    // { fallback: false } means other routes should 404.
+    return { paths, fallback: false }
+  }
 
-const index = () => {
+  export async function getStaticProps({ params }) {
+    const {data} = await client.query(
+        {
+            query: gql`
+              query($slug:String!){
+                getBlogBySlug(slug:$slug) {
+                  id
+                  title
+                  description
+                  thumbnail{
+                    url
+                  }
+                }
+              }
+            `,
+            variables:{
+                slug: params.slug
+            }
+        }
+    )
+    const blog = data.getBlogBySlug
+    return { props: blog }
+  }
+const index = (props) => {
     return (
         <>
             <Head>
@@ -22,7 +75,7 @@ const index = () => {
                 <link rel="stylesheet" href="../../css/grid.css"/>
             </Head>
             <Header/>
-            <NewDetail/>
+            <NewDetail title={props.title} description={props.description} url={props.thumbnail.url}/>
             <Footer/>         
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

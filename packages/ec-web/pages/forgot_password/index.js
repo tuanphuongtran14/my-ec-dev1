@@ -1,50 +1,34 @@
 import "../_app.js";
-import React, { useState } from "react";
-import DismissingAlert from "../../components/DismissingAlert/DismissingAlert";
-import { forgotPassword, isSignIn } from "../../helpers/auth";
+import React from "react";
 import { useRouter } from "next/router";
-import { gql } from "@apollo/client";
-import axios from 'axios';
+import { userApi } from "../../apis";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function(){
+export default function ForgetPassword() {
   const route = useRouter();
   const onSubmit = async (e) => {
-//     e.preventDefault();
-//     const email = document.getElementById("email").value;
-//     console.log(email);
-
-//     const forgotPasswordMutation = gql`
-//       mutation ForgotPassword($email: String!) {
-//         forgotPassword(email: $email) {
-//           ok
-//         }
-//       }
-//     `;
-//     const variables = {
-//       email: email,
-//   };
-//   const { data } = await axios({
-//     method: 'POST',
-//     url: '/api/mutation',
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-//     data: {
-//       forgotPasswordMutation,
-//         variables
-//     },
-// });
-  if(true){      
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const data = await userApi.forgetPassword(email);
+    if (data) {
       route.push("/login_register");
-      alert("Thông tin đã được gửi đên email của bạn. Vui lòng kiểm tra trước khi đăng nhập")
-  }
-  else 
-  {
-    alert("Tài khoản email không hợp lệ")
-  }
+      alert("aadasdasd");
+      toast.success(`Thông tin đã được chuyển đến email:${email} của bạn`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      alert("Tài khoản email không hợp lệ");
+    }
   };
+
   return (
-    
     <div className="body">
       <link
         rel="stylesheet"
@@ -60,18 +44,17 @@ export default function(){
       />
       <link rel="stylesheet" href="./css/style.css" />
 
-      <div className="forgot_container" id="">
+      <div className="forgot_container">
         <div className="form-container sign-in-container">
-         
           <form onSubmit={onSubmit}>
             <h1>Forgot Password</h1>
-            <div id= "thong-bao" className= "text-primary " hidden> <h5>Thông tin đã được gửi, bạn hãy vào email để kiểm tra </h5></div>
             <h6 className="mt-5 ">Hãy nhập email mà bạn đã đăng ký</h6>
             <input type="email" placeholder="Email" required id="email" />
-            <button className="mt-2" type= "submit">
+            <button className="mt-2" type="submit">
               {" "}
               Xác thực tài khoản{" "}
             </button>
+           
             <a className="mt-3" href="/login_register">
               Trở về đăng nhập
             </a>

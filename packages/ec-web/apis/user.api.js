@@ -1,34 +1,202 @@
 
 import axiosClient from "./clients/axiosClient";
 import {
-    GET_CART,
-    TOGGLE_SELECT_ITEM,
-    TOGGLE_SELECT_ALL_ITEMS,
-    REMOVE_SELECTED_ITEMS,
-    REMOVE_ITEM,
-    INCREMENT_QUANTITY,
-    DECREMENT_QUANTITY,
-    APPLY_COUPON,
-    REMOVE_COUPON,
-    CHANGE_ITEM_COLOR,
-} from "../constants/graphql/cart";
+    apolloClient,
+    gql,
+} from './clients/apolloClient';
+import {
+    LOGIN,
+    GET_USER_CART,
+    ME,
+    FORGET_PASSWORD,
+    GET_USER_ORDERS,
+} from "../constants/graphql/user";
 
-class CartApi {
-    async changeItemColor(cartId, itemId, color) {
+class UserApi {
+    async login(username, password, options) {
+        try {
+            // Declare query need be used
+            const query = `
+                mutation($input: UsersPermissionsLoginInput!) {
+                    login: ${LOGIN},
+                }
+            `;
+            // Declare variables need be used
+            const variables = {
+                input: {
+                    identifier: username,
+                    password,
+                }
+            };
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    "http://localhost:3000/api/graphql",
+                    {
+                        type: "mutation",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.mutate({
+                    mutation: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
+    }
+    async forgetPassword(email, options) {
+        try {
+            // Declare query need be used
+            const query = `
+                mutation($email: String!) {
+                    ${FORGET_PASSWORD},
+                }
+            `;
+            // Declare variables need be used
+            const variables = {
+                email
+            };
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    "http://localhost:3000/api/graphql",
+                    {
+                        type: "mutation",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.mutate({
+                    mutation: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
+    }
+    async me(options) {
+        try {
+            // Declare query need be used
+            const query = `
+                query {
+                    me: ${ME},
+                }
+            `;
+            // Declare variables need be used
+            const variables = {};
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    "http://localhost:3000/api/graphql",
+                    {
+                        type: "query",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.query({
+                    query: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
+    }
+    async getUserCart(cartId, options) {
+        try {
+            // Declare query need be used
+            const query = `
+                query($cartId: ID) {
+                    cart: ${GET_USER_CART},
+                }
+            `;
+            // Declare variables need be used
+            const variables = !cartId ? {} : {
+                cartId
+            };
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    "http://localhost:3000/api/graphql",
+                    {
+                        type: "query",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.query({
+                    query: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
+    }
+    async getUserOrders() {
         const { data: responseData } = await axiosClient.post(
             "http://localhost:3000/api/graphql",
             {
-                type: "mutation",
+                type: "query",
                 query: `
-                    mutation($cartId: ID!, $itemId: ID!, $color: String!) {
-                        cart: ${CHANGE_ITEM_COLOR},
+                    query {
+                        orders: ${GET_USER_ORDERS},
                     }
                 `,
-                variables: {
-                    cartId,
-                    itemId,
-                    color
-                },
+                variables: {},
             }
         );
         const { data, error, success } = responseData;
@@ -36,4 +204,4 @@ class CartApi {
     }
 }
 
-export default new CartApi();
+export default new UserApi();

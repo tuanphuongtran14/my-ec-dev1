@@ -1,12 +1,63 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../components/Header/Header";
 import Banner from "../../components/Banner/Banner";
 import Footer from "../../components/Footer/Footer";
 import Head from "next/head";
-import ItemList  from "../../components/Checkout/ItemList";
+import ItemList from "../../components/Checkout/ItemList";
 import Link from "next/link";
+import { useAuth } from "../../helpers/auth";
+import { useRouter } from 'next/router'
+import EmptyCart from '../chua-co-don-hang/index'
+import { orderApi } from "../../apis";
+
+
+
+export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+    const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
+    if (!jwt) {
+        res.writeHead(302, {
+            Location: '/'
+        });
+        res.end();
+    }
+    return {
+        props: {
+        }
+    }
+});
 
 export default function Login() {
+    const router = useRouter();
+    useEffect(() => {
+        const name = sessionStorage.getItem('name');
+        const phone = sessionStorage.getItem('phone');
+        const mail = sessionStorage.getItem('mail');
+        const address = sessionStorage.getItem('address');
+        if (!name || !phone || !mail || !address) {
+            router.push("/checkout");
+        }
+    }, [])
+
+    const [cartLength, setCartLength] = useState(false);
+
+    useEffect(() => {
+        const cartLengthSession = sessionStorage.getItem('cartLength');
+        if (cartLengthSession > 0)
+            setCartLength(true)
+    }, [])
+
+    if (cartLength === 0) {
+        return (
+            <EmptyCart />
+        )
+    }
+
+    const handleSubmit = () => {
+        const data = orderApi.checkout("Tên người nhận", "Số đt", "email", "Tên đường, số nhà", "Quận/huyện", "Tỉnh/Thành phố", "COD");
+        if (data)
+            router.push("/payment/success");
+        console.log(data)
+    }
 
     return (
         <>
@@ -34,7 +85,7 @@ export default function Login() {
                                                 </label>
                                             </button>
                                         </div>
-                                        <div id="collapseDirect" class="collapse show" aria-labelledby="headingDirect" data-parent="#thanhtoan">
+                                        <div id="collapseDirect" className="collapse show" aria-labelledby="headingDirect" data-parent="#thanhtoan">
                                             <div className="card-body mx-auto">
                                                 <h5 className="text-danger">Cửa hàng thực hiện chương trình miễn phí vận chuyển cho đơn hàng trên 5 triệu đồng!</h5>
                                                 <p>Với phương thức thanh toán này, quý khách trả tiền mặt cho nhân viên giao hàng ngay khi nhận được đơn hàng của mình. Chúng tôi chấp nhận hình thức thanh toán khi nhận hàng (COD) cho hầu hết đơn hàng trên toàn quốc.</p>
@@ -50,7 +101,7 @@ export default function Login() {
                                                 </label>
                                             </button>
                                         </div>
-                                        <div id="collapseVnpay" class="collapse" aria-labelledby="headingVnpay" data-parent="#thanhtoan">
+                                        <div id="collapseVnpay" className="collapse" aria-labelledby="headingVnpay" data-parent="#thanhtoan">
                                             <div className="card-body mx-auto">
                                                 <h4 className="text-center text-success">Hướng dẫn thanh toán bằng VNPAY</h4>
                                                 <ol className="container">
@@ -243,9 +294,9 @@ export default function Login() {
                                 </div>
                             </div>
                         </div>
-                        <Link href="/payment/success">
-                            <button type="button" className="btn btn-success w-100 my-3">Xác nhận đơn hàng</button>
-                        </Link>
+                        {/* <Link href="/payment/success"> */}
+                            <button type="button" className="btn btn-success w-100 my-3" onClick={handleSubmit}>Xác nhận đơn hàng</button>
+                        {/* </Link> */}
                     </div>
                 </div>
                 <div className="payment__product col-12 col-lg-4">
