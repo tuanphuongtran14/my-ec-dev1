@@ -32,30 +32,30 @@ export default function Header() {
                             reloadOnUpdate // default false
                             static // default false
                         >
-                            <img className="gallery-cell" src="./img/banner/banner1.png" alt="" style={{maxHeight: "600px"}}/>
-                            <img className="gallery-cell" src="./img/banner/banner2.png" alt="" style={{maxHeight: "600px"}} />
-                            <img className="gallery-cell" src="./img/banner/banner3.png" alt="" style={{maxHeight: "600px"}} />
-                            <img className="gallery-cell" src="./img/banner/banner4.png" alt="" style={{maxHeight: "600px"}} />
+                            <img className="gallery-cell" src="./img/banner/banner1.png" alt="" style={{ maxHeight: "600px" }} />
+                            <img className="gallery-cell" src="./img/banner/banner2.png" alt="" style={{ maxHeight: "600px" }} />
+                            <img className="gallery-cell" src="./img/banner/banner3.png" alt="" style={{ maxHeight: "600px" }} />
+                            <img className="gallery-cell" src="./img/banner/banner4.png" alt="" style={{ maxHeight: "600px" }} />
                         </Flickity>
                     </div>
                 </div>
             </div >
-            <div className="container-fluid">
-                <div className="container mx-auto text-dark py-2">
-                    <div className="row col-12 w-100 mx-auto">
-                        <div className="col-4 py-3 d-flex justify-content-center">
+            <div className="container-fluid px-auto">
+                <div className="container py-2">
+                    <div className="subBanner row col-12 w-100 mx-auto">
+                        <div className="subBanner--content col-4 py-3 d-flex justify-content-center">
                             <p className="my-auto"><i className="fas fa-truck"></i> FREESHIP ĐƠN HÀNG {'>'}5000K</p>
                         </div>
-                        <div className="col-4 py-3 d-flex justify-content-center">
+                        <div className="subBanner--content col-4 py-3 d-flex justify-content-center">
                             <p className="my-auto"><i className="fas fa-shield-alt"></i> BẢO HÀNH 3 NĂM</p>
                         </div>
-                        <div className="col-4 py-3 d-flex justify-content-center">
+                        <div className="subBanner--content col-4 py-3 d-flex justify-content-center">
                             <p className="my-auto"><i className="fas fa-archive"></i> ĐỔI TRẢ MIỄN PHÍ TRONG VÒNG 7 NGÀY</p>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* </div> */}
+
         </>
     )
 }

@@ -4,7 +4,7 @@ import Footer from '../../components/Footer/Footer';
 import Banner from '../../components/Banner/Banner';
 import { useState } from 'react';
 import Pagination from '../../components/Category/pagination';
-import Product from './product';
+import Product from '../../components/Result/product';
 import client from '../../components/Category/apolloClient'
 import { gql } from '@apollo/client';
 import { useRouter } from "next/router"

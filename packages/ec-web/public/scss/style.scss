@@ -37,6 +37,7 @@
 6. Footer Section
 7. Category Page Section
 8. Pagination Section
+13. Home Section
 -----------------------------------------------------------------------------------*/
 
 /*=================================================================================*/
@@ -125,8 +126,8 @@ html{
 /* Preloder */
 #preloder {
     position: fixed;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     top: 0;
     left: 0;
     z-index: 999999;
@@ -325,14 +326,6 @@ html{
             
 }
 
-.btnIphone{
-    background-color: #FFFFFF;
-    border: 1px solid $fontColor;
-}
-.btnSamsung{
-    background-color: #FFFFFF;
-    border: 1px solid $fontColor;
-}
 
 /*-------------------------*/
 /* 2.5. Menu
@@ -425,63 +418,7 @@ html{
     }
 }
 
-.bannerIphone{
-    .bannerIphoneText{
-        transition-duration: 0.5s;
-        padding: 0 5rem;
-    }
-    .btnIphone{
-        transition-duration: 0.5s;
-    }
-    &:hover{ 
-        .bannerIphoneText{
-            background-color: #15191C;
-            color: $bodyColor;
-            
-            .btnIphone{
-                background-color: #15191C;
-                border: 1px solid $bodyColor;
-                color: $bodyColor;
-            }
-        }
-    } 
-}
 
-.bannerSamsung{
-    .bannerSamsungText{
-        transition-duration: 0.5s;
-    }
-    .btnSamsung{
-        transition-duration: 0.5s;
-    }
-    &:hover{ 
-        .bannerSamsungText{
-            background-color: #111113;
-            color: $bodyColor;
-            
-            .btnSamsung{
-                background-color: #111113;
-                border: 1px solid $bodyColor;
-                color: $bodyColor;
-            }
-        }
-    } 
-}
-
-.bannerUs{
-    height: 500px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: bottom;
-    background-image: url('https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-    .bannerUsText{
-        opacity: 0.85;
-        margin: 0 auto;
-        padding: 5% 10% ;
-        width: 50%;
-        color: white;
-    }
-}
 /*-------------------------*/
 /* 2.6. Fontawesome CSS
 /*-------------------------*/
@@ -1806,3 +1743,183 @@ footer a {
     }
 }
 
+/* 13. HomeSection
+/*=================================================================================*/
+
+.subBanner{
+    margin: 0;
+    color: $fontColor;
+    @media only screen and (max-width: 768px){
+        display: block;       
+    }
+    .subBanner--content{
+        @media only screen and (max-width: 768px){
+            max-width: 100%;
+        }
+    }
+}
+
+.bannerIphone{
+    .bannerIphone--text{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition-duration: 0.5s;
+        text-align: center;
+        padding: 0 5rem;
+        background-color: #FFF;
+    }
+    .bannerIphone--text__btn{
+        transition-duration: 0.5s;
+        background-color: #FFF;
+        border: 1px solid $fontColor;
+    }
+    &:hover{ 
+        .bannerIphone--text{
+            background-color: #15191C;
+            color: $bodyColor; 
+            .bannerIphone--text__btn{
+                background-color: #15191C;
+                border: 1px solid $bodyColor;
+                color: $bodyColor;
+                &:hover{
+                    background-color: $bodyColor;
+                    border: 1px solid $bodyColor;
+                    color: #15191C;
+                }
+            }
+        }
+    } 
+    @media only screen and (max-width: 768px){
+        // display: block; 
+        display: flexbox;
+        flex-wrap: nowrap;
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+        clear: both;
+        .bannerIphone--text{
+            max-width: 100%;
+            padding-top: 10%;
+            padding-bottom: 10%;
+        }
+        .bannerIphone--img{
+            max-width: 100%;
+        }  
+    }
+}
+
+.bannerSamsung{
+    .bannerSamsung--img{
+        // height: 100%; 
+        background-image: url('https://images.unsplash.com/photo-1611282104291-6bd45ca8bf93?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        height: 482px; 
+    }
+    .bannerSamsung--text{
+        transition-duration: 0.5s;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 5rem;
+        background-color: #FFF;
+        padding-top: 5%;
+        padding-bottom: 5%;
+    }
+    .bannerSamsung--text__btn{
+        transition-duration: 0.5s; 
+        background-color: #FFF;
+        border: 1px solid $fontColor;
+    }
+    &:hover{ 
+        .bannerSamsung--text{
+            background-color: #111113;
+            color: $bodyColor; 
+            
+            .bannerSamsung--text__btn{
+                background-color: #111113;
+                border: 1px solid $bodyColor;
+                color: $bodyColor;
+                &:hover{
+                    background-color: $bodyColor;
+                    border: 1px solid $bodyColor;
+                    color: #111113;
+                }
+            }
+        }
+    } 
+    @media only screen and (max-width: 768px){
+        display: flexbox;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        justify-content: flex-start;
+        clear: both;
+        .bannerSamsung--text{
+            width: 100%;
+        }
+        .bannerSamsung--img{
+            width: 100%;
+            max-height: 337px;
+        }
+    }
+}
+
+.bannerUs{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+    background-image: url('https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    .bannerUs--text{
+        opacity: 0.85;
+        margin: 0 auto;
+        padding: 10% 10% ;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: #111113;
+        flex-direction: column;
+    }
+    @media only screen and (max-width: 768px){
+        display:block;
+        .bannerUs--text{
+            
+            height: 500px;
+            width: 100%;
+            padding: 0 5%;
+            .bannerUs--text__title,
+            .bannerUs--text__content{
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+    }
+}
+
+.bannerNews{
+    margin: 0;
+    
+    .bannerNews--title{
+        color: $mainColor;
+        cursor: pointer;
+    }
+    .bannerNews--content{
+        margin: 0;
+        
+        @media only screen and (max-width: 768px){
+            display: block;       
+        }
+        .bannerNews--content__item{
+            cursor: pointer;
+            @media only screen and (max-width: 768px){
+                max-width: 100%;
+                
+            }
+        }
+    }
+}

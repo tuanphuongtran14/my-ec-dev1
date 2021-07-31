@@ -116,15 +116,16 @@ export default function Header() {
 
     return (
         <>
-            <div className="top-nav bg-light text-dark">
-                <div className="container d-flex justify-content-between align-items-center">
-                    <button type="button" className=" btn btn--no-outline px-0">
-                        <i className="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
-                    </button>
+            <div className="top-nav bg-light text-dark my-0 py-1">
+                <div className="container d-flex justify-content-between align-items-center my-0">
+                    {/* <button type="button" className=" btn btn--no-outline px-0 my-0">
+                    </button> */}
+                    <div>
+                    <i className="fa fa-phone mr-2" aria-hidden="true"></i> Hotline: 0396042357</div>
                     <DropdownUser></DropdownUser>
                 </div>
             </div>
-            <div className="header__navbar sticky-top">
+            <div className="header__navbar sticky-top my-0">
                 <div className="navbar--custom container">
                     <div className="navbar__logo">
                         <button type="button" className="text-white ml-3 mr-4 bars-btn btn btn--no-outline" id="bars-btn">
@@ -142,7 +143,7 @@ export default function Header() {
                                 </Link>
                             </li>
                             <li className="menu__item">
-                                <Link href="/about">
+                                <Link href="/gioi-thieu">
                                     <a className="text-white">Về chúng tôi</a>
                                 </Link>
                             </li>

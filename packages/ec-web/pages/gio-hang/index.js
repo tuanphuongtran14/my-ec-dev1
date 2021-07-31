@@ -3,8 +3,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { cartApi } from '../../apis';
 import { Header, Footer, Modal, CartItem } from '../../components';
-
-
+import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function CartPagex({ isSignedIn }) {
     const [items, setItems] = useState([]);
     const [coupon, setCoupon] = useState({});
@@ -13,7 +14,7 @@ export default function CartPagex({ isSignedIn }) {
         totalAmount: 0,
         finalAmount: 0,
     });
-
+    const route = useRouter();
     // ************* START: Fetch cart first time ************** //
     useEffect(() => {
         fetchCart();
@@ -30,10 +31,14 @@ export default function CartPagex({ isSignedIn }) {
         else   
             document.getElementById("customCheckAll").checked = false;
 
-        if(selectedItems.length > 0)
+        if(selectedItems.length > 0){
+        
             setEnableMutilRemove(true);
-        else 
+        } 
+        else {
+      
             setEnableMutilRemove(false);
+        }
             
     },[items]);
 
@@ -113,18 +118,28 @@ export default function CartPagex({ isSignedIn }) {
     }
 
     // *************** START: Process remove coupon *************** //
-    const removeCoupon = async () => {
-        try {
-            const data = await cartApi.removeCoupon(localStorage.getItem('cartId'));
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-            setCoupon({
-                wrong: true
-            });
-        } 
-    }
+  
+  // *************** START: Process click thanh toan *************** //
 
+    const clickPaỵ = () =>{
+        const selectedItemLength = localStorage.getItem('selectedItemLength');
+            if (selectedItemLength < 1)
+                toast.info(`Hiện bạn chưa chọn sản phẩm nào để mua `, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+              });  
+            else 
+              route.push('/checkout');
+  };
+  
+
+
+  
     return (
         <>
             <Head>
@@ -144,6 +159,17 @@ export default function CartPagex({ isSignedIn }) {
                     <span className="breadcrumb-item active">Giỏ hàng</span>
                 </div>
             </nav>
+            <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
             <div style={{backgroundColor: "#F8F9FA"}}>
             <div className="container mb-3">
                 <div className="box-2-column">
@@ -257,14 +283,14 @@ export default function CartPagex({ isSignedIn }) {
                                     </dd>
                                 </dl>
                                 <hr />
-                                <Link href="/checkout">
+                               
                                 <a
-                                    className="btn btn--buy-now btn-block"
+                                    className="text-white btn btn--buy-now btn-block" onClick = {clickPaỵ}
                                 >
                                     {" "}
                                     Thanh toán{" "}
                                 </a>
-                                </Link>
+                               
                                 <Link href="/"> 
                                     <a className="btn btn-light btn-block">
                                         Tiếp tục mua sắm

@@ -85,6 +85,27 @@ export default function DropdownUser() {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <a
+                                                href="/wishlist"
+                                                className={classNames(
+                                                    active
+                                                    ? "bg-dark-100 text-light"
+                                                    : "text-dark",
+                                                "block px-3 py-2 text-sm text-dark"
+                                                )}
+                                            >
+                                                <i
+                                                    className="fa fa-heart pr-2"
+                                                    aria-hidden="true"
+                                                />
+                                                Sản phẩm yêu thích 
+                                            </a>
+                                        )}
+                                    </Menu.Item>
+                                </div>
+                                <div className="py-2">
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <a
                                                 href="#"
                                                 className={classNames(
                                                     active
