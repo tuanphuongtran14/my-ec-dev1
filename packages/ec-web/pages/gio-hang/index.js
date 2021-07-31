@@ -4,7 +4,8 @@ import Link from "next/link";
 import withIronSession from "../../helpers/customWithIronSession";
 import { cartApi } from '../../apis';
 import { Header, Footer, Modal, CartItem } from '../../components';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export const getServerSideProps = withIronSession(async ({ req, res }) => {
     const user = req.session.get("user");
     const isSignedIn = user ? true : false;
@@ -49,10 +50,22 @@ const index = ({ isSignedIn }) => {
         else   
             document.getElementById("customCheckAll").checked = false;
 
-        if(selectedItems.length > 0)
+        if(selectedItems.length > 0){
+        
             setEnableMutilRemove(true);
-        else 
+        } 
+        else {
+        // toast.warning(`Hiện bạn chưa chọn sản phẩm nào để mua `, {
+        //     position: "top-center",
+        //     autoClose: 5000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        //   });
             setEnableMutilRemove(false);
+        }
             
     },[items]);
 
@@ -163,6 +176,17 @@ const index = ({ isSignedIn }) => {
                     <span className="breadcrumb-item active">Giỏ hàng</span>
                 </div>
             </nav>
+            {/* <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            /> */}
             <div style={{backgroundColor: "#F8F9FA"}}>
             <div className="container mb-3">
                 <div className="box-2-column">

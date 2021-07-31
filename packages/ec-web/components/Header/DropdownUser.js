@@ -88,9 +88,9 @@ export default function DropdownUser() {
                                                 href="/wishlist"
                                                 className={classNames(
                                                     active
-                                                        ? "bg-gray-100 text-gray-900"
-                                                        : "text-gray-700",
-                                                    "block px-3 py-2 text-sm text-light"
+                                                    ? "bg-dark-100 text-light"
+                                                    : "text-dark",
+                                                "block px-3 py-2 text-sm text-dark"
                                                 )}
                                             >
                                                 <i
