@@ -46,8 +46,8 @@
 /*=================================================================================*/
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 * {
-  font-family: sans-serif;
-  font-size: 15px;
+  font-family: 'Calibri';
+  font-size: 16px;
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
@@ -58,10 +58,10 @@
   background-color: #F8F9FA;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url(https://images.unsplash.com/photo-1500817487388-039e623edc21?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1870&q=80); }
+  background-image: url(https://images.unsplash.com/photo-1562555135-133684c2bb84?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1880&q=80); }
 
 body {
-  background-color: #F8F9FA; }
+  background-color: #FFF; }
 
 html {
   scroll-behavior: smooth; }
@@ -73,6 +73,7 @@ html {
   background: #70d404;
   bottom: 40px;
   right: 50px;
+  z-index: 1000;
   text-decoration: none;
   text-align: center;
   line-height: 50px;
@@ -256,6 +257,14 @@ html {
   background-color: #000;
   color: #F8F9FA; }
 
+.btnIphone {
+  background-color: #FFFFFF;
+  border: 1px solid #000; }
+
+.btnSamsung {
+  background-color: #FFFFFF;
+  border: 1px solid #000; }
+
 /*-------------------------*/
 /* 2.5. Menu
 /*-------------------------*/
@@ -309,6 +318,48 @@ html {
       text-decoration: none;
       font-size: 0.9rem; }
 
+.bannerIphone .bannerIphoneText {
+  transition-duration: 0.5s;
+  padding: 0 5rem; }
+
+.bannerIphone .btnIphone {
+  transition-duration: 0.5s; }
+
+.bannerIphone:hover .bannerIphoneText {
+  background-color: #15191C;
+  color: #F8F9FA; }
+  .bannerIphone:hover .bannerIphoneText .btnIphone {
+    background-color: #15191C;
+    border: 1px solid #F8F9FA;
+    color: #F8F9FA; }
+
+.bannerSamsung .bannerSamsungText {
+  transition-duration: 0.5s; }
+
+.bannerSamsung .btnSamsung {
+  transition-duration: 0.5s; }
+
+.bannerSamsung:hover .bannerSamsungText {
+  background-color: #111113;
+  color: #F8F9FA; }
+  .bannerSamsung:hover .bannerSamsungText .btnSamsung {
+    background-color: #111113;
+    border: 1px solid #F8F9FA;
+    color: #F8F9FA; }
+
+.bannerUs {
+  height: 500px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
+  background-image: url("https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"); }
+  .bannerUs .bannerUsText {
+    opacity: 0.85;
+    margin: 0 auto;
+    padding: 5% 10%;
+    width: 50%;
+    color: white; }
+
 /*-------------------------*/
 /* 2.6. Fontawesome CSS
 /*-------------------------*/
@@ -339,7 +390,8 @@ html {
 /* 3.1. Navbar
 /*-------------------------*/
 .header__navbar {
-  background-color: #d70018; }
+  background-color: #252525;
+  color: #F8F9FA; }
 
 .navbar--custom {
   display: flex;
@@ -379,7 +431,7 @@ html {
     height: 1.2rem;
     width: 1.2rem;
     display: inline-block;
-    background-color: orange;
+    background-color: #d70018;
     border-radius: 50%;
     position: absolute;
     top: -8px; }
@@ -712,7 +764,6 @@ ul.product-details__bonus {
   background-color: #fff;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
   padding-bottom: 2.5rem; }
   .box .box-title {

@@ -28,6 +28,7 @@ const itemList = () => {
                       finalPrice
                     }
                     qty
+                    selected
                     amount
                   }
                   finalAmount
@@ -50,13 +51,13 @@ const itemList = () => {
                 variables
             },
         });
-        setItems(data.cart.items);
+        setItems(data.cart.items.filter(item => item.selected === true)); 
         setTotals(data.cart.finalAmount)
       }
       catch{
         
       }
-});
+}, []);
 
   return (
     <div> 

@@ -36,7 +36,7 @@ export default function DropdownUser() {
             <Menu as="div" className="relative inline-block text-left">
                 {({ open }) => (
                     <>
-                        <Menu.Button className="d-inline-block justify-center rounded-md text-center text-white btn btn--no-outline p-0">
+                        <Menu.Button className="d-inline-block justify-center rounded-md text-center btn btn--no-outline p-0">
                             <i
                                 className=" mr-3 fa fa-user fa--sm"
                                 aria-hidden="true"
@@ -57,7 +57,7 @@ export default function DropdownUser() {
                         >
                             <Menu.Items
                                 static
-                                className="bg-dark font-weight-solid origin-top-right position-absolute top-20 mt-2 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                                className="bg-light font-weight-solid origin-top-right position-absolute top-20 mt-2 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                                 style={{ zIndex: 10000000 }}
                             >
                                 <div className="py-2 ">
@@ -67,9 +67,9 @@ export default function DropdownUser() {
                                                 href="#"
                                                 className={classNames(
                                                     active
-                                                        ? "bg-gray-100 text-gray-900"
-                                                        : "text-gray-700",
-                                                    "block px-3 py-2 text-sm text-light"
+                                                        ? "bg-dark-100 text-light"
+                                                        : "text-dark",
+                                                    "block px-3 py-2 text-sm text-dark"
                                                 )}
                                             >
                                                 <i
@@ -88,9 +88,9 @@ export default function DropdownUser() {
                                                 href="#"
                                                 className={classNames(
                                                     active
-                                                        ? "bg-gray-100 text-gray-900"
-                                                        : "text-gray-700",
-                                                    "block px-3 py-2 text-sm text-light"
+                                                        ? "bg-dark-100 text-light"
+                                                        : "text-dark",
+                                                    "block px-3 py-2 text-sm text-dark"
                                                 )}
                                             >
                                                 <i
@@ -109,9 +109,9 @@ export default function DropdownUser() {
                                                 onClick={handleSignOut}
                                                 className={classNames(
                                                     active
-                                                        ? "bg-gray-100 text-gray-900"
-                                                        : "text-gray-700",
-                                                    "block px-3 py-2 text-sm text-light"
+                                                        ? "bg-dark-100 text-light"
+                                                        : "text-dark",
+                                                    "block px-3 py-2 text-sm text-dark"
                                                 )}
                                             >
                                                 <i

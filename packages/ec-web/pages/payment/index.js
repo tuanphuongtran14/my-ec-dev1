@@ -28,12 +28,23 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
 
 export default function Login() {
     const router = useRouter();
+
+    useEffect(() => {
+        const selectedItemLength = localStorage.getItem('selectedItemLength');
+        if (selectedItemLength < 1)
+            router.push({
+                pathname: '/gio-hang',
+            })
+    }, [])
+
     useEffect(() => {
         const name = sessionStorage.getItem('name');
         const phone = sessionStorage.getItem('phone');
         const mail = sessionStorage.getItem('mail');
-        const address = sessionStorage.getItem('address');
-        if (!name || !phone || !mail || !address) {
+        const address1 = sessionStorage.getItem('address1');
+        const address2 = sessionStorage.getItem('address2');
+        const address3 = sessionStorage.getItem('address3');
+        if (!name || !phone || !mail || !address1 || !address2 || !address3 ) {
             router.push("/checkout");
         }
     }, [])
@@ -53,7 +64,14 @@ export default function Login() {
     }
 
     const handleSubmit = () => {
-        const data = orderApi.checkout("Tên người nhận", "Số đt", "email", "Tên đường, số nhà", "Quận/huyện", "Tỉnh/Thành phố", "COD");
+        const name = sessionStorage.getItem('name');
+        const phone = sessionStorage.getItem('phone');
+        const mail = sessionStorage.getItem('mail');
+        const address1 = sessionStorage.getItem('address1');
+        const address2 = sessionStorage.getItem('address2');
+        const address3 = sessionStorage.getItem('address3');
+        // const
+        const data = orderApi.checkout(name, phone, mail, address3, address2, address1, "COD");
         if (data)
             router.push("/payment/success");
         console.log(data)

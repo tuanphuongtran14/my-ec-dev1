@@ -29,16 +29,28 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
 const payment = () => {
     const router = useRouter();
 
+    useEffect(() => {
+        const selectedItemLength = localStorage.getItem('selectedItemLength');
+        if (selectedItemLength < 1)
+            router.push({
+                pathname: '/gio-hang',
+            })
+    }, [])
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const name = document.getElementById("name").value;
-        const phone = document.getElementById("phone").value;
-        const mail = document.getElementById("mail").value;
-        const address = document.getElementById("address").value;
-        sessionStorage.setItem("name", name);
-        sessionStorage.setItem("phone", phone);
-        sessionStorage.setItem("mail", mail);
-        sessionStorage.setItem("address", address);
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const mail = document.getElementById('mail').value;
+        const address1 = document.getElementById('address1').value;
+        const address2 = document.getElementById('address2').value;
+        const address3 = document.getElementById('address3').value;
+        sessionStorage.setItem('name', name);
+        sessionStorage.setItem('phone', phone);
+        sessionStorage.setItem('mail', mail);
+        sessionStorage.setItem('address1', address1);
+        sessionStorage.setItem('address2', address2);
+        sessionStorage.setItem('address3', address3);
 
         router.push({
             pathname: "/payment",

@@ -12,8 +12,9 @@ export default function Header() {
         const data = await userApi.getUserCart(cartId);
 
         if (data && data.cart) {
-            localStorage.setItem("cartId", data.cart._id);
-            localStorage.setItem("cartLength", data.cart.items.length);
+            localStorage.setItem('cartId', data.cart._id);
+            localStorage.setItem('cartLength', data.cart.items.length);
+            localStorage.setItem('selectedItemLength', data.cart.items.filter(item => item.selected).length);
             setItemsNumber(data.cart.items.length);
         } else {
             localStorage.removeItem("cartId");
@@ -115,12 +116,12 @@ export default function Header() {
 
     return (
         <>
-            <div className="top-nav bg-dark">
+            <div className="top-nav bg-light text-dark">
                 <div className="container d-flex justify-content-between align-items-center">
-                    <button type="button" className="text-white btn btn--no-outline px-0">
+                    <button type="button" className=" btn btn--no-outline px-0">
                         <i class="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
                     </button>
-                    <button type="button" className="text-white btn btn--no-outline px-0">
+                    <button type="button" className=" btn btn--no-outline px-0">
                         <DropdownUser></DropdownUser>
                     </button>
                 </div>
@@ -143,13 +144,19 @@ export default function Header() {
                                 </Link>
                             </li>
                             <li className="menu__item">
-                                <a href="/about" className="text-white">Về chúng tôi</a>
+                                <Link href="/about">
+                                    <a className="text-white">Về chúng tôi</a>
+                                </Link>
                             </li>
                             <li className="menu__item">
-                                <a href="/new" className="text-white">Tin tức</a>
+                                <Link href="/new">
+                                    <a className="text-white">Tin tức</a>
+                                </Link>
                             </li>
                             <li className="menu__item">
-                                <a href="/about" className="text-white">Liên hệ</a>
+                                <Link href="/dich-vu">
+                                    <a className="text-white">Dịch vụ</a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
