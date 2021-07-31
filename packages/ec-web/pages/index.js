@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Header, Footer, Banner } from "../components";
+import { Header, Footer, Banner, RatingStars } from "../components";
 import Link from "next/link"
 import React from "react";
 import Flickity from "react-flickity-component";
@@ -23,25 +23,6 @@ export async function getServerSideProps() {
 
 
 export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
-    const displayStars = (stars) => {
-        const result = [];
-        for (let index = 0; index < stars; index++) {
-            result.push(
-                <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            )
-        }
-        if ((stars - Math.floor(stars)) > 0) {
-            result.push(
-                <i className="fa product__rating-icon fa-star-half" aria-hidden="true"></i>
-            )
-        }
-        for (let index = result.length; index < 5; index++) {
-            result.push(
-                <i className="fa product__rating-icon fa-star-o" aria-hidden="true"></i>
-            )
-        }
-        return result;
-    }
 
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
@@ -64,7 +45,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         <span className="regular-price">{regularPrice}₫</span>
                     </div>
                     <div className="product__rating">
-                        {displayStars(product.stars)}
+                        <RatingStars stars={product.stars} />
                         <span>({product.votes} đánh giá)</span>
                     </div>
                     {
@@ -102,7 +83,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         <span className="regular-price">{regularPrice}₫</span>
                     </div>
                     <div className="product__rating">
-                        {displayStars(product.stars)}
+                        <RatingStars stars={product.stars} />
                         <span>({product.votes} đánh giá)</span>
                     </div>
                     {
@@ -140,7 +121,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         <span className="regular-price">{regularPrice}₫</span>
                     </div>
                     <div className="product__rating">
-                        {displayStars(product.stars)}
+                        <RatingStars stars={product.stars} />
                         <span>({product.votes} đánh giá)</span>
                     </div>
                     {

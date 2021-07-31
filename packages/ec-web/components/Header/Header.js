@@ -167,13 +167,13 @@ export default function Header() {
                                     <i className="fa fa-search fa--md" aria-hidden="true" />
                                 </button>
                             </li>
-                            <li className="menu__item">
+                            {/* <li className="menu__item">
                                 <button type="button" className="text-white btn btn--no-outline">
                                 <Link href="/wishlist">
                                         <a><i className="fa fa-heart fa--md text-white" aria-hidden="true" /></a>
                                     </Link>
                                 </button>
-                            </li>
+                            </li> */}
                             <li className="menu__item">
                                 <button type="button" className="btn btn--no-outline">
                                     <Link href="/gio-hang">
@@ -219,4 +219,21 @@ export default function Header() {
             </a>
         </>
     )
+}
+
+function getStyleByID(idElement, styleProp) {
+    var element = document.getElementById(idElement);
+    if (element.currentStyle)
+        var y = element.currentStyle[styleProp];
+    else if (window.getComputedStyle)
+        var y = document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
+    return y;
+}
+
+function getStyleElement(element, styleProp) {
+    if (element.currentStyle)
+        var y = element.currentStyle[styleProp];
+    else if (window.getComputedStyle)
+        var y = document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
+    return y;
 }

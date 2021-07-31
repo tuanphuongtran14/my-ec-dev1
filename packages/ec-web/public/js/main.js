@@ -4,23 +4,6 @@ window.onload = function () {
     
 }
 
-function getStyleByID(idElement, styleProp) {
-    var element = document.getElementById(idElement);
-    if (element.currentStyle)
-        var y = element.currentStyle[styleProp];
-    else if (window.getComputedStyle)
-        var y = document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
-    return y;
-}
-
-function getStyleElement(element, styleProp) {
-    if (element.currentStyle)
-        var y = element.currentStyle[styleProp];
-    else if (window.getComputedStyle)
-        var y = document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
-    return y;
-}
-
 function selectVersions(id) {
     var versions = document.querySelectorAll(`#${id} .version`);
     console.log(versions);
