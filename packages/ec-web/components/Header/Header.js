@@ -131,7 +131,7 @@ export default function Header() {
                             <i className="fa fa-bars fa--md" aria-hidden="true" />
                         </button>
                         <Link href="/" >
-                            <a><img src="/img/logo.png" className="logo" alt="" /></a>
+                            <a><img src="/img/logo.png" className="logo px-0" alt="" /></a>
                         </Link>
                     </div>
                     <div className="navbar__menu" id="navbar-menu">
@@ -168,7 +168,7 @@ export default function Header() {
                             <li className="menu__item">
                                 <button type="button" className="btn btn--no-outline">
                                     <Link href="/gio-hang">
-                                        <a><i className="fas fa-shopping-bag fa-lg text-white" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
+                                        <a><i className="fas fa-shopping-bag fa-lg text-white mr-2" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
                                     </Link>
                                 </button>
                             </li>

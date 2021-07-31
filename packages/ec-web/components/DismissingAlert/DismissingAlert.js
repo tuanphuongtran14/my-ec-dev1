@@ -12,7 +12,7 @@ export default function DismissingAlert({ children, type, showTime }) {
 
     useEffect(() => {
         const notification = document.getElementById(id);
-        fadeIn(notification, 400);
+        fadeIn(notification, 200);
     });
 
     const hideNofitication = (e) => {
@@ -51,7 +51,7 @@ export default function DismissingAlert({ children, type, showTime }) {
         >
             {children}
             <button type="button" className="close" onClick={hideNofitication}>
-                <span aria-hidden="true">&times;</span>
+                <i className="fas fa-times"></i>
             </button>
         </div>
     );

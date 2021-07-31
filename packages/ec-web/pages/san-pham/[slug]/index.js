@@ -64,38 +64,19 @@ export default function Product({
                     as={`/san-pham/${product.slug}`}
                 >
                     <span
-                        className="product__title"
+                        className="product__title font-weight-bold"
                         style={{ cursor: "pointer" }}
                     >
                         {product.name}
                     </span>
                 </Link>
                 <div className="product__price">
-                    <span className="sales-price">{finalPrice}₫</span>
-                    <span className="regular-price">{regularPrice}₫</span>
+                    <span className="sales-price">{product.finalPrice.toLocaleString("DE-de")}₫</span>
+                    <span className="regular-price">{product.regularPrice.toLocaleString("DE-de")}₫</span>
                 </div>
                 <div className="product__rating">
-                    <i
-                        className="fa product__rating-icon fa-star"
-                        aria-hidden="true"
-                    />
-                    <i
-                        className="fa product__rating-icon fa-star"
-                        aria-hidden="true"
-                    />
-                    <i
-                        className="fa product__rating-icon fa-star"
-                        aria-hidden="true"
-                    />
-                    <i
-                        className="fa product__rating-icon fa-star"
-                        aria-hidden="true"
-                    />
-                    <i
-                        className="fa product__rating-icon fa-star"
-                        aria-hidden="true"
-                    />
-                    <span>(472 đánh giá)</span>
+                    <RatingStars stars={product.stars} />
+                    <span>({product.votes} đánh giá)</span>
                 </div>
                 {product.salespercentage > 0 ? (
                     <div className="product__box-sticker">
@@ -313,9 +294,13 @@ export default function Product({
                     <p className="text-center">
                         <button type="button" class="btn btn-success mt-3" onClick={loadMore}>Tải thêm...</button>
                     </p>) : ""}
-                {(reviewList.reviews.length === 0) ? (
-                    <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này</p>
-                ) : ""}
+                {
+                    (reviewList.reviews.length === 0) ? 
+                        ((reviewList.userReview) ? 
+                            <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này ngoài bạn</p> :
+                            <p className="text-center my-5">Hiện chưa có đánh giá về sản phẩm này</p>
+                        ) : ""
+                }
             </>
         )
     }
@@ -347,7 +332,7 @@ export default function Product({
                         <span className="rating-result">
                             5
                             <i
-                                className="fa fa-star checked"
+                                className="fa fa-star fa-sm checked"
                                 aria-hidden="true"
                             />
                         </span>
@@ -365,7 +350,7 @@ export default function Product({
                         <span className="rating-result">
                             4
                             <i
-                                className="fa fa-star checked"
+                                className="fa fa-star fa-sm checked"
                                 aria-hidden="true"
                             />
                         </span>
@@ -383,7 +368,7 @@ export default function Product({
                         <span className="rating-result">
                             3
                             <i
-                                className="fa fa-star checked"
+                                className="fa fa-star fa-sm checked"
                                 aria-hidden="true"
                             />
                         </span>
@@ -401,7 +386,7 @@ export default function Product({
                         <span className="rating-result">
                             2
                             <i
-                                className="fa fa-star checked"
+                                className="fa fa-star fa-sm checked"
                                 aria-hidden="true"
                             />
                         </span>
@@ -419,7 +404,7 @@ export default function Product({
                         <span className="rating-result">
                             1
                             <i
-                                className="fa fa-star checked"
+                                className="fa fa-star fa-sm checked"
                                 aria-hidden="true"
                             />
                         </span>

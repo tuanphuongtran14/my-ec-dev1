@@ -10,6 +10,8 @@ import {
     ME,
     FORGET_PASSWORD,
     GET_USER_ORDERS,
+    IS_VALID_EMAIL,
+    IS_VALID_USERNAME,
 } from "../constants/graphql/user";
 
 class UserApi {
@@ -201,6 +203,92 @@ class UserApi {
         );
         const { data, error, success } = responseData;
         return success ? data : error;
+    }
+    async isValidEmail(email, options) {
+        try {
+            // Declare query need be used
+            const query = `
+                query($email: String!) {
+                    valid: ${IS_VALID_EMAIL},
+                }
+            `;
+            // Declare variables need be used
+            const variables = {
+                email
+            };
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    "http://localhost:3000/api/graphql",
+                    {
+                        type: "query",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.query({
+                    query: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
+    }
+    async isValidUsername(username, options) {
+        try {
+            // Declare query need be used
+            const query = `
+                query($username: String!) {
+                    valid: ${IS_VALID_USERNAME},
+                }
+            `;
+            // Declare variables need be used
+            const variables = {
+                username
+            };
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    "http://localhost:3000/api/graphql",
+                    {
+                        type: "query",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.query({
+                    query: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
     }
 }
 
