@@ -27,6 +27,10 @@ async function handler(req, res) {
                 ok: true,
             });
         }
+        return res.json({
+            message: "Wrong password or username!",
+            ok: false,
+        });
     } catch {
         return res.json({
             message:
