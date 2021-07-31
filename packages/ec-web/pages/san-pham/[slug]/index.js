@@ -6,6 +6,8 @@ import { useAuth } from "../../../helpers/auth";
 import axios from 'axios';
 import Flickity from "react-flickity-component";
 import { productApi, reviewApi } from '../../../apis';
+import { useRouter } from "next/router";
+
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
@@ -41,6 +43,7 @@ export default function Product({
     const [isEditing, setIsEditing] = useState(false);
     const [displayNumber, setDisplayNumber] = useState(1);
     const [reload, setReload] = useState();
+    const router = useRouter();
     
     const id = product._id; 
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
@@ -663,6 +666,66 @@ export default function Product({
         }
     }
 
+    const handleBuyNow = async () => {
+        try {
+            const btnEle = document.getElementById("buyNowBtn");
+            btnEle.setAttribute("disabled", true);
+            btnEle.innerHTML = `
+                <span class="spinner-border spinner-border-sm"></span>
+                &nbsp; Đang xử lý
+            `;
+
+            const mutation = `
+                mutation($cartId: ID!, $newItem: CartItemInput!) {
+                    cart: addItemToCart(
+                        cartId: $cartId,
+                        newItem: $newItem
+                    ) {
+                        _id
+                        items {
+                            _id
+                        }
+                    }
+                }
+            `;
+
+            const variables = {
+                cartId: localStorage.getItem("cartId"),
+                newItem: {
+                    product: product._id,
+                    qty: 1,
+                    color: selectedColor
+                }
+            };
+
+            const { data } = await axios({
+                method: 'POST',
+                url: '/api/mutation',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    mutation,
+                    variables
+                },
+            });
+
+            localStorage.setItem("cartId", data.cart._id);
+            localStorage.setItem('cartItems', data.cart.items.length);
+            setReload(data.cart.items.length);
+
+            btnEle.removeAttribute("disabled");
+            btnEle.innerHTML = `
+                <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                &nbsp; Mua ngay
+            `;
+
+        } catch (error) {
+            console.log(error);
+        }
+        router.push('/gio-hang');
+    }
+
     const addToWishList = async(productId) => {
         try {
             const btnWL = document.ElementByClassName("btnAddToWishList");
@@ -853,7 +916,7 @@ export default function Product({
                                 ></ul>
                             </p>
                             <div className="row px-0 mx-0">
-                                <button className="btn btn--buy-now col-12 px-0 mb-2">
+                                <button className="btn btn--buy-now col-12 px-0 mb-2" id="buyNowBtn" onClick={handleBuyNow}>
                                     <i
                                         className="fa fa-cart-arrow-down fa--md"
                                         aria-hidden="true"

@@ -151,7 +151,7 @@ export default function DropdownUser() {
         );
     } else
         return (
-            <a href="/login_register" className="text-white">
+            <a href="/login_register" className="text-dark">
                 Đăng nhập
             </a>
         );
