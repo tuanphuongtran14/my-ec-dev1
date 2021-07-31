@@ -165,13 +165,6 @@ export default function Header() {
                                     <i className="fas fa-search fa-lg" aria-hidden="true" />
                                 </button>
                             </li>
-                            {/* <li className="menu__item">
-                                <button type="button" className="text-white btn btn--no-outline">
-                                <Link href="/wishlist">
-                                        <a><i className="fa fa-heart fa--md text-white" aria-hidden="true" /></a>
-                                    </Link>
-                                </button>
-                            </li> */}
                             <li className="menu__item">
                                 <button type="button" className="btn btn--no-outline">
                                     <Link href="/gio-hang">

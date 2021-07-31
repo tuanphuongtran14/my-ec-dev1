@@ -259,8 +259,7 @@ export default function CartPagex({ isSignedIn }) {
                                 <hr />
                                 <Link href="/checkout">
                                 <a
-                                    href=""
-                                    className="btn btn--buy-now  btn-block"
+                                    className="btn btn--buy-now btn-block"
                                 >
                                     {" "}
                                     Thanh toán{" "}

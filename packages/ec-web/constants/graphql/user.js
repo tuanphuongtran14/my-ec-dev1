@@ -39,6 +39,7 @@ export const GET_USER_CART = `
         _id
         items {
             _id
+            selected
         }
     }
 `;
