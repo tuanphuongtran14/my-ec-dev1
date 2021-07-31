@@ -1,29 +1,11 @@
 import React, {useState, useEffect} from "react";
 import Head from "next/head";
 import Link from "next/link";
-import withIronSession from "../../helpers/customWithIronSession";
 import { cartApi } from '../../apis';
 import { Header, Footer, Modal, CartItem } from '../../components';
 
-export const getServerSideProps = withIronSession(async ({ req, res }) => {
-    const user = req.session.get("user");
-    const isSignedIn = user ? true : false;
 
-    if (!isSignedIn) {
-        res.writeHead(302, {
-            Location: '/'
-        });
-        return res.end();
-    }
-
-    return {
-        props: {
-            isSignedIn,
-        },
-    };
-});
-
-const index = ({ isSignedIn }) => {
+export default function CartPagex({ isSignedIn }) {
     const [items, setItems] = useState([]);
     const [coupon, setCoupon] = useState({});
     const [enableMutilRemove, setEnableMutilRemove] = useState(false);
@@ -31,7 +13,6 @@ const index = ({ isSignedIn }) => {
         totalAmount: 0,
         finalAmount: 0,
     });
-    let deleleItemId = '';
 
     // ************* START: Fetch cart first time ************** //
     useEffect(() => {
@@ -308,4 +289,3 @@ const index = ({ isSignedIn }) => {
     );
 };
 
-export default index;

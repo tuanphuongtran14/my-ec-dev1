@@ -1,23 +1,23 @@
-import Link from 'next/link';
-import DropdownUser from './DropdownUser';
-import { useEffect, useState } from 'react';
-import { userApi } from '../../apis';
+import Link from "next/link";
+import DropdownUser from "./DropdownUser";
+import React, { useEffect, useState } from "react";
+import { userApi } from "../../apis";
 
 export default function Header() {
     const [itemsNumber, setItemsNumber] = useState();
 
     useEffect(async () => {
-        const cartId = localStorage.getItem('cartId');
+        const cartId = localStorage.getItem("cartId");
 
         const data = await userApi.getUserCart(cartId);
 
         if (data && data.cart) {
-            localStorage.setItem('cartId', data.cart._id);
-            localStorage.setItem('cartLength', data.cart.items.length);
+            localStorage.setItem("cartId", data.cart._id);
+            localStorage.setItem("cartLength", data.cart.items.length);
             setItemsNumber(data.cart.items.length);
         } else {
-            localStorage.removeItem('cartId');
-            localStorage.setItem('cartLength', 0);
+            localStorage.removeItem("cartId");
+            localStorage.setItem("cartLength", 0);
         }
     });
 
@@ -51,7 +51,7 @@ export default function Header() {
                     overBodyLayer.style.display = "none";
                     menuParent.appendChild(menu);
                     menu.style.transform = "none";
-                    body.classList.remove('noscroll');
+                    body.classList.remove("noscroll");
                 }
             } else {
                 body.appendChild(menu);
@@ -61,9 +61,9 @@ export default function Header() {
 
         window.onscroll = function () {
             if (window.scrollY >= 150) {
-                document.getElementById('backToTopID').style.display = "block"
+                document.getElementById("backToTopID").style.display = "block"
             } else {
-                document.getElementById('backToTopID').style.display = "none"
+                document.getElementById("backToTopID").style.display = "none"
             }
         };
 
@@ -72,25 +72,25 @@ export default function Header() {
             overBodyLayer.style.display = "block";
             menu.style.transform = "translateX(60vw)";
             root.style.transform = "translateX(60vw)";
-            body.classList.add('noscroll');
+            body.classList.add("noscroll");
         }
 
         // If search button is clicked, display search bar
         searchBtn.onclick = function () {
             searchBar.style.display = "flex";
             overBodyLayer.style.display = "block";
-            body.classList.add('noscroll');
+            body.classList.add("noscroll");
             searchIcon.style.display = "block";
             searchGo.style.display = "none"
             searchAdvanced.style.display = "none";
         }
 
         searchAdvanced.onclick = function () {
-            body.classList.remove('noscroll');
+            body.classList.remove("noscroll");
         }
 
         searchGo.onclick = function () {
-            body.classList.remove('noscroll');
+            body.classList.remove("noscroll");
         }
 
         searchBar.onclick = function () {
@@ -109,7 +109,7 @@ export default function Header() {
                 searchBar.style.display = "none";
                 overBodyLayer.style.display = "none";
             }
-            body.classList.remove('noscroll');
+            body.classList.remove("noscroll");
         }
     }
 
@@ -177,7 +177,7 @@ export default function Header() {
                         </ul>
                     </div>
                 </div>
-                <form action className="search-bar" id="search-bar" action="/result" method='GET'>
+                <form action className="search-bar" id="search-bar" action="/result" method="GET">
                     <div className="container position-relative">
                         <input
                             type="text"
@@ -185,7 +185,7 @@ export default function Header() {
                             id="search"
                             className="search-input container "
                             placeholder="Search"
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                         />
                         <button type="submit" className="btn btn--searchGo" id="search-go"
                         >

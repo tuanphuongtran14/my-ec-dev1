@@ -1,8 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import Link from 'next/link';
-import '../../pages/_app'
-import '../../pages/_document'
-import Flickity from 'react-flickity-component'
+import React, { useEffect, useRef } from "react";
+import Flickity from "react-flickity-component";
 
 export default function Header() {
     let flkty = useRef();
@@ -24,16 +21,10 @@ export default function Header() {
         <div class="container banner">
             <div class="carousel row">
                 <div class="col-12 col-lg-8 pr-1">
-                    {/* <div class="gallery js-flickity " data-flickity-options='{ "freeScroll": true, "wrapAround": true, "imagesLoaded": true }'>
-                        <img class="gallery-cell" src="./img/banner/ROG_Phone_Sliding_desk.webp" alt="" />
-                        <img class="gallery-cell" src="./img/banner/690x300_Buds_.webp" alt="" />
-                        <img class="gallery-cell" src="./img/banner/mg-6690x300.webp" alt="" />
-                        <img class="gallery-cell" src="./img/banner/IMG_20210515_220924_947.webp" alt="" />
-                    </div> */}
                     <Flickity
                         flickityRef={c => flkty = c}
-                        className={'carousel'} // default ''
-                        elementType={'div'} // default 'div'
+                        className={"carousel"} // default ""
+                        elementType={"div"} // default "div"
                         options={flickityOptions} // takes flickity options {}
                         disableImagesLoaded={false} // default false
                         reloadOnUpdate // default false

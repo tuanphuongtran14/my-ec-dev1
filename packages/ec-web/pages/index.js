@@ -1,17 +1,11 @@
-import Head from 'next/head';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-import Banner from '../components/Banner/Banner';
-import './_app'
-import './_document'
-import Link from 'next/link'
-import { useEffect, useState } from 'react';
-import client from '../components/Category/apolloClient';
-import getProductsQuery from '../components/Category/getProductsQuery';
-import Flickity from 'react-flickity-component';
-import { productApi } from '../apis';
+import Head from "next/head";
+import { Header, Footer, Banner } from "../components";
+import Link from "next/link"
+import React from "react";
+import Flickity from "react-flickity-component";
+import { productApi } from "../apis";
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const {
     productHotSale,
     productsBestSell,
@@ -186,16 +180,16 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
           </div>
           <div className="box-body">
             <Flickity
-              className={'product-list border-0'} // default ''
-              elementType={'div'} // default 'div'
+              className={"product-list border-0"} // default ""
+              elementType={"div"} // default "div"
               options={flickityOptions} // takes flickity options {}
               disableImagesLoaded={false} // default false
               reloadOnUpdate // default false
               static // default false
             >
-              {typeCategory === 'Hot sales' ? HotSale :
-                typeCategory === 'Bán chạy' ? bestSeller :
-                  typeCategory === 'Mới nhất' ? productsNew : ''
+              {typeCategory === "Hot sales" ? HotSale :
+                typeCategory === "Bán chạy" ? bestSeller :
+                  typeCategory === "Mới nhất" ? productsNew : ""
               }
             </Flickity>
           </div>
@@ -211,9 +205,9 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         </Head>
         <Header />
         <Banner />
-        {ProductList('Hot sales')}
-        {ProductList('Bán chạy')}
-        {ProductList('Mới nhất')}
+        {ProductList("Hot sales")}
+        {ProductList("Bán chạy")}
+        {ProductList("Mới nhất")}
         <Footer />
     </body>
   )

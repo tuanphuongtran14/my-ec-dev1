@@ -1,11 +1,8 @@
-import React, {useState} from 'react';
-import Head from 'next/head';
-import Router from 'next/router'
-import $ from 'jquery';
+import React, { useState } from 'react';
+import Router from 'next/router';
 
 export default function App({ Component, pageProps }) {
     const [loading, setLoading] = useState(false);
-
     Router.events.on("routeChangeStart", url => {
         setLoading(true);
     });

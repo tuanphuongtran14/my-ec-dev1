@@ -1,21 +1,19 @@
-import Head from 'next/head'
-import Link from 'next/dist/client/link';
-import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer'
-import Queries from '../../components/Checkout/ItemList';
-import InfoUser from '../../components/Checkout/infoUser';
-import { useRouter } from 'next/router'
-import { GET_ALL_ITEMS_CART } from '../../components/Checkout/ItemList';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import Head from "next/head"
+import Link from "next/dist/client/link";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer"
+import Queries from "../../components/Checkout/ItemList";
+import InfoUser from "../../components/Checkout/infoUser";
+import { useRouter } from "next/router";
 import { useAuth } from "../../helpers/auth";
-import { useEffect, useState } from 'react';
-import EmptyCart from '../chua-co-don-hang/index'
+import React, { useEffect, useState } from "react";
+import EmptyCart from "../chua-co-don-hang/index"
 
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
     if (!jwt) {
         res.writeHead(302, {
-            Location: '/'
+            Location: "/"
         });
         res.end();
     }
@@ -33,24 +31,24 @@ const payment = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        const mail = document.getElementById('mail').value;
-        const address = document.getElementById('address').value;
-        sessionStorage.setItem('name', name);
-        sessionStorage.setItem('phone', phone);
-        sessionStorage.setItem('mail', mail);
-        sessionStorage.setItem('address', address);
+        const name = document.getElementById("name").value;
+        const phone = document.getElementById("phone").value;
+        const mail = document.getElementById("mail").value;
+        const address = document.getElementById("address").value;
+        sessionStorage.setItem("name", name);
+        sessionStorage.setItem("phone", phone);
+        sessionStorage.setItem("mail", mail);
+        sessionStorage.setItem("address", address);
 
         router.push({
-            pathname: '/payment',
+            pathname: "/payment",
         })
     }
 
     const [cartLength, setCartLength] = useState(false);
 
     useEffect(() => {
-        const cartLengthLocal = localStorage.getItem('cartLength');
+        const cartLengthLocal = localStorage.getItem("cartLength");
         if (cartLengthLocal > 0)
             setCartLength(true)
     }, [])
