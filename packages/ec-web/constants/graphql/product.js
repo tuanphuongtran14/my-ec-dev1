@@ -1,5 +1,6 @@
 export const GET_BEST_SELLERS = `
     searchProducts(sort:["total_sold:desc"], limit: $limit) {
+        id
         name
         slug
         regularPrice
@@ -15,6 +16,7 @@ export const GET_BEST_SELLERS = `
 
 export const GET_HOT_SALES = `
     searchProducts(sort:["salesPercentage:desc"], limit: $limit) {
+        id
         name
         slug
         regularPrice
@@ -30,6 +32,7 @@ export const GET_HOT_SALES = `
 
 export const GET_NEW_ARRIVALS = `
     searchProducts(sort:["createAt:desc"], limit: $limit) {
+        id
         name
         slug
         regularPrice
@@ -48,6 +51,7 @@ export const GET_PRODUCT_DETAIL_BY_SLUG = `
         slug: $slug
     }) {
         _id
+        id
         name
         salesPercentage
         slug

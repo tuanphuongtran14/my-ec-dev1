@@ -53,6 +53,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
       jwt,
     },
   };
+  
 });
 
 const index = ({ products,jwt }) => {
@@ -205,8 +206,8 @@ const index = ({ products,jwt }) => {
     indexOfFirstProduct,
     indexOfLastProduct
   );
-  console.log(products);
-  //const temp = {}
+  // console.log(products);
+  // //const temp = {}
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -268,7 +269,7 @@ const index = ({ products,jwt }) => {
             {/* <Wishlist currentProducts={currentProducts} jwt={jwt} /> */}
             {DisplayProduct(currentProducts)}
             <Pagination
-              productsPerPage={currentProducts}
+              productsPerPage={productsPerPage}
               totalProducts={product_2.length}
               paginate={paginate}
               currentPage={currentPage}

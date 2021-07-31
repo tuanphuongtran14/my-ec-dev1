@@ -85,7 +85,6 @@ export default function OrderDetail() {
   ) 
     
   return (
-    <body id="body">
       <div id="root">
         <Head>
           <title>Chi tiết đơn hàng</title>
@@ -95,6 +94,5 @@ export default function OrderDetail() {
         <OrderDetail />
         <Footer />
       </div>
-    </body>
   )
 }

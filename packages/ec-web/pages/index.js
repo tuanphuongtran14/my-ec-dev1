@@ -1,60 +1,35 @@
-import Head from 'next/head';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-import Banner from '../components/Banner/Banner';
-import './_app'
-import './_document'
-import Link from 'next/link'
-import { useEffect, useState } from 'react';
-import client from '../components/Category/apolloClient';
-import getProductsQuery from '../components/Category/getProductsQuery';
-import Flickity from 'react-flickity-component';
-import { productApi } from '../apis';
+import Head from "next/head";
+import { Header, Footer, Banner, RatingStars } from "../components";
+import Link from "next/link"
+import React from "react";
+import Flickity from "react-flickity-component";
+import { productApi } from "../apis";
 
-export async function getStaticProps() {
-    const {
-        productHotSale,
-        productsBestSell,
-        productsBestNew
-    } = await productApi.getForHome();
+export async function getServerSideProps() {
+  const {
+    productHotSale,
+    productsBestSell,
+    productsBestNew
+  } = await productApi.getForHome();
 
-    return {
-        props: {
-            productHotSale,
-            productsBestSell,
-            productsBestNew
-        },
-    };
+  return {
+    props: {
+      productHotSale,
+      productsBestSell,
+      productsBestNew
+    },
+  };
 }
 
 
 export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
-    const displayStars = (stars) => {
-        const result = [];
-        for (let index = 0; index < stars; index++) {
-            result.push(
-                <i className="fa product__rating-icon fa-star" aria-hidden="true"></i>
-            )
-        }
-        if ((stars - Math.floor(stars)) > 0) {
-            result.push(
-                <i className="fa product__rating-icon fa-star-half" aria-hidden="true"></i>
-            )
-        }
-        for (let index = result.length; index < 5; index++) {
-            result.push(
-                <i className="fa product__rating-icon fa-star-o" aria-hidden="true"></i>
-            )
-        }
-        return result;
-    }
 
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
         return (
-            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "hotsales" }>
                 <div className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
@@ -70,7 +45,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         <span className="regular-price">{regularPrice}₫</span>
                     </div>
                     <div className="product__rating">
-                        {displayStars(product.stars)}
+                        <RatingStars stars={product.stars} />
                         <span>({product.votes} đánh giá)</span>
                     </div>
                     {
@@ -92,7 +67,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
         return (
-            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "newarrival" }>
                 <div className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
@@ -108,7 +83,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         <span className="regular-price">{regularPrice}₫</span>
                     </div>
                     <div className="product__rating">
-                        {displayStars(product.stars)}
+                        <RatingStars stars={product.stars} />
                         <span>({product.votes} đánh giá)</span>
                     </div>
                     {
@@ -130,7 +105,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
         return (
-            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id}>
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "bestsellers" }>
                 <div className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
@@ -146,7 +121,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         <span className="regular-price">{regularPrice}₫</span>
                     </div>
                     <div className="product__rating">
-                        {displayStars(product.stars)}
+                        <RatingStars stars={product.stars} />
                         <span>({product.votes} đánh giá)</span>
                     </div>
                     {
@@ -206,7 +181,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
     }
 
     return (
-        <body
+        <div
             //  className="bodyIndex" 
             id="root"
         >
@@ -261,13 +236,6 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                 </div>
             </div>
             <div className="bannerUs row bg-white mx-0">
-                {/* <div className="bannerIphoneImg col-8 px-0">
-                    <img
-                        src="https://images.unsplash.com/photo-1437419764061-2473afe69fc2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1190&q=80"
-                        style={{ width: '100%' }}
-                    >
-                    </img>
-                </div> */}
                 <div className="bannerUsText d-flex justify-content-center align-items-center text-center" style={{backgroundColor: "#111113"}}>
                     <div>
                         <b><h3 className="px-auto py-3">Group1's journey</h3></b>
@@ -283,6 +251,6 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
             {ProductList('Mới nhất')}
             <Footer />
-        </body>
+        </div>
     )
 }

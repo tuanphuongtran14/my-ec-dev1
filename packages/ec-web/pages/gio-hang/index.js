@@ -1,30 +1,12 @@
 import React, {useState, useEffect} from "react";
 import Head from "next/head";
 import Link from "next/link";
-import withIronSession from "../../helpers/customWithIronSession";
 import { cartApi } from '../../apis';
 import { Header, Footer, Modal, CartItem } from '../../components';
+import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export const getServerSideProps = withIronSession(async ({ req, res }) => {
-    const user = req.session.get("user");
-    const isSignedIn = user ? true : false;
-
-    if (!isSignedIn) {
-        res.writeHead(302, {
-            Location: '/'
-        });
-        return res.end();
-    }
-
-    return {
-        props: {
-            isSignedIn,
-        },
-    };
-});
-
-const index = ({ isSignedIn }) => {
+export default function CartPagex({ isSignedIn }) {
     const [items, setItems] = useState([]);
     const [coupon, setCoupon] = useState({});
     const [enableMutilRemove, setEnableMutilRemove] = useState(false);
@@ -32,8 +14,7 @@ const index = ({ isSignedIn }) => {
         totalAmount: 0,
         finalAmount: 0,
     });
-    let deleleItemId = '';
-
+    const route = useRouter();
     // ************* START: Fetch cart first time ************** //
     useEffect(() => {
         fetchCart();
@@ -55,15 +36,7 @@ const index = ({ isSignedIn }) => {
             setEnableMutilRemove(true);
         } 
         else {
-        // toast.warning(`Hiện bạn chưa chọn sản phẩm nào để mua `, {
-        //     position: "top-center",
-        //     autoClose: 5000,
-        //     hideProgressBar: false,
-        //     closeOnClick: true,
-        //     pauseOnHover: true,
-        //     draggable: true,
-        //     progress: undefined,
-        //   });
+      
             setEnableMutilRemove(false);
         }
             
@@ -145,18 +118,28 @@ const index = ({ isSignedIn }) => {
     }
 
     // *************** START: Process remove coupon *************** //
-    const removeCoupon = async () => {
-        try {
-            const data = await cartApi.removeCoupon(localStorage.getItem('cartId'));
-            setNewCart(data.cart);
-        } catch(error) {
-            console.log(error);
-            setCoupon({
-                wrong: true
-            });
-        } 
-    }
+  
+  // *************** START: Process click thanh toan *************** //
 
+    const clickPaỵ = () =>{
+        const selectedItemLength = localStorage.getItem('selectedItemLength');
+            if (selectedItemLength < 1)
+                toast.info(`Hiện bạn chưa chọn sản phẩm nào để mua `, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+              });  
+            else 
+              route.push('/checkout');
+  };
+  
+
+
+  
     return (
         <>
             <Head>
@@ -176,7 +159,7 @@ const index = ({ isSignedIn }) => {
                     <span className="breadcrumb-item active">Giỏ hàng</span>
                 </div>
             </nav>
-            {/* <ToastContainer
+            <ToastContainer
               position="top-center"
               autoClose={5000}
               hideProgressBar={false}
@@ -186,7 +169,7 @@ const index = ({ isSignedIn }) => {
               pauseOnFocusLoss
               draggable
               pauseOnHover
-            /> */}
+            />
             <div style={{backgroundColor: "#F8F9FA"}}>
             <div className="container mb-3">
                 <div className="box-2-column">
@@ -300,15 +283,14 @@ const index = ({ isSignedIn }) => {
                                     </dd>
                                 </dl>
                                 <hr />
-                                <Link href="/checkout">
+                               
                                 <a
-                                    href=""
-                                    className="btn btn--buy-now  btn-block"
+                                    className="text-white btn btn--buy-now btn-block" onClick = {clickPaỵ}
                                 >
                                     {" "}
                                     Thanh toán{" "}
                                 </a>
-                                </Link>
+                               
                                 <Link href="/"> 
                                     <a className="btn btn-light btn-block">
                                         Tiếp tục mua sắm
@@ -332,4 +314,3 @@ const index = ({ isSignedIn }) => {
     );
 };
 
-export default index;

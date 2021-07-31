@@ -42,7 +42,6 @@ export default function DropdownUser() {
                                 aria-hidden="true"
                             ></i>
                             Xin chào, {user.username}
-                            {/* <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" /> */}
                         </Menu.Button>
 
                         <Transition
