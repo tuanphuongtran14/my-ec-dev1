@@ -41,8 +41,8 @@ export default function Product({
     const [isEditing, setIsEditing] = useState(false);
     const [displayNumber, setDisplayNumber] = useState(1);
     const [reload, setReload] = useState();
-    
-    const id = product._id; 
+    const [id,setId] = useState(product._id);
+    console.log(product);
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
 
