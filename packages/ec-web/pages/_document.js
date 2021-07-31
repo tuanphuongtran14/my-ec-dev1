@@ -17,7 +17,7 @@ class MyDocument extends Document {
                     <link rel="stylesheet" href="/vendors/flickity.min.css" />
                     <link rel="stylesheet" href="/css/style.css" />
                 </Head>
-                <body>
+                <body id="body">
                     <Main />
                     <NextScript />
                     {/* Optional JavaScript */}

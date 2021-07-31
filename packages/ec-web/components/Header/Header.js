@@ -119,11 +119,9 @@ export default function Header() {
             <div className="top-nav bg-light text-dark">
                 <div className="container d-flex justify-content-between align-items-center">
                     <button type="button" className=" btn btn--no-outline px-0">
-                        <i class="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
+                        <i className="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
                     </button>
-                    <button type="button" className=" btn btn--no-outline px-0">
-                        <DropdownUser></DropdownUser>
-                    </button>
+                    <DropdownUser></DropdownUser>
                 </div>
             </div>
             <div className="header__navbar sticky-top">
@@ -164,7 +162,7 @@ export default function Header() {
                         <ul className="menu menu--horizontal">
                             <li className="menu__item">
                                 <button id="search-btn" type="button" className="text-white btn btn--no-outline" id="search-btn">
-                                    <i className="fa fa-search fa--md" aria-hidden="true" />
+                                    <i className="fas fa-search fa-lg" aria-hidden="true" />
                                 </button>
                             </li>
                             {/* <li className="menu__item">
@@ -177,7 +175,7 @@ export default function Header() {
                             <li className="menu__item">
                                 <button type="button" className="btn btn--no-outline">
                                     <Link href="/gio-hang">
-                                        <a><i className="fa fa-shopping-bag fa--md text-white" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
+                                        <a><i className="fas fa-shopping-bag fa-lg text-white" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
                                     </Link>
                                 </button>
                             </li>
@@ -215,7 +213,7 @@ export default function Header() {
                 <div id="overlaybody"></div>
             </div>
             <a href="#" className="goTopBtn border" id="backToTopID">
-                <i class="fas fa-angle-up fa-lg"></i>
+                <i className="fas fa-angle-up fa-lg"></i>
             </a>
         </>
     )

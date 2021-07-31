@@ -204,7 +204,6 @@ export default function Customer() {
     
   return (
     <div>
-        <body id="body">
         <div id="root">
           <Head>
             <title>Thông tin tài khoản</title>
@@ -215,7 +214,6 @@ export default function Customer() {
           <Customer />
           <Footer />
         </div>
-      </body>
       <script src="./js/customer-info.js"></script>
     </div>
   )
