@@ -32,6 +32,7 @@ const pro = ({ currentProducts, filter }) => {
             currentProducts = (currentProducts.filter(product => product.rom >= 128 && product.rom <= 256))
         else if (filter.rom === "tren-512")
             currentProducts = (currentProducts.filter(product => product.rom >= 512))
+    
         return currentProducts
     }
 

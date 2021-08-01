@@ -85,7 +85,7 @@ export default function DropdownUser() {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <a
-                                                href="/wishlist"
+                                                href="/yeu-thich"
                                                 className={classNames(
                                                     active
                                                     ? "bg-dark-100 text-light"

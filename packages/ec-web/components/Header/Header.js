@@ -148,7 +148,7 @@ export default function Header() {
                                 </Link>
                             </li>
                             <li className="menu__item">
-                                <Link href="/new">
+                                <Link href="/tin-tuc">
                                     <a className="text-white">Tin tức</a>
                                 </Link>
                             </li>
@@ -176,7 +176,7 @@ export default function Header() {
                         </ul>
                     </div>
                 </div>
-                <form action className="search-bar" id="search-bar" action="/result" method="GET">
+                <form action className="search-bar" id="search-bar" action="/ket-qua-tim-kiem" method="GET">
                     <div className="container position-relative">
                         <input
                             type="text"
@@ -193,7 +193,7 @@ export default function Header() {
                             </div>
                         </button>
                         <button type="submit" className="btn btn--search" id="search-advanced">
-                            <Link href="/advancedSearch">
+                            <Link href="/tim-kiem-chi-tiet">
                                 <div className="searchGo_text">
                                     Advanced
                                 </div>

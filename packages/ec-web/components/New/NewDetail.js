@@ -51,7 +51,7 @@ const NewsHot = () =>{
                     </div>
                     <div className="col-lg-12 list-news-new__item-detail">
                         <h5>
-                            <a href={`/new/`+blog.slug}>{blog.title}</a>
+                            <a href={`/tin-tuc/`+blog.slug}>{blog.title}</a>
                         </h5>
                         <span>18 Tháng Bảy, 2021</span>
                     </div>
@@ -70,7 +70,7 @@ const ListNews = () => {
                     </div>
                     <div className="col-lg-8 list-news-hot__item-detail">
                         <h5>
-                            <a href={`/new/`+blog.slug}>{blog.title}</a>
+                            <a href={`/tin-tuc/`+blog.slug}>{blog.title}</a>
                         </h5>
                         <span className="category">Tin hot</span>
                         <span>18 Tháng Bảy, 2021</span>

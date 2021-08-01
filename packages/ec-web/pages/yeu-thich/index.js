@@ -238,12 +238,12 @@ const index = ({ products,jwt }) => {
               <li className="breadcrumb-item">
                 <h6>
                   <a href="/" className="text-danger">
-                    Home
+                    Trang chủ
                   </a>
                 </h6>
               </li>
               <li className="breadcrumb-item">
-                <h6>Wishlist</h6>
+                <h6>Sản phẩm yêu thích</h6>
               </li>
             </div>
           </ol>

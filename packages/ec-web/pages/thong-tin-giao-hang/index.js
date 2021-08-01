@@ -42,8 +42,8 @@ const payment = () => {
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const mail = document.getElementById('mail').value;
-        const address1 = document.getElementById('address1').value;
-        const address2 = document.getElementById('address2').value;
+        const address1 = document.getElementById('TinhThanh').value;
+        const address2 = document.getElementById('QuanHuyen').value;
         const address3 = document.getElementById('address3').value;
         sessionStorage.setItem('name', name);
         sessionStorage.setItem('phone', phone);
@@ -53,7 +53,7 @@ const payment = () => {
         sessionStorage.setItem('address3', address3);
 
         router.push({
-            pathname: "/payment",
+            pathname: "/thanh-toan",
         })
     }
 
@@ -93,7 +93,7 @@ const payment = () => {
             </nav>
             <div className="payment container row mx-auto px-0">
                 <div className="payment__bill col-12 col-lg-8">
-                    <form className="bg-white p-3" action="/payment" method="POST" onSubmit={handleSubmit}>
+                    <form className="bg-white p-3" action="/thanh-toan" method="POST" onSubmit={handleSubmit}>
                         <div className="form-group ">
                             <h2 className="title">Thông tin giao hàng</h2>
                             <InfoUser></InfoUser>

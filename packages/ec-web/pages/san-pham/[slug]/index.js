@@ -727,14 +727,14 @@ export default function Product({
   }, []);
   const handleBuyNow = async () => {
     try {
-        const btnEle = document.getElementById("buyNowBtn");
-        btnEle.setAttribute("disabled", true);
-        btnEle.innerHTML = `
+      const btnEle = document.getElementById("buyNowBtn");
+      btnEle.setAttribute("disabled", true);
+      btnEle.innerHTML = `
             <span class="spinner-border spinner-border-sm"></span>
             &nbsp; Đang xử lý
         `;
 
-        const mutation = `
+      const mutation = `
             mutation($cartId: ID!, $newItem: CartItemInput!) {
                 cart: addItemToCart(
                     cartId: $cartId,
@@ -748,42 +748,41 @@ export default function Product({
             }
         `;
 
-        const variables = {
-            cartId: localStorage.getItem("cartId"),
-            newItem: {
-                product: product._id,
-                qty: 1,
-                color: selectedColor
-            }
-        };
+      const variables = {
+        cartId: localStorage.getItem("cartId"),
+        newItem: {
+          product: product._id,
+          qty: 1,
+          color: selectedColor,
+        },
+      };
 
-        const { data } = await axios({
-            method: 'POST',
-            url: '/api/mutation',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: {
-                mutation,
-                variables
-            },
-        });
+      const { data } = await axios({
+        method: "POST",
+        url: "/api/mutation",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          mutation,
+          variables,
+        },
+      });
 
-        localStorage.setItem("cartId", data.cart._id);
-        localStorage.setItem('cartItems', data.cart.items.length);
-        setReload(data.cart.items.length);
+      localStorage.setItem("cartId", data.cart._id);
+      localStorage.setItem("cartItems", data.cart.items.length);
+      setReload(data.cart.items.length);
 
-        btnEle.removeAttribute("disabled");
-        btnEle.innerHTML = `
+      btnEle.removeAttribute("disabled");
+      btnEle.innerHTML = `
             <i class="fa fa-cart-plus" aria-hidden="true"></i>
             &nbsp; Mua ngay
         `;
-
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-    router.push('/gio-hang');
-}
+    router.push("/gio-hang");
+  };
 
   const addToWishList = async (productId) => {
     try {
@@ -807,13 +806,12 @@ export default function Product({
         },
       });
       // alert("dung hay khong " + dataWL.addProductToWishList);
-     
-        btnWL.removeAttribute("disabled");
-        btnWL.innerHTML = `
+
+      btnWL.removeAttribute("disabled");
+      btnWL.innerHTML = `
                 <i class="fa fa-heart" aria-hidden="true"></i>
                 &nbsp Đã thêm vào yêu thích
             `;
-      
     } catch (error) {
       console.log(error);
     }
@@ -915,7 +913,11 @@ export default function Product({
                 ></ul>
               </p>
               <div className="row px-0 mx-0">
-                <button className="btn btn--buy-now col-12 px-0 mb-2" id="buyNowBtn" onClick={handleBuyNow}>
+                <button
+                  className="btn btn--buy-now col-12 px-0 mb-2"
+                  id="buyNowBtn"
+                  onClick={handleBuyNow}
+                >
                   <i
                     className="fa fa-cart-arrow-down fa--md"
                     aria-hidden="true"
@@ -939,7 +941,7 @@ export default function Product({
                     onClick={() => addToWishList(idProduct)}
                   >
                     <i className="fa fa-heart" aria-hidden="true" />
-                    &nbsp; Thêm vào sản phẩm yêu thích 
+                    &nbsp; Thêm vào sản phẩm yêu thích
                   </button>
                 </div>
               </div>
@@ -1143,7 +1145,7 @@ export default function Product({
 
                   {displayReviews()}
                 </div>
-              </div>
+              </div> 
             </div>
           </div>
           <div className="col-12 col-lg-4 bg-white bd-top-left--fake-bg">

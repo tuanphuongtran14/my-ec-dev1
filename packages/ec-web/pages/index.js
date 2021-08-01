@@ -252,7 +252,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                     </Link>
                 </div>
                 <div className="bannerNews--content row">
-                    <Link href="/new/cach-cap-nhat-ios-15-beta-4-dje-su-dung-safari-voi-thiet-ke-giao-dien-moi-va-co-hieu-nang-iphone-on-djinh-hon">
+                    <Link href="/tin-tuc/cach-cap-nhat-ios-15-beta-4-dje-su-dung-safari-voi-thiet-ke-giao-dien-moi-va-co-hieu-nang-iphone-on-djinh-hon">
                         <div className="bannerNews--content__item card col-4">
                             <img src="https://photo2.tinhte.vn/data/attachment-files/2021/07/5567088_cach-cap-nhat-ios-15-beta-4_1280x720-800-resize.jpeg" class="card-img-top" alt="..." />
                             <div class="card-body">
@@ -261,7 +261,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             </div>
                         </div>
                     </Link>
-                    <Link href="/new/cac-dong-djien-thoai-tam-trung-djang-mua-2021-djen-tu-cac-ong-lon-djau-nganh-la-dan-cong-nghe-lau-nam-ban-dja-biet-het-chua">
+                    <Link href="/tin-tuc/cac-dong-djien-thoai-tam-trung-djang-mua-2021-djen-tu-cac-ong-lon-djau-nganh-la-dan-cong-nghe-lau-nam-ban-dja-biet-het-chua">
                         <div className="bannerNews--content__item card col-4">
                             <img src="https://i2.wp.com/shiftdelete.net/wp-content/uploads/2021/07/telefon-kameralari-izleniyor-mu-2.jpg?resize=1170%2C658&ssl=1" class="card-img-top" alt="..." />
                             <div class="card-body">
@@ -270,7 +270,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             </div>
                         </div>
                     </Link>
-                    <Link href="/new/loat-djien-thoai-vivo-y-giam-sau-het-y-mung-sinh-nhat-gia-djang-hoi-lam-djo-khong-sam-ve-thi-qua-phi">
+                    <Link href="/tin-tuc/loat-djien-thoai-vivo-y-giam-sau-het-y-mung-sinh-nhat-gia-djang-hoi-lam-djo-khong-sam-ve-thi-qua-phi">
                         <div className="bannerNews--content__item card col-4">
                             <img src="https://cdn.tgdd.vn/Files/2021/04/29/1347335/vivoy725gxanh_den-10_800x450_800x450.jpg" class="card-img-top" alt="..." />
                             <div class="card-body">
