@@ -2,6 +2,13 @@ import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import React from 'react'
+import { userApi } from '../../apis';
+import {useState, useEffect} from 'react'
+import {useRouter} from 'next/router'
+
+//import { userApi } from "../../apis";
+
+const {orders} = await userApi.getUserOrders();
 
 import {
   ApolloClient,
@@ -19,8 +26,24 @@ const client = new ApolloClient({
 
 
 
-export default function Customer() {
 
+//const getServerSideProps = () => async {
+
+//}
+
+export default function Customer() {
+  const router = useRouter();
+  const [userInfo, setUserInfo] = useState({}) 
+  useEffect(async() => {
+    const data= await userApi.me();
+    console.log(data)
+    setUserInfo(data.me);
+    //alert(data.me.username);
+    //if(!data) {
+    //  router.push('/')
+    //}
+  }, [])
+//console.log(userInfo)
   const Address = (props) => (
     <div>
       <label for="address" >{props.address}</label>
@@ -39,10 +62,40 @@ export default function Customer() {
       <td className="order-moble">{props.trangThaiDonHang}</td>
     </tr>
   )
+  
+  useEffect(() =>  {
+    function customerToggle() {
+      const account = document.getElementById("show-account")
+      const order = document.getElementById("show-order")
+      const changePasswordShow = document.getElementById("change-password__show")
+      const changePassword = document.querySelector("input[name=change-password]")
+      
+      account.style.display = "block"
+      order.style.display = "none"
+      changePasswordShow.style.display = "none"
+  
+      document.getElementById('account-event').addEventListener("click", function() {
+          account.style.display = "block"
+          order.style.display = "none"
+      });
+      document.getElementById('order-event').addEventListener("click", function() {
+          account.style.display = "none"
+          order.style.display = "block"
+      });
+      changePassword.addEventListener( 'change', function() {
+          if(this.checked) {
+              changePasswordShow.style.display = "flex"
+          } else {
+              changePasswordShow.style.display = "none"
+          }
+      });
+  }
+  customerToggle()
+  })
+  const Customer = () => (
    
-  const Customer = (data) => (
      
-  <div onload="customerToggle()">
+  <div >
       <div className="container-fluid"style={{backgroundColor: '#f0f0f0'}}>
             <div className="container py-4">
                 <div className="row manage-resposive">
@@ -53,7 +106,7 @@ export default function Customer() {
                                 <img className="account__img"src="https://lh4.googleusercontent.com/-HBXyAHCrURI/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucl3I6rOPCyi3anNHc8C8CKj9ItxMA/s96-c-rg-br100/photo.jpg" alt=""/>
                                 <div className="account__info">
                                     Tài khoản của
-                                    <strong>MinhTam</strong>
+                                    <strong>{userInfo.username}</strong>
                                 </div>
                             </div>
                         </div>
@@ -87,43 +140,30 @@ export default function Customer() {
                         <div className="shadow">
                             <form className="account-detail__form">
                                 <div className="form-group row account-form-edit">
-                                    <label for="name" className="col-sm-2 col-form-label">MinhTam</label>
+                                    <label for="name" className="col-sm-2 col-form-label">Tên người dùng</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control" id="name" placeholder="Tên đăng nhập" value="Minh Tâm" disabled/>
+                                        <input type="text" className="form-control" id="name"  value={userInfo.username} disabled/>
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
                                     <label for="name" className="col-sm-2 col-form-label">Họ tên</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control" id="name" placeholder="DoVansa"/>
+                                        <input type="text" className="form-control" id="name" placeholder={userInfo.name}/>
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
                                     <label for="phone" className="col-sm-2 col-form-label">Số điện thoại</label>
                                     <div className="col-sm-10">
-                                        <input type="text" className="form-control" id="phone" placeholder={data.consigneePhone} />
+                                        <input type="text" className="form-control" id="phone" placeholder={userInfo.phone} />
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
-                                    <label for="email" className="col-sm-2  col-form-label">Email</label>
+                                    <label for="email" className="col-sm-2  col-form-label">Email</label> 
                                     <div className="col-sm-10">
-                                        <input type="email" className="form-control" id="email" placeholder="xxxxx@gmail.com"/>
+                                        <input type="email" className="form-control" id="email" placeholder={userInfo.email}/>
                                     </div>
                                 </div>
-                                <div className="form-group account-form-edit row">
-                                  <label className="input-label col-sm-2" for="gender">Giới tính</label>
-                                  <div className="col-sm-10">
-                                      <div className="custom-control custom-radio custom-control-inline">
-                                          <input type="radio" id="male" name="gender" className="custom-control-input"/>
-                                          <label  for="male" className="custom-control-label">Nam</label>
-                                      </div>
-                                      <div className="custom-control custom-radio custom-control-inline">
-                                          <input type="radio" id="female"  name="gender" className="custom-control-input"/>
-                                          <label for="female" className="custom-control-label">Nữ</label>
-                                      </div>
-                                  </div>
-                                </div>
-                                <div className="form-group account-form-edit row">
+                                {/*<div className="form-group account-form-edit row">
                                   <label for="address" className="col-sm-2 col-form-label">Địa chỉ của bạn</label>
                                   <div className="col-sm-10">
                                     <Address 
@@ -141,7 +181,7 @@ export default function Customer() {
                                 <div className="form-group account-form-edit row">
                                     <label for="add-address" className="col-sm-2 col-form-label">Thêm địa chỉ</label>
                                     <input type="text" className="form-control" id="add-address" placeholder="Nhập vào chi tiết địa chỉ của bạn"/>
-                                </div>
+                                </div>*/}
                                 <div className="form-group row">
                                   <div className="col-sm-2"></div>
                                   <div className="col-sm-10">
@@ -230,11 +270,15 @@ export default function Customer() {
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous"/>
           </Head>
           <Header />
+
+
+          {/*{userInfo ?  <Customer /> : ''}*/}
           <Customer />
+          
           <Footer />
         </div>
       </body>
-      <script src="./js/customer-info.js"></script>
+      {/*<script src="./js/customer-info.js"></script>*/}
     </div>
   )
 }
