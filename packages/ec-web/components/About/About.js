@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import Image from "next/image";
 
 const About = () => {
     return (
@@ -39,7 +40,7 @@ const About = () => {
                     <div className="block tgdd">
                         <div className="block__top">
                             <div className="main-img">
-                                <img className="lazy" src="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" data-original="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" />
+                                <Image className="lazy" src="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" data-original="https://mwg.vn/uploads/img/sites/4/pic_tgdd.png" layout="fill" />
                             </div>
                             <div className="main-text">
                                 <div className="main-text-ct">

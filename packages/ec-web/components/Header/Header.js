@@ -1,23 +1,24 @@
-import Link from 'next/link';
-import DropdownUser from './DropdownUser';
-import { useEffect, useState } from 'react';
-import { userApi } from '../../apis';
+import Link from "next/link";
+import DropdownUser from "./DropdownUser";
+import React, { useEffect, useState } from "react";
+import { userApi } from "../../apis";
 
 export default function Header() {
     const [itemsNumber, setItemsNumber] = useState();
 
     useEffect(async () => {
-        const cartId = localStorage.getItem('cartId');
+        const cartId = localStorage.getItem("cartId");
 
         const data = await userApi.getUserCart(cartId);
 
         if (data && data.cart) {
             localStorage.setItem('cartId', data.cart._id);
             localStorage.setItem('cartLength', data.cart.items.length);
+            localStorage.setItem('selectedItemLength', data.cart.items.filter(item => item.selected).length);
             setItemsNumber(data.cart.items.length);
         } else {
-            localStorage.removeItem('cartId');
-            localStorage.setItem('cartLength', 0);
+            localStorage.removeItem("cartId");
+            localStorage.setItem("cartLength", 0);
         }
     });
 
@@ -51,7 +52,7 @@ export default function Header() {
                     overBodyLayer.style.display = "none";
                     menuParent.appendChild(menu);
                     menu.style.transform = "none";
-                    body.classList.remove('noscroll');
+                    body.classList.remove("noscroll");
                 }
             } else {
                 body.appendChild(menu);
@@ -61,9 +62,9 @@ export default function Header() {
 
         window.onscroll = function () {
             if (window.scrollY >= 150) {
-                document.getElementById('backToTopID').style.display = "block"
+                document.getElementById("backToTopID").style.display = "block"
             } else {
-                document.getElementById('backToTopID').style.display = "none"
+                document.getElementById("backToTopID").style.display = "none"
             }
         };
 
@@ -72,25 +73,25 @@ export default function Header() {
             overBodyLayer.style.display = "block";
             menu.style.transform = "translateX(60vw)";
             root.style.transform = "translateX(60vw)";
-            body.classList.add('noscroll');
+            body.classList.add("noscroll");
         }
 
         // If search button is clicked, display search bar
         searchBtn.onclick = function () {
             searchBar.style.display = "flex";
             overBodyLayer.style.display = "block";
-            body.classList.add('noscroll');
+            body.classList.add("noscroll");
             searchIcon.style.display = "block";
             searchGo.style.display = "none"
             searchAdvanced.style.display = "none";
         }
 
         searchAdvanced.onclick = function () {
-            body.classList.remove('noscroll');
+            body.classList.remove("noscroll");
         }
 
         searchGo.onclick = function () {
-            body.classList.remove('noscroll');
+            body.classList.remove("noscroll");
         }
 
         searchBar.onclick = function () {
@@ -109,20 +110,18 @@ export default function Header() {
                 searchBar.style.display = "none";
                 overBodyLayer.style.display = "none";
             }
-            body.classList.remove('noscroll');
+            body.classList.remove("noscroll");
         }
     }
 
     return (
         <>
-            <div className="top-nav bg-dark">
+            <div className="top-nav bg-light text-dark">
                 <div className="container d-flex justify-content-between align-items-center">
-                    <button type="button" className="text-white btn btn--no-outline px-0">
-                        <i class="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
+                    <button type="button" className=" btn btn--no-outline px-0">
+                        <i className="fa fa-phone mr-2 fa--sm" aria-hidden="true"></i> Hotline: 0396042357
                     </button>
-                    <button type="button" className="text-white btn btn--no-outline px-0">
-                        <DropdownUser></DropdownUser>
-                    </button>
+                    <DropdownUser></DropdownUser>
                 </div>
             </div>
             <div className="header__navbar sticky-top">
@@ -143,13 +142,19 @@ export default function Header() {
                                 </Link>
                             </li>
                             <li className="menu__item">
-                                <a href="/about" className="text-white">Về chúng tôi</a>
+                                <Link href="/about">
+                                    <a className="text-white">Về chúng tôi</a>
+                                </Link>
                             </li>
                             <li className="menu__item">
-                                <a href="/new" className="text-white">Tin tức</a>
+                                <Link href="/new">
+                                    <a className="text-white">Tin tức</a>
+                                </Link>
                             </li>
                             <li className="menu__item">
-                                <a href="/about" className="text-white">Liên hệ</a>
+                                <Link href="/dich-vu">
+                                    <a className="text-white">Dịch vụ</a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -157,25 +162,20 @@ export default function Header() {
                         <ul className="menu menu--horizontal">
                             <li className="menu__item">
                                 <button id="search-btn" type="button" className="text-white btn btn--no-outline" id="search-btn">
-                                    <i className="fa fa-search fa--md" aria-hidden="true" />
+                                    <i className="fas fa-search fa-lg" aria-hidden="true" />
                                 </button>
                             </li>
-                            {/* <li className="menu__item">
-                                <button type="button" className="text-white btn btn--no-outline">
-                                    <i className="fa fa-heart fa--md" aria-hidden="true" data-amount={0} />
-                                </button>
-                            </li> */}
                             <li className="menu__item">
                                 <button type="button" className="btn btn--no-outline">
                                     <Link href="/gio-hang">
-                                        <a><i className="fa fa-shopping-bag fa--md text-white" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
+                                        <a><i className="fas fa-shopping-bag fa-lg text-white" data-amount={itemsNumber || 0} aria-hidden="true" /></a>
                                     </Link>
                                 </button>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <form action className="search-bar" id="search-bar" action="/result" method='GET'>
+                <form action className="search-bar" id="search-bar" action="/result" method="GET">
                     <div className="container position-relative">
                         <input
                             type="text"
@@ -183,7 +183,7 @@ export default function Header() {
                             id="search"
                             className="search-input container "
                             placeholder="Search"
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                         />
                         <button type="submit" className="btn btn--searchGo" id="search-go"
                         >
@@ -206,8 +206,25 @@ export default function Header() {
                 <div id="overlaybody"></div>
             </div>
             <a href="#" className="goTopBtn border" id="backToTopID">
-                <i class="fas fa-angle-up fa-lg"></i>
+                <i className="fas fa-angle-up fa-lg"></i>
             </a>
         </>
     )
+}
+
+function getStyleByID(idElement, styleProp) {
+    var element = document.getElementById(idElement);
+    if (element.currentStyle)
+        var y = element.currentStyle[styleProp];
+    else if (window.getComputedStyle)
+        var y = document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
+    return y;
+}
+
+function getStyleElement(element, styleProp) {
+    if (element.currentStyle)
+        var y = element.currentStyle[styleProp];
+    else if (window.getComputedStyle)
+        var y = document.defaultView.getComputedStyle(element, null).getPropertyValue(styleProp);
+    return y;
 }

@@ -4,6 +4,7 @@ import Banner from "../../components/Banner/Banner";
 import Footer from "../../components/Footer/Footer";
 import Head from "next/head";
 import Link from "next/link";
+import { useEffect } from "react";
 
 // export async function getServerSideProps(ctx) {
 //     nookies.destroy(ctx, 'jwt')
@@ -12,6 +13,14 @@ import Link from "next/link";
 // }
 
 export default function Login() {
+
+    useEffect(() => {
+        const selectedItemLength = localStorage.getItem('selectedItemLength');
+        if (selectedItemLength < 1)
+            router.push({
+                pathname: '/gio-hang',
+            })
+    }, [])
 
     return (
         <>

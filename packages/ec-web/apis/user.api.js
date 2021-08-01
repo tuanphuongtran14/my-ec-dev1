@@ -64,7 +64,7 @@ class UserApi {
             // Declare query need be used
             const query = `
                 mutation($email: String!) {
-                    login: ${FORGET_PASSWORD},
+                    ${FORGET_PASSWORD},
                 }
             `;
             // Declare variables need be used

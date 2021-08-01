@@ -1,9 +1,56 @@
-import { useEffect, useState } from 'react';
-import { cartApi } from '../../apis';
+import { cartApi } from "../../apis";
+import { Modal } from "../../components";
 
-export default function CartItem({item, index}) {
+export default function CartItem({item, index, setNewCart}) {
+    let qtyInStock = 0;
+    const itemOptions = item.product.options.map(option => {
+        if(option.color === item.color) {
+            console.log(item.product.name);
+            qtyInStock = option.quantityInStock;
+            return <option value={option.color} selected>{ option.color }</option>;
+        }
+        
+        return <option value={option.color}>{ option.color }</option>;
+    });
 
-    // *********** START: Process toggle select items  ************ //
+    const changeItemColor = async (e, itemId) => {
+        const color = e.target.value;
+
+        try {
+            const data = await cartApi.changeItemColor(localStorage.getItem('cartId'), itemId, color);
+            setNewCart(data.cart);
+        } catch(error) {
+            console.log(error);
+        } 
+    }
+
+    const decrementQuantityItemByOne = async (itemId, qtyInputId) => {
+        const currentQty = Number(document.getElementById(qtyInputId).value);
+        if(currentQty - 1 < 1) 
+            return $(`#warningDecreQty_${index}`).modal();
+
+        try {
+            const data = await cartApi.decrementQuantity(localStorage.getItem('cartId'), itemId, 1);
+            setNewCart(data.cart);
+        } catch(error) {
+            console.log(error);
+        }
+    };
+
+    const incrementQuantityItemByOne = async (itemId, qtyInputId) => {
+        const currentQty = Number(document.getElementById(qtyInputId).value);
+        if(currentQty + 1 > qtyInStock)
+            return $(`#warningIncreQty_${index}`).modal();
+
+        try {
+            const data = await cartApi.incrementQuantity(localStorage.getItem('cartId'), itemId, 1);
+
+            setNewCart(data.cart);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
     const toggleSelectItem = async (e, itemId) => {
         const value = e.target.checked;
         try {
@@ -13,38 +60,18 @@ export default function CartItem({item, index}) {
             console.log(error);
         }
     };
-    
-    // ********** START: Process delete selected items  *********** //
-    const removeSelectedItems = async () => {
+                   
+    const removeItem = async itemId => {
         try {
-            const data = await cartApi.removeSelectedItems(localStorage.getItem('cartId'));
-
+            const data = await cartApi.removeItem(localStorage.getItem('cartId'), itemId);
             setNewCart(data.cart);
         } catch(error) {
             console.log(error);
         }
     };
 
-    const confirmRemoveItems = () => {
-        $(`#removeMutilConfirm`).modal();
-    }
-
-    // *********** START: Process render option select  ************ //
-    let qtyInStock = 0;
-    const optionSelect = item.product.options.map(option => {
-        if(option.color === item.color) {
-            qtyInStock = option.quantityInStock;
-            return (
-                <option value={option.color} selected>{ option.color }</option>
-            )
-        }
-        
-        return (
-            <option value={option.color}>{ option.color }</option>
-        )
-    });
-
     return (
+        <>
         <div className="card mb-3" key={`checkbox${index}`}>
             <div className="card-body">
                 <div className="row align-items-center">
@@ -85,7 +112,7 @@ export default function CartItem({item, index}) {
                                         className="form-control form-control-sm bg-grey border"
                                         onChange={e => changeItemColor(e, item._id)}
                                     >
-                                        { optionSelect }
+                                        { itemOptions }
                                     </select>
                                 </div>
                             </div>
@@ -105,7 +132,7 @@ export default function CartItem({item, index}) {
                                 <button
                                     type="button"
                                     className="btn btn-light"
-                                    onClick={() => confirmRemoveItem(item._id)}
+                                    onClick={() => $(`#removeItemConfirm_${index}`).modal()}
                                 >
                                     <i
                                         className="fa fa-trash"
@@ -120,7 +147,7 @@ export default function CartItem({item, index}) {
                                             className="btn btn-quantity-control border rounded-0"
                                             type="button"
                                             id="button-addon1"
-                                            onClick={() => decrementQuantityItemByOne(item._id, qtyInStock, `qtyInput${index}`)}
+                                            onClick={() => decrementQuantityItemByOne(item._id, `qtyInput${index}`)}
                                         >
                                             -
                                         </button>
@@ -141,7 +168,7 @@ export default function CartItem({item, index}) {
                                             className="btn btn-quantity-control border rounded-0"
                                             type="button"
                                             id="button-addon2"
-                                            onClick={() => incrementQuantityItemByOne(item._id, qtyInStock, `qtyInput${index}`)}
+                                            onClick={() => incrementQuantityItemByOne(item._id, `qtyInput${index}`)}
                                         >
                                             +
                                         </button>
@@ -154,5 +181,25 @@ export default function CartItem({item, index}) {
                 </div>
             </div>
         </div>
+        <Modal
+            id={`removeItemConfirm_${index}`}
+            title="Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?"
+            confirmStyle="danger"
+            cancelStyle="success"
+            callback={() => removeItem(item._id)}
+        ></Modal>
+        <Modal
+            id={`warningDecreQty_${index}`}
+            title={`Số lượng tối thiểu để bạn có thể mua sản phẩm này là: 1`}
+            confirmStyle="success"
+            onlyConfirm={true}
+        ></Modal>
+        <Modal
+            id={`warningIncreQty_${index}`}
+            title={`Số lượng tối đa mà bạn có thể mua với sản phẩm này là: ${qtyInStock}`}
+            confirmStyle="success"
+            onlyConfirm={true}
+        ></Modal>
+        </>
     )
 }
