@@ -13,6 +13,7 @@ import axios from "axios";
 import Flickity from "react-flickity-component";
 import { productApi, reviewApi } from "../../../apis";
 import { graphqlClient, gql } from "../../../helpers/apollo-client";
+import { useRouter } from "next/router";
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
   const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
@@ -57,7 +58,7 @@ export default function Product({
   console.log(product);
   const regularPrice = product.regularPrice.toLocaleString("DE-de");
   const finalPrice = product.finalPrice.toLocaleString("DE-de");
-
+  const router = useRouter();
   // Sản phẩm liên quan
   const relatedProduct = relatedProducts.slice(1, 5).map((product, index) => {
     const regularPrice = product.regularPrice.toLocaleString("DE-de");
@@ -724,9 +725,68 @@ export default function Product({
   useEffect(() => {
     selectVersions("colors");
   }, []);
+  const handleBuyNow = async () => {
+    try {
+        const btnEle = document.getElementById("buyNowBtn");
+        btnEle.setAttribute("disabled", true);
+        btnEle.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            &nbsp; Đang xử lý
+        `;
+
+        const mutation = `
+            mutation($cartId: ID!, $newItem: CartItemInput!) {
+                cart: addItemToCart(
+                    cartId: $cartId,
+                    newItem: $newItem
+                ) {
+                    _id
+                    items {
+                        _id
+                    }
+                }
+            }
+        `;
+
+        const variables = {
+            cartId: localStorage.getItem("cartId"),
+            newItem: {
+                product: product._id,
+                qty: 1,
+                color: selectedColor
+            }
+        };
+
+        const { data } = await axios({
+            method: 'POST',
+            url: '/api/mutation',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: {
+                mutation,
+                variables
+            },
+        });
+
+        localStorage.setItem("cartId", data.cart._id);
+        localStorage.setItem('cartItems', data.cart.items.length);
+        setReload(data.cart.items.length);
+
+        btnEle.removeAttribute("disabled");
+        btnEle.innerHTML = `
+            <i class="fa fa-cart-plus" aria-hidden="true"></i>
+            &nbsp; Mua ngay
+        `;
+
+    } catch (error) {
+        console.log(error);
+    }
+    router.push('/gio-hang');
+}
+
   const addToWishList = async (productId) => {
     try {
-      alert("đã bấm 2");
       const btnWL = document.getElementById("btnAddToWishList");
       btnWL.setAttribute("disabled", true);
       btnWL.innerHTML = `
@@ -855,7 +915,7 @@ export default function Product({
                 ></ul>
               </p>
               <div className="row px-0 mx-0">
-                <button className="btn btn--buy-now col-12 px-0 mb-2">
+                <button className="btn btn--buy-now col-12 px-0 mb-2" id="buyNowBtn" onClick={handleBuyNow}>
                   <i
                     className="fa fa-cart-arrow-down fa--md"
                     aria-hidden="true"

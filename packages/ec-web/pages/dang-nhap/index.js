@@ -1,9 +1,10 @@
-import "../_app.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DismissingAlert from "../../components/DismissingAlert/DismissingAlert";
 import { signIn } from "../../helpers/auth";
 import withIronSession from "../../helpers/customWithIronSession";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { userApi } from "../../apis";
 
 export const getServerSideProps = withIronSession(async ({ req, res }) => {
     const user = req.session.get("user");
@@ -18,20 +19,60 @@ export const getServerSideProps = withIronSession(async ({ req, res }) => {
 });
 
 export default function () {
-    const [message, setMessage] = useState();
+    const [loginMessage, setLoginMessage] = useState();
+    const [registerMessage, setRegisterMessage] = useState();
+    const [lgUsername, setLgUsername] = useState();
+    const [lgPw, setLgPw] = useState();
+    const [rgCustomerName, setRgCustomerName] = useState();
+    const [rgEmail, setRgEmail] = useState();
+    const [rgEmailIsValid, setRgEmailIsValid] = useState(true);
+    const [rgPhone, setRgPhone] = useState();
+    const [rgUsername, setRgUsername] = useState();
+    const [rgUsernameIsValid, setRgUsernameIsValid] = useState();
+    const [rgPw, setRgPw] = useState();
+    const [rgRepeatPw, setRgRepeatPw] = useState();
     const router = useRouter();
 
-    const onSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+
+        if (await signIn(lgUsername, lgPw))
+            router.push({
+                pathname: "/",
+            });
+        else {
+            setLoginMessage(
+                displayMessage(
+                    "Tên tài khoản hoặc mật khẩu không chính xác",
+                    "danger"
+                )
+            );
+        }
+    };
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("user-name").value;
+        const email = document.getElementById("user-email").value;
+        const phone = document.getElementById("user-phone").value;
+        const username = document.getElementById("user-username").value;
+        const password = document.getElementById("user-pass").value;
+        const repeatPw = document.getElementById("user-repeatpass").value;
+
+        if(password !== repeatPw) 
+            return setRegisterMessage(
+                displayMessage(
+                    "Mật khẩu bạn nhập không khớp nhau",
+                    "warning"
+                )
+            );
 
         if (await signIn(username, password))
             router.push({
                 pathname: "/",
             });
         else {
-            setMessage(
+            setRegisterMessage(
                 displayMessage(
                     "Tên tài khoản hoặc mật khẩu không chính xác",
                     "danger"
@@ -48,133 +89,238 @@ export default function () {
         );
     };
 
-    return (
-        <div className="body">
-            <link
-                rel="stylesheet"
-                href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-                integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
-                crossOrigin="anonymous"
-            />
-            <link
-                rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-                integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-                crossorigin="anonymous"
-            />
-            <link rel="stylesheet" href="./css/style.css" />
+    useEffect(() => {
+        function toggleResetPswd(e){
+            e.preventDefault();
+            $('#logreg-forms .form-signin').toggle() // display:block or none
+            $('#logreg-forms .form-reset').toggle() // display:block or none
+        }
+        
+        function toggleSignUp(e){
+            e.preventDefault();
+            $('#logreg-forms .form-signin').toggle(); // display:block or none
+            $('#logreg-forms .form-signup').toggle(); // display:block or none
+        }
 
-            <div className="login_container" id="login_container">
-                <div className=" form-container sign-up-container">
-                    <form>
-                        <h1>Create Account</h1>
-                        <input
-                            className="mt-5"
-                            type="text"
-                            placeholder="Tên tài khoản"
-                            name="username"
-                            required
-                        />
-                        <input
-                            type="password"
-                            placeholder="Mật khẩu"
-                            name="MatKhau"
-                            required
-                        />
-                        <input
-                            type="password"
-                            placeholder="Nhập lại mật khẩu"
-                            name="NhapLaiMatKahu"
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Họ Tên"
-                            name="HoTen"
-                            required
-                        />
-                        <input
-                            type="tel"
-                            placeholder="Số điện thoại"
-                            name="SoDT"
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Địa chỉ "
-                            name="DiaChi"
-                            required
-                        />
-                        <button className="mt-3">Đăng kí</button>
-                        <a href="/">Trờ về trang chủ </a>
-                    </form>
-                </div>
-                <div className=" form-container sign-in-container">
-                    <form onSubmit={onSubmit}>
-                        {message}
-                        <h1>Sign in</h1>
-                        <div className="social-container">
-                            <a href="#" className="social">
-                                <i className="fab fa-facebook-f" />
-                            </a>
-                            <a
-                                href="http://localhost:1337/connect/google"
-                                className="social"
-                            >
-                                <i className="fab fa-google-plus-g" />
-                            </a>
-                            <a href="#" className="social">
-                                <i className="fab fa-linkedin-in" />
-                            </a>
-                        </div>
-                        <span>Hoặc sử dụng tài khoản của bạn</span>
-                        <input
-                            type="text"
-                            placeholder="Tên tài khoản"
-                            required
-                            name="username"
-                            id="username"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Mật khẩu"
-                            required
-                            name="password"
-                            id="password"
-                        />
-                        <a href="/forgot_password">Quên mật khẩu?</a>
-                        <button className="relative" type="submit">
-                            Đăng nhập{" "}
+        $(".toggle-password").click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+              input.attr("type", "text");
+            } else {
+              input.attr("type", "password");
+            }
+        });
+        
+        document.getElementById('forgot_pswd').onclick = toggleResetPswd;
+        document.getElementById('cancel_reset').onclick = toggleResetPswd;
+        document.getElementById('btn-signup').onclick = toggleSignUp;
+        document.getElementById('cancel_signup').onclick = toggleSignUp;
+    }, []);
+
+    useEffect(() => {
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    })
+
+    return (
+        <div id="logreg-forms">
+            <form className="form-signin" onSubmit={handleLogin}>
+                <h1
+                    className="h3 mb-3 font-weight-normal"
+                    style={{ textAlign: "center" }}
+                >
+                    Đăng nhập
+                </h1>
+                { loginMessage }
+                <div className="social-login">
+                    <button
+                        className="btn facebook-btn social-btn mr-1"
+                        type="button"
+                    >
+                        <span>
+                            <i className="fab fa-facebook-f mr-1" /> Đăng nhập
+                            Facebook
+                        </span>
+                    </button>
+                    <Link href="http://localhost:1337/connect/google">
+                        <button className="btn google-btn social-btn" type="button">
+                            <span>
+                                <i className="fab fa-google-plus-g mr-1" /> Đăng nhập
+                                Google+
+                            </span>
                         </button>
-                        <a href="/">Trờ về trang chủ </a>
-                    </form>
+                    </Link>
                 </div>
-                <div className="overlay-container">
-                    <div className="overlay">
-                        <div className="overlay-panel overlay-left">
-                            <h1>Welcome Back!</h1>
-                            <p>
-                                To keep connected with us please login with your
-                                personal info
-                            </p>
-                            <button className="ghost" id="signIn">
-                                Sign In
-                            </button>
-                        </div>
-                        <div className="overlay-panel overlay-right">
-                            <h1>Hello, Friend!</h1>
-                            <p>
-                                Enter your personal details and start journey
-                                with us
-                            </p>
-                            <button className="ghost" id="signUp">
-                                Sign Up
-                            </button>
-                        </div>
-                    </div>
+                <p style={{ textAlign: "center" }}> Hoặc</p>
+                <input
+                    type="text"
+                    id="inputUsername"
+                    className="form-control"
+                    placeholder="Tên tài khoản"
+                    required
+                    autofocus
+                    onChange= {e => setLgUsername(e.target.value)}
+                    value={lgUsername}
+                />
+                <input
+                    type="password"
+                    id="inputPassword"
+                    className="form-control"
+                    placeholder="Mật khẩu"
+                    required
+                    onChange= {e => setLgPw(e.target.value)}
+                    value={lgPw}
+                />
+                <span toggle="#inputPassword" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <button 
+                    id="loginBtn" 
+                    className="btn btn-success btn-block" 
+                    type="button"
+                    disabled={
+                        !(lgUsername && lgPw)
+                    }
+                    onClick={handleLogin}
+                >
+                    <i className="fas fa-sign-in-alt mr-1" /> Đăng nhập
+                </button>
+                <a href="#" id="forgot_pswd">
+                    Quên mật khẩu?
+                </a>
+                <hr />
+                {/* <p>Don't have an account!</p>  */}
+                <button
+                    className="btn btn-primary btn-block"
+                    type="submit"
+                    id="btn-signup"
+                >
+                    <i className="fas fa-user-plus mr-1" /> Đăng ký tài khoản mới
+                </button>
+            </form>
+            <form action="/reset/password/" className="form-reset">
+                <input
+                    type="email"
+                    id="resetEmail"
+                    className="form-control"
+                    placeholder="Email address"
+                    required
+                    autofocus
+                />
+                <button className="btn btn-primary btn-block" type="submit">
+                    Reset Password
+                </button>
+                <a href="#" id="cancel_reset">
+                    <i className="fas fa-angle-left" /> Back
+                </a>
+            </form>
+            <form action="/signup/" className="form-signup" onSubmit={handleRegister}>
+                <h1
+                    className="h3 mb-3 font-weight-normal"
+                    style={{ textAlign: "center" }}
+                >
+                    Đăng ký
+                </h1>
+                { registerMessage }
+                <div className="social-login">
+                    <Link href="http://localhost:1337/connect/google">
+                        <button
+                            className="btn facebook-btn social-btn mb-2"
+                            type="button"
+                        >
+                            <span>
+                                <i className="fab fa-facebook-f mr-2" /> Đăng nhập bằng
+                                Facebook
+                            </span>
+                        </button>
+                    </Link>
                 </div>
-            </div>
-            <script src="./js/main.js"></script>
+                <div className="social-login">
+                    <Link href="http://localhost:1337/connect/google">
+                        <button className="btn google-btn social-btn mb-2" type="button">
+                            <span>
+                                <i className="fab fa-google-plus-g mr-2" /> Đăng nhập bằng
+                                Google+
+                            </span>{" "}
+                        </button>
+                    </Link>
+                </div>
+                <p style={{ textAlign: "center" }}>Hoặc</p>
+                <input
+                    type="text"
+                    id="user-name"
+                    className="form-control"
+                    placeholder="Họ và tên"
+                    required
+                    autofocus
+                />
+                <input
+                    type="email"
+                    id="user-email"
+                    className="form-control"
+                    placeholder="Email"
+                    required
+                    autofocus
+                    data-toggle="tooltip" 
+                    data-placement="auto"
+                    title={
+                        rgEmailIsValid ? "" : "Email đã được đăng ký trước đó"
+                    }
+                    onChange={async e => {
+                        const value = e.target.value; 
+                        setRgEmail(value);
+                        const isValid = await userApi.isValidEmail(value);
+                        console.log(isValid);
+                        setRgEmailIsValid(isValid.valid);
+                    }}
+                />
+                {
+                    rgEmail ? (
+                        (rgEmailIsValid) ? 
+                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                    ) : ""
+                }
+                <input
+                    type="text"
+                    id="user-phone"
+                    className="form-control"
+                    placeholder="Số điện thoại"
+                    required
+                    autofocus
+                />
+                <input
+                    type="text"
+                    id="user-username"
+                    className="form-control"
+                    placeholder="Tên tài khoản"
+                    required
+                    autofocus
+                />
+                <input
+                    type="password"
+                    id="user-pass"
+                    className="form-control"
+                    placeholder="Password"
+                    required
+                    autofocus
+                />
+                <input
+                    type="password"
+                    id="user-repeatpass"
+                    className="form-control"
+                    placeholder="Repeat Password"
+                    required
+                    autofocus
+                />
+                <button className="btn btn-primary btn-block" type="submit">
+                    <i className="fas fa-user-plus mr-2" /> Đăng ký ngay
+                </button>
+                <a href="#" id="cancel_signup">
+                    <i className="fas fa-angle-left mr-2" /> Quay lại
+                </a>
+            </form>
+            <br />
         </div>
     );
 }

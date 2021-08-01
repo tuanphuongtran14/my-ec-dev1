@@ -36,5 +36,19 @@ module.exports = {
 
         }
         throw new Error("You need login before requesting your account information");
+    },
+    async isValidUsername(ctx) {
+        const { _username: username } = ctx.request.query;
+
+        const usernameIsValid = !(await strapi.query("user", "users-permissions").findOne({ username }));
+
+        return usernameIsValid;
+    },
+    async isValidEmail(ctx) {
+        const { _email: email } = ctx.request.query;
+
+        const emailIsValid = !(await strapi.query("user", "users-permissions").findOne({ email }));
+
+        return emailIsValid;
     }
 };

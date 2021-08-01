@@ -75,5 +75,12 @@ export const GET_USER_ORDERS = `
         paymentMethod
         isPaid
     }
-`
+`;
 
+export const IS_VALID_EMAIL = `
+    isValidEmail(email: $email)
+`;
+
+export const IS_VALID_USERNAME = `
+    isValidUsername(username: $username)
+`;
