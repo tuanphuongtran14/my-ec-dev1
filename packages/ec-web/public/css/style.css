@@ -37,6 +37,7 @@
 6. Footer Section
 7. Category Page Section
 8. Pagination Section
+13. Home Section
 -----------------------------------------------------------------------------------*/
 /*=================================================================================*/
 /* 1. @varible & @mixin
@@ -91,8 +92,8 @@ html {
 /* Preloder */
 #preloder {
   position: fixed;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   top: 0;
   left: 0;
   z-index: 999999;
@@ -257,14 +258,6 @@ html {
   background-color: #000;
   color: #F8F9FA; }
 
-.btnIphone {
-  background-color: #FFFFFF;
-  border: 1px solid #000; }
-
-.btnSamsung {
-  background-color: #FFFFFF;
-  border: 1px solid #000; }
-
 /*-------------------------*/
 /* 2.5. Menu
 /*-------------------------*/
@@ -317,48 +310,6 @@ html {
     .menu.menu--vertical a {
       text-decoration: none;
       font-size: 0.9rem; }
-
-.bannerIphone .bannerIphoneText {
-  transition-duration: 0.5s;
-  padding: 0 5rem; }
-
-.bannerIphone .btnIphone {
-  transition-duration: 0.5s; }
-
-.bannerIphone:hover .bannerIphoneText {
-  background-color: #15191C;
-  color: #F8F9FA; }
-  .bannerIphone:hover .bannerIphoneText .btnIphone {
-    background-color: #15191C;
-    border: 1px solid #F8F9FA;
-    color: #F8F9FA; }
-
-.bannerSamsung .bannerSamsungText {
-  transition-duration: 0.5s; }
-
-.bannerSamsung .btnSamsung {
-  transition-duration: 0.5s; }
-
-.bannerSamsung:hover .bannerSamsungText {
-  background-color: #111113;
-  color: #F8F9FA; }
-  .bannerSamsung:hover .bannerSamsungText .btnSamsung {
-    background-color: #111113;
-    border: 1px solid #F8F9FA;
-    color: #F8F9FA; }
-
-.bannerUs {
-  height: 500px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: bottom;
-  background-image: url("https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"); }
-  .bannerUs .bannerUsText {
-    opacity: 0.85;
-    margin: 0 auto;
-    padding: 5% 10%;
-    width: 50%;
-    color: white; }
 
 /*-------------------------*/
 /* 2.6. Fontawesome CSS
@@ -431,11 +382,10 @@ html {
     height: 1.2rem;
     width: 1.2rem;
     display: inline-block;
-    background-color: #d70018;
+    background-color: #ff893d;
     border-radius: 50%;
     position: absolute;
-    top: -10px;
-    right: -12px; }
+    top: -10px; }
 
 .nav--custom {
   justify-content: center;
@@ -571,10 +521,8 @@ html {
       justify-content: flex-start;
       margin-bottom: 1rem; } }
 
-.rating-result {
-  display: inline-block; }
-  .rating-result .fa.checked {
-    color: orange; }
+.fa-star {
+  color: orange; }
 
 /*-------------------------*/
 /* 5.2. Product Images
@@ -1265,3 +1213,233 @@ footer a {
 .dlist-align {
   display: flex;
   justify-content: space-between; }
+
+/*=================================================================================*/
+/* 13. Login Page
+/*=================================================================================*/
+/* sign in FORM */
+#logreg-forms {
+  width: 412px;
+  margin: 10vh auto;
+  background-color: #f3f3f3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* Mobile */ }
+  #logreg-forms form {
+    width: 100%;
+    max-width: 410px;
+    padding: 15px;
+    margin: auto; }
+  #logreg-forms .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px; }
+  #logreg-forms .form-control:focus {
+    z-index: 2; }
+  #logreg-forms .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0; }
+  #logreg-forms .form-signin input[type="password"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0; }
+  #logreg-forms .social-login {
+    width: 390px;
+    margin: 0 auto;
+    margin-bottom: 14px; }
+  #logreg-forms .social-btn {
+    font-weight: 100;
+    color: white;
+    width: 190px;
+    font-size: 0.9rem; }
+  #logreg-forms a {
+    display: block;
+    padding-top: 10px;
+    color: lightseagreen; }
+  #logreg-forms .lines {
+    width: 200px;
+    border: 1px solid red; }
+  #logreg-forms button[type="submit"] {
+    margin-top: 10px; }
+  #logreg-forms .facebook-btn {
+    background-color: #3C589C; }
+  #logreg-forms .google-btn {
+    background-color: #DF4B3B; }
+  #logreg-forms .form-signup .social-btn {
+    width: 100%; }
+  #logreg-forms .form-signup input {
+    margin-bottom: 2px; }
+  #logreg-forms .form-signup .social-login {
+    width: 250px !important;
+    margin: 0 auto; }
+  #logreg-forms .field-icon {
+    float: right;
+    margin-top: -30px;
+    position: relative;
+    left: -1rem;
+    z-index: 2; }
+  @media screen and (max-width: 500px) {
+    #logreg-forms {
+      width: 90%; }
+      #logreg-forms .social-login {
+        width: 250px;
+        margin: 0 auto;
+        margin-bottom: 10px; }
+      #logreg-forms .social-btn {
+        font-size: 1.3rem;
+        font-weight: 100;
+        color: white;
+        width: 100%;
+        display: block; }
+        #logreg-forms .social-btn button {
+          display: block; }
+      #logreg-forms .social-btn:nth-child(1) {
+        margin-bottom: 5px; } }
+
+/* 13. HomeSection
+/*=================================================================================*/
+.subBanner {
+  margin: 0;
+  color: #000; }
+  @media only screen and (max-width: 768px) {
+    .subBanner {
+      display: block; } }
+  @media only screen and (max-width: 768px) {
+    .subBanner .subBanner--content {
+      max-width: 100%; } }
+
+.bannerIphone .bannerIphone--text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition-duration: 0.5s;
+  text-align: center;
+  padding: 0 5rem;
+  background-color: #FFF; }
+
+.bannerIphone .bannerIphone--text__btn {
+  transition-duration: 0.5s;
+  background-color: #FFF;
+  border: 1px solid #000; }
+
+.bannerIphone:hover .bannerIphone--text {
+  background-color: #15191C;
+  color: #F8F9FA; }
+  .bannerIphone:hover .bannerIphone--text .bannerIphone--text__btn {
+    background-color: #15191C;
+    border: 1px solid #F8F9FA;
+    color: #F8F9FA; }
+    .bannerIphone:hover .bannerIphone--text .bannerIphone--text__btn:hover {
+      background-color: #F8F9FA;
+      border: 1px solid #F8F9FA;
+      color: #15191C; }
+
+@media only screen and (max-width: 768px) {
+  .bannerIphone {
+    display: flexbox;
+    flex-wrap: nowrap;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    clear: both; }
+    .bannerIphone .bannerIphone--text {
+      max-width: 100%;
+      padding-top: 10%;
+      padding-bottom: 10%; }
+    .bannerIphone .bannerIphone--img {
+      max-width: 100%; } }
+
+.bannerSamsung .bannerSamsung--img {
+  background-image: url("https://images.unsplash.com/photo-1611282104291-6bd45ca8bf93?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 482px; }
+
+.bannerSamsung .bannerSamsung--text {
+  transition-duration: 0.5s;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 5rem;
+  background-color: #FFF;
+  padding-top: 5%;
+  padding-bottom: 5%; }
+
+.bannerSamsung .bannerSamsung--text__btn {
+  transition-duration: 0.5s;
+  background-color: #FFF;
+  border: 1px solid #000; }
+
+.bannerSamsung:hover .bannerSamsung--text {
+  background-color: #111113;
+  color: #F8F9FA; }
+  .bannerSamsung:hover .bannerSamsung--text .bannerSamsung--text__btn {
+    background-color: #111113;
+    border: 1px solid #F8F9FA;
+    color: #F8F9FA; }
+    .bannerSamsung:hover .bannerSamsung--text .bannerSamsung--text__btn:hover {
+      background-color: #F8F9FA;
+      border: 1px solid #F8F9FA;
+      color: #111113; }
+
+@media only screen and (max-width: 768px) {
+  .bannerSamsung {
+    display: flexbox;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    clear: both; }
+    .bannerSamsung .bannerSamsung--text {
+      width: 100%; }
+    .bannerSamsung .bannerSamsung--img {
+      width: 100%;
+      max-height: 337px; } }
+
+.bannerUs {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
+  background-image: url("https://images.unsplash.com/photo-1506869640319-fe1a24fd76dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"); }
+  .bannerUs .bannerUs--text {
+    opacity: 0.85;
+    margin: 0 auto;
+    padding: 10% 10%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #111113;
+    flex-direction: column; }
+  @media only screen and (max-width: 768px) {
+    .bannerUs {
+      display: block; }
+      .bannerUs .bannerUs--text {
+        height: 500px;
+        width: 100%;
+        padding: 0 5%; }
+        .bannerUs .bannerUs--text .bannerUs--text__title,
+        .bannerUs .bannerUs--text .bannerUs--text__content {
+          padding-top: 0;
+          padding-bottom: 0; } }
+
+.bannerNews {
+  margin: 0; }
+  .bannerNews .bannerNews--title {
+    color: #d70018;
+    cursor: pointer; }
+  .bannerNews .bannerNews--content {
+    margin: 0; }
+    @media only screen and (max-width: 768px) {
+      .bannerNews .bannerNews--content {
+        display: block; } }
+    .bannerNews .bannerNews--content .bannerNews--content__item {
+      cursor: pointer; }
+      @media only screen and (max-width: 768px) {
+        .bannerNews .bannerNews--content .bannerNews--content__item {
+          max-width: 100%; } }

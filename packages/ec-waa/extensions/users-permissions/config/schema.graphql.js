@@ -38,7 +38,11 @@ module.exports = {
         }
     `,
     query: `
-        customMe: CustomUsersPermissionsMe! 
+        customMe: CustomUsersPermissionsMe!
+        isValidEmail(email: String!): Boolean!
+        isValidUsername(username: String!): Boolean!
+        isAvailableEmail(email: String!): Boolean!
+        isAvailableUsername(username: String!): Boolean!
     `,
     mutation: `
         customRegister(input: CustomUsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
@@ -48,6 +52,22 @@ module.exports = {
             customMe: {
                 description: 'Retrieve account information, only working when use logged in before',
                 resolver: 'plugins::users-permissions.user.customMe',
+            },
+            isValidEmail: {
+                description: 'Check if email is valid or not',
+                resolver: 'plugins::users-permissions.user.isValidEmail',
+            },
+            isValidUsername: {
+                description: 'Check if username is valid or not',
+                resolver: 'plugins::users-permissions.user.isValidUsername',
+            },
+            isAvailableEmail: {
+                description: 'Check if email is available to register or not',
+                resolver: 'plugins::users-permissions.user.isAvailableEmail',
+            },
+            isAvailableUsername: {
+                description: 'Check if username is available to register or not',
+                resolver: 'plugins::users-permissions.user.isAvailableUsername',
             },
         },
         Mutation: {

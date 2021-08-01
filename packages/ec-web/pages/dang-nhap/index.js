@@ -1,9 +1,10 @@
-import "../_app.js";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DismissingAlert from "../../components/DismissingAlert/DismissingAlert";
 import { signIn } from "../../helpers/auth";
 import withIronSession from "../../helpers/customWithIronSession";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { userApi } from "../../apis";
 
 export const getServerSideProps = withIronSession(async ({ req, res }) => {
     const user = req.session.get("user");
@@ -18,163 +19,575 @@ export const getServerSideProps = withIronSession(async ({ req, res }) => {
 });
 
 export default function () {
-    const [message, setMessage] = useState();
+    const [loginMessage, setLoginMessage] = useState();
+    const [registerMessage, setRegisterMessage] = useState();
+    const [forgetPwMessage, setForgetPwMessage] = useState();
+    const [lgUsername, setLgUsername] = useState();
+    const [lgPw, setLgPw] = useState();
+    const [rgCustomerName, setRgCustomerName] = useState();
+    const [rgCustomerNameIsValid, setRgCustomerNameIsValid] = useState(false);
+    const [rgEmail, setRgEmail] = useState();
+    const [rgEmailIsValid, setRgEmailIsValid] = useState(false);
+    const [rgEmailTooltip, setRgEmailTooltip] = useState();
+    const [rgPhone, setRgPhone] = useState();
+    const [rgPhoneIsValid, setRgPhoneIsValid] = useState(false);
+    const [rgPhoneTooltip, setRgPhoneTooltip] = useState();
+    const [rgUsername, setRgUsername] = useState();
+    const [rgUsernameIsValid, setRgUsernameIsValid] = useState(false);
+    const [rgUsernameTooltip, setRgUsernameTooltip] = useState();
+    const [rgPw, setRgPw] = useState();
+    const [rgRepeatPw, setRgRepeatPw] = useState();
+    const [fpEmail, setFpEmail] = useState();
+    const [fpEmailIsValid, setFpEmailIsValid] = useState(false);
+    const [fpEmailTooltip, setFpEmailTooltip] = useState();
+    const [page, setPage] = useState("login");
+    const backBtn = useRef();
+    const registerForm = useRef();
     const router = useRouter();
 
-    const onSubmit = async (e) => {
+    const handleLogin = async e => {
         e.preventDefault();
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
 
-        if (await signIn(username, password))
-            router.push({
+        const loginBtn = document.getElementById("login-btn");
+        loginBtn.setAttribute("disabled", true);
+        loginBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Đang đăng nhập... 
+        `;
+
+        const { success, error } = await signIn(lgUsername, lgPw);
+
+        
+        loginBtn.removeAttribute("disabled");
+        loginBtn.innerHTML = `<i class="fas fa-sign-in-alt mr-1"></i> Đăng nhập`;
+
+        if (success)
+            return router.push({
                 pathname: "/",
             });
-        else {
-            setMessage(
+       
+        if(error === "Not confirmed")
+            return setLoginMessage(
                 displayMessage(
-                    "Tên tài khoản hoặc mật khẩu không chính xác",
+                    (<>Tài khoản của bạn chưa được xác nhận. <a href="#" onClick={handleResendConfirmedEmail}>Gửi lại email xác nhận?</a></>),
+                    "warning"
+                )
+            );
+        
+        return setLoginMessage(
+            displayMessage(
+                "Tên tài khoản hoặc mật khẩu không chính xác",
+                "danger"
+            )
+        );
+    };
+
+    const handleRegister = async e => {
+        e.preventDefault();
+        
+        if(rgPw !== rgRepeatPw) 
+            return setRegisterMessage(
+                displayMessage(
+                    "Mật khẩu bạn nhập không khớp nhau",
+                    "warning"
+                )
+            );
+
+        if(!rgCustomerNameIsValid)
+            return setRegisterMessage(
+                displayMessage(
+                    "Họ tên bạn nhập quá ngắn",
+                    "danger"
+                )
+            );
+
+        if(!rgEmailIsValid)
+            return setRegisterMessage(
+                displayMessage(
+                    rgEmailTooltip,
+                    "danger"
+                )
+            );
+
+        if(!rgPhoneIsValid)
+            return setRegisterMessage(
+                displayMessage(
+                    rgPhoneTooltip,
+                    "danger"
+                )
+            );
+
+        if(!rgUsernameIsValid)
+            return setRegisterMessage(
+                displayMessage(
+                    rgUsernameTooltip,
+                    "danger"
+                )
+            );
+
+        const registerBtn = document.getElementById("register-btn");
+        registerBtn.setAttribute("disabled", true);
+        registerBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Đang đăng ký... 
+        `;
+    
+        const { register: success } = await userApi.register(rgCustomerName, rgEmail, rgPhone, rgUsername, rgPw);
+
+        if (success) {
+            setLoginMessage(
+                displayMessage(
+                    "Tạo tài khoản thành công, vui lòng xác nhận tài khoản trước khi đăng nhập",
+                    "success"
+                )
+            );
+            backBtn.current.click();
+            registerForm.current.reset();
+            setRgCustomerNameIsValid();
+            setRgEmailIsValid();
+            setRgPhoneIsValid();
+            setRgUsernameIsValid();
+        }
+        else {
+            setRegisterMessage(
+                displayMessage(
+                    "Có lỗi trong quá trình đăng ký tài khoản, vui lòng thử lại sau",
                     "danger"
                 )
             );
         }
+        registerBtn.removeAttribute("disabled");
+        registerBtn.innerHTML = `<i class="fas fa-user-plus mr-2"></i> Đăng ký ngay`;
     };
+
+    const handleForgetPassword = async e => {
+        if(!fpEmailIsValid)
+            return setForgetPwMessage(
+                displayMessage(
+                    fpEmailTooltip,
+                    "danger"
+                )
+            );
+
+        
+        const forgetPwBtn = document.getElementById("forget-pw-btn");
+        forgetPwBtn.setAttribute("disabled", true);
+        forgetPwBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+            Đang yêu cầu... 
+        `;
+        const { ok } = await userApi.forgetPassword(fpEmail);
+
+        forgetPwBtn.removeAttribute("disabled");
+        forgetPwBtn.innerHTML = `Yêu cầu thay đổi mật khẩu`;
+
+        if(ok)
+            return setForgetPwMessage(
+                displayMessage(
+                    "Thành công, vui lòng kiểm tra email của bạn",
+                    "success"
+                )
+            );
+              
+        return setForgetPwMessage(
+            displayMessage(
+                "Có lỗi xảy ra với hệ thống, vui lòng thử lại sau ít phút",
+                "danger"
+            )
+        );
+    };
+
+    const handleResendConfirmedEmail = async () => {
+        if(await userApi.resendConfirmedEmail(fpEmail))
+            return setLoginMessage(
+                displayMessage(
+                    "Thành công, vui lòng kiểm tra email của bạn",
+                    "success"
+                )
+            );
+
+        return setLoginMessage(
+            displayMessage(
+                (<>Có lỗi xảy ra trong quá trình gửi mail xác nhận, vui lòng <a href="#" onClick={handleResendConfirmedEmail}>thử lại</a></>),
+                "danger"
+            )
+        );
+    }
 
     const displayMessage = (message, type) => {
         return (
-            <DismissingAlert type={type} showTime={5}>
+            <DismissingAlert type={type} showTime={5000}>
                 {message}
             </DismissingAlert>
         );
     };
 
-    return (
-        <div className="body">
-            <link
-                rel="stylesheet"
-                href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-                integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
-                crossOrigin="anonymous"
-            />
-            <link
-                rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-                integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-                crossorigin="anonymous"
-            />
-            <link rel="stylesheet" href="./css/style.css" />
+    const changeToResetPswdPage = e => {
+        e.preventDefault();
+        setPage("reset-password");
+    }
+    
+    const changeToRegisterPage = e => {
+        e.preventDefault();
+        setPage("register");
+    }
+    
+    const changeToLoginPage = e => {
+        e.preventDefault();
+        setPage("login");
+    }
 
-            <div className="login_container" id="login_container">
-                <div className=" form-container sign-up-container">
-                    <form>
-                        <h1>Create Account</h1>
-                        <input
-                            className="mt-5"
-                            type="text"
-                            placeholder="Tên tài khoản"
-                            name="username"
-                            required
-                        />
-                        <input
-                            type="password"
-                            placeholder="Mật khẩu"
-                            name="MatKhau"
-                            required
-                        />
-                        <input
-                            type="password"
-                            placeholder="Nhập lại mật khẩu"
-                            name="NhapLaiMatKahu"
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Họ Tên"
-                            name="HoTen"
-                            required
-                        />
-                        <input
-                            type="tel"
-                            placeholder="Số điện thoại"
-                            name="SoDT"
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Địa chỉ "
-                            name="DiaChi"
-                            required
-                        />
-                        <button className="mt-3">Đăng kí</button>
-                        <a href="/">Trờ về trang chủ </a>
-                    </form>
-                </div>
-                <div className=" form-container sign-in-container">
-                    <form onSubmit={onSubmit}>
-                        {message}
-                        <h1>Sign in</h1>
-                        <div className="social-container">
-                            <a href="#" className="social">
-                                <i className="fab fa-facebook-f" />
-                            </a>
-                            <a
-                                href="http://localhost:1337/connect/google"
-                                className="social"
-                            >
-                                <i className="fab fa-google-plus-g" />
-                            </a>
-                            <a href="#" className="social">
-                                <i className="fab fa-linkedin-in" />
-                            </a>
-                        </div>
-                        <span>Hoặc sử dụng tài khoản của bạn</span>
-                        <input
-                            type="text"
-                            placeholder="Tên tài khoản"
-                            required
-                            name="username"
-                            id="username"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Mật khẩu"
-                            required
-                            name="password"
-                            id="password"
-                        />
-                        <a href="/forgot_password">Quên mật khẩu?</a>
-                        <button className="relative" type="submit">
-                            Đăng nhập{" "}
+    useEffect(() => {
+        $(".toggle-password").click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $($(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+              input.attr("type", "text");
+            } else {
+              input.attr("type", "password");
+            }
+        });
+    }, []);
+
+    let form;
+    if(page === "login") 
+        form = (
+            <form className="form-signin" id="form-signin" onSubmit={handleLogin} onKeyPress={
+                e => {
+                    if (e.which === 13 && page === "login") 
+                        return handleLogin(e);
+                }
+            }>
+                <h1
+                    className="h3 mb-3 font-weight-normal"
+                    style={{ textAlign: "center" }}
+                >
+                    Đăng nhập
+                </h1>
+                { loginMessage }
+                <div className="social-login">
+                    <button
+                        className="btn facebook-btn social-btn mr-1"
+                        type="button"
+                    >
+                        <span>
+                            <i className="fab fa-facebook-f mr-1" /> Đăng nhập
+                            Facebook
+                        </span>
+                    </button>
+                    <Link href="http://localhost:1337/connect/google">
+                        <button className="btn google-btn social-btn" type="button">
+                            <span>
+                                <i className="fab fa-google-plus-g mr-1" /> Đăng nhập
+                                Google+
+                            </span>
                         </button>
-                        <a href="/">Trờ về trang chủ </a>
-                    </form>
+                    </Link>
                 </div>
-                <div className="overlay-container">
-                    <div className="overlay">
-                        <div className="overlay-panel overlay-left">
-                            <h1>Welcome Back!</h1>
-                            <p>
-                                To keep connected with us please login with your
-                                personal info
-                            </p>
-                            <button className="ghost" id="signIn">
-                                Sign In
-                            </button>
-                        </div>
-                        <div className="overlay-panel overlay-right">
-                            <h1>Hello, Friend!</h1>
-                            <p>
-                                Enter your personal details and start journey
-                                with us
-                            </p>
-                            <button className="ghost" id="signUp">
-                                Sign Up
-                            </button>
-                        </div>
-                    </div>
+                <p style={{ textAlign: "center" }}> Hoặc</p>
+                <input
+                    type="text"
+                    id="inputUsername"
+                    className="form-control mb-1"
+                    placeholder="Tên tài khoản"
+                    required
+                    autofocus
+                    onChange= {e => setLgUsername(e.target.value)}
+                    value={lgUsername}
+                />
+                <input
+                    type="password"
+                    id="inputPassword"
+                    className="form-control mb-1"
+                    placeholder="Mật khẩu"
+                    required
+                    onChange= {e => setLgPw(e.target.value)}
+                    value={lgPw}
+                />
+                <span toggle="#inputPassword" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <button 
+                    id="login-btn" 
+                    className="btn btn-success btn-block mb-1" 
+                    type="button"
+                    disabled={
+                        !(lgUsername && lgPw)
+                    }
+                    onClick={handleLogin}
+                >
+                    <i className="fas fa-sign-in-alt mr-1" /> Đăng nhập
+                </button>
+                <hr />
+                {/* <p>Don't have an account!</p>  */}
+                <button
+                    className="btn btn-primary btn-block"
+                    type="submit"
+                    id="btn-signup"
+                    onClick={changeToRegisterPage}
+                >
+                    <i className="fas fa-user-plus mr-1" /> Đăng ký tài khoản mới
+                </button>
+                <button
+                    className="btn btn-info btn-block"
+                    type="submit"
+                    id="btn-signup"
+                    onClick={changeToResetPswdPage}
+                >
+                    <i className="fas fa-lock mr-1" /> Quên mật khẩu?
+                </button>
+                <Link href="/">
+                    <a className="text-center">Quay về trang chủ</a>
+                </Link>
+            </form>
+        );
+        
+    if(page === "reset-password") 
+        form = (
+            <form action="/reset/password/" className="form-reset" onSubmit={handleForgetPassword} onKeyPress={
+                e => {
+                    if (e.which === 13 && page === "reset-password") 
+                        return handleForgetPassword(e);
+                }
+            }>      
+                <input
+                    type="email"
+                    id="user-email"
+                    className="form-control"
+                    placeholder="Địa chỉ email"
+                    required
+                    data-toggle="tooltip" 
+                    data-placement="top"
+                    title={ fpEmailTooltip }
+                    onChange={async e => {
+                        const email = e.target.value;
+                        setFpEmail(email);
+
+                        if(!validateEmail(email)) {
+                            setFpEmailIsValid(false);
+                            setFpEmailTooltip("Email này không hợp lệ");
+                            return;
+                        }
+
+                        const {valid: isValid} = await userApi.isAvailableEmail(email);
+                        setFpEmailIsValid(isValid);
+
+                        if(isValid)
+                            setFpEmailTooltip();
+                        else
+                            setFpEmailTooltip("Email này đã được đăng ký trước đó");
+                    }}
+                />
+                {
+                    fpEmail ? (
+                        (fpEmailIsValid) ? 
+                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                    ) : ""
+                }
+                <button id="forget-pw-btn" className="btn btn-primary btn-block" type="submit">
+                    Yêu cầu thay đổi mật khẩu
+                </button>
+                <a href="#" id="cancel_reset" onClick={changeToLoginPage}>
+                    <i className="fas fa-angle-left" /> Quay lại
+                </a>
+            </form>
+        );
+
+    if(page === "register") 
+        form = (
+            <form action="/signup/" className="form-signup" id="form-signup" onSubmit={handleRegister} ref={registerForm} onKeyPress={
+                e => {
+                    if (e.which === 13 && page === "register") 
+                        return handleRegister(e);
+                }
+            }>
+                <h1
+                    className="h3 mb-3 font-weight-normal"
+                    style={{ textAlign: "center" }}
+                >
+                    Đăng ký
+                </h1>
+                { registerMessage }
+                <div className="social-login">
+                    <Link href="http://localhost:1337/connect/google">
+                        <button
+                            className="btn facebook-btn social-btn mb-2"
+                            type="button"
+                        >
+                            <span>
+                                <i className="fab fa-facebook-f mr-2" /> Đăng nhập bằng
+                                Facebook
+                            </span>
+                        </button>
+                    </Link>
                 </div>
-            </div>
-            <script src="./js/main.js"></script>
+                <div className="social-login">
+                    <Link href="http://localhost:1337/connect/google">
+                        <button className="btn google-btn social-btn mb-2" type="button">
+                            <span>
+                                <i className="fab fa-google-plus-g mr-2" /> Đăng nhập bằng
+                                Google+
+                            </span>{" "}
+                        </button>
+                    </Link>
+                </div>
+                <p style={{ textAlign: "center" }}>Hoặc</p>
+                <input
+                    type="text"
+                    id="user-name"
+                    className="form-control"
+                    placeholder="Họ và tên"
+                    required
+                    autofocus
+                    onChange={e => {
+                        const customerName = e.target.value;
+                        setRgCustomerName(customerName);
+
+                        if(customerName.length > 1)
+                            return setRgCustomerNameIsValid(true);
+
+                        return setRgCustomerNameIsValid(false);
+                    }}
+                />
+                {
+                    rgCustomerName ? (
+                        (rgCustomerNameIsValid) ? 
+                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                    ) : ""
+                }
+                <input
+                    type="email"
+                    id="user-email"
+                    className="form-control"
+                    placeholder="Email"
+                    required
+                    data-toggle="tooltip" 
+                    data-placement="top"
+                    title={ rgEmailTooltip }
+                    onChange={async e => {
+                        const email = e.target.value;
+                        setRgEmail(email);
+
+                        if(!validateEmail(email)) {
+                            setRgEmailIsValid(false);
+                            setRgEmailTooltip("Email này không hợp lệ");
+                            return;
+                        }
+
+                        const {valid: isValid} = await userApi.isAvailableEmail(email);
+                        setRgEmailIsValid(isValid);
+
+                        if(isValid)
+                            setRgEmailTooltip();
+                        else
+                            setRgEmailTooltip("Email này đã được đăng ký trước đó");
+                    }}
+                />
+                {
+                    rgEmail ? (
+                        (rgEmailIsValid) ? 
+                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                    ) : ""
+                }
+                <input
+                    type="text"
+                    id="user-phone"
+                    className="form-control"
+                    placeholder="Số điện thoại"
+                    required
+                    data-toggle="tooltip" 
+                    data-placement="top"
+                    title={ rgPhoneTooltip }
+                    onChange={e => {
+                        const phone = e.target.value;
+                        const pattern = /^[0-9]$/;
+
+                        if(pattern.test(phone[phone.length - 1]))
+                            setRgPhone(phone);
+                        else
+                            e.target.value = phone.slice(0, phone.length - 1);
+
+                        if(phone.length < 10) {
+                            setRgPhoneTooltip("Số điện thoại này không hợp lệ");
+                            return setRgPhoneIsValid(false);
+                        }
+                        
+                        setRgPhoneTooltip();
+                        return setRgPhoneIsValid(true);
+                    }}
+                />
+                {
+                    rgPhone ? (
+                        (rgPhoneIsValid) ? 
+                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                    ) : ""
+                }
+                <input
+                    type="text"
+                    id="user-username"
+                    className="form-control"
+                    placeholder="Tên tài khoản"
+                    required
+                    data-toggle="tooltip" 
+                    data-placement="top"
+                    title={ rgUsernameTooltip }
+                    onChange={async e => {
+                        const username = e.target.value;
+                        setRgUsername(username);
+
+                        const {valid: isValid} = await userApi.isAvailableUsername(username);
+                        setRgUsernameIsValid(isValid);
+
+                        if(isValid)
+                            setRgUsernameTooltip();
+                        else
+                            setRgUsernameTooltip("Tên tài khoản này đã được đăng ký trước đó");
+                    }}
+                />
+                {
+                    rgUsername ? (
+                        (rgUsernameIsValid) ? 
+                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                    ) : ""
+                }
+                <input
+                    type="password"
+                    id="user-pass"
+                    className="form-control"
+                    placeholder="Mật khẩu"
+                    required
+                    onChange={e => setRgPw(e.target.value)} 
+                />
+                <span toggle="#user-pass" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <input
+                    type="password"
+                    id="user-repeatpass"
+                    className="form-control"
+                    placeholder="Xác nhận mật khẩu"
+                    required
+                    onChange={e => setRgRepeatPw(e.target.value)} 
+                />
+                <span toggle="#user-repeatpass" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <button id="register-btn" className="btn btn-primary btn-block" type="submit">
+                    <i className="fas fa-user-plus mr-2" /> Đăng ký ngay
+                </button>
+                <a href="#" id="cancel_signup" ref={backBtn} onClick={changeToLoginPage}>
+                    <i className="fas fa-angle-left mr-2" /> Quay lại
+                </a>
+            </form>
+        );
+
+    return (
+        <div id="logreg-forms">
+            { form }
         </div>
-    );
+    )
+}
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
 }

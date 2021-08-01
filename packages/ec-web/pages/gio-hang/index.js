@@ -134,7 +134,7 @@ export default function CartPagex({ isSignedIn }) {
                     progress: undefined,
               });  
             else 
-              route.push('/checkout');
+              route.push('/thong-tin-giao-hang');
   };
   
 

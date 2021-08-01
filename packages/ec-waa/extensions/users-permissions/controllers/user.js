@@ -36,5 +36,33 @@ module.exports = {
 
         }
         throw new Error("You need login before requesting your account information");
-    }
+    },
+    async isValidUsername(ctx) {
+        const { _username: username } = ctx.request.query;
+
+        const user = await strapi.query("user", "users-permissions").findOne({ username });
+
+        return user ? true : false;
+    },
+    async isValidEmail(ctx) {
+        const { _email: email } = ctx.request.query;
+
+        const user = await strapi.query("user", "users-permissions").findOne({ email });
+
+        return user ? true : false;
+    },
+    async isAvailableEmail(ctx) {
+        const { _email: email } = ctx.request.query;
+
+        const emailIsAvailable = !(await strapi.query("user", "users-permissions").findOne({ email }));
+
+        return emailIsAvailable;
+    },
+    async isAvailableUsername(ctx) {
+        const { _username: username } = ctx.request.query;
+
+        const usernameIsAvailable = !(await strapi.query("user", "users-permissions").findOne({ username }));
+
+        return usernameIsAvailable;
+    },
 };

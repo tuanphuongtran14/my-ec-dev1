@@ -2434,6 +2434,10 @@ type Query {
   usersConnection(sort: String, limit: Int, start: Int, where: JSON): UsersPermissionsUserConnection
   me: UsersPermissionsMe
   customMe: CustomUsersPermissionsMe!
+  isValidEmail(email: String!): Boolean!
+  isValidUsername(username: String!): Boolean!
+  isAvailableEmail(email: String!): Boolean!
+  isAvailableUsername(username: String!): Boolean!
   getBlogBySlug(slug: String!): Blog!
   getCart(cartId: ID): UserCart!
   getOrders: [Order]!

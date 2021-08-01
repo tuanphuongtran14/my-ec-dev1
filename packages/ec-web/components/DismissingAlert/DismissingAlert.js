@@ -1,18 +1,19 @@
 import React, { useEffect } from "react";
 
-export default function DismissingAlert({ children, type, showTime }) {
+export default function DismissingAlert({ children, type, showTimeMs }) {
     const id = Math.floor(Math.random() * 100 + 1);
 
     useEffect(() => {
-        setTimeout(() => {
-            const notification = document.getElementById(id);
-            if (notification) fadeOut(notification, 400);
-        }, showTime * 1000 || 5000);
+        if(showTimeMs)
+            setTimeout(() => {
+                const notification = document.getElementById(id);
+                if (notification) fadeOut(notification, 400);
+            }, showTimeMs); 
     });
 
     useEffect(() => {
         const notification = document.getElementById(id);
-        fadeIn(notification, 400);
+        fadeIn(notification, 200);
     });
 
     const hideNofitication = (e) => {
@@ -51,7 +52,7 @@ export default function DismissingAlert({ children, type, showTime }) {
         >
             {children}
             <button type="button" className="close" onClick={hideNofitication}>
-                <span aria-hidden="true">&times;</span>
+                <i className="fas fa-times"></i>
             </button>
         </div>
     );

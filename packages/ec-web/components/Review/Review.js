@@ -39,10 +39,10 @@ export default function Review({stars, comment, username, postedTime}) {
         let i = 1;
 
         for(i; i <= stars; i++)
-            result.push(<i className="fa fa-star checked" aria-hidden="true" />);
+            result.push(<i className="fa fa-star fa-sm checked" />);
         
         for(i; i <= 5; i++)
-            result.push(<i className="fa fa-star-o checked" aria-hidden="true" />);
+            result.push(<i className="fa fa-star-half-alt checked fa-sm" />);
 
         return result;
     }

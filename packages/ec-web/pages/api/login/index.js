@@ -10,9 +10,11 @@ async function handler(req, res) {
 
     try {
         const { username, password } = req.body;
-        const data = await userApi.login(username, password, {
+        const response = await userApi.login(username, password, {
             useAxiosClient: false,
         });
+
+        const {data, errors} = response;
 
         if (data?.login?.jwt) {
             req.session.set("user", {
@@ -29,6 +31,7 @@ async function handler(req, res) {
         }
         return res.json({
             message: "Wrong password or username!",
+            errors,
             ok: false,
         });
     } catch {

@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { userApi } from "../../apis";
 import { signOut } from "../../helpers/auth";
+import Link from "next/link";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -84,7 +85,7 @@ export default function DropdownUser() {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <a
-                                                href="/wishlist"
+                                                href="/yeu-thich"
                                                 className={classNames(
                                                     active
                                                     ? "bg-dark-100 text-light"
@@ -151,8 +152,10 @@ export default function DropdownUser() {
         );
     } else
         return (
-            <a href="/login_register" className="text-dark">
-                Đăng nhập
-            </a>
+            <Link href="/dang-nhap">
+                <a className="text-dark">
+                    Đăng nhập
+                </a>
+            </Link>
         );
 }

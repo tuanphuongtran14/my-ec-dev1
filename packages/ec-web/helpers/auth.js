@@ -16,12 +16,26 @@ export const isSignIn = ctx => {
 
 export const signIn = async (username, password) => {
     // Send request to login API
-    const { data } = await axiosClient.post("/api/login", {
+    const { data: responseData } = await axiosClient.post("/api/login", {
         username,
         password
     });
 
-    return data.ok;
+    console.log("response");
+    console.log(responseData);
+    const { data, errors } = responseData;
+
+    const error = errors ? errors[0].extensions.exception.data.message[0].messages[0].id : null;
+
+    if(error === "Auth.form.error.confirmed")
+        return {
+            success: false,
+            error: "Not confirmed"
+        }
+
+    return {
+        success: data ? data.ok : false,
+    }
 };
 
 export const signOut = async () => {

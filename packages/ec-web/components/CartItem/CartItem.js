@@ -122,15 +122,6 @@ export default function CartItem({item, index, setNewCart}) {
                                 </p>
                                 <button
                                     type="button"
-                                    className="btn btn-red mr-2"
-                                >
-                                    <i
-                                        className="fa fa-heart"
-                                        aria-hidden="true"
-                                    ></i>
-                                </button>
-                                <button
-                                    type="button"
                                     className="btn btn-light"
                                     onClick={() => $(`#removeItemConfirm_${index}`).modal()}
                                 >

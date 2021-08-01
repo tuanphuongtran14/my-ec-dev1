@@ -11,6 +11,12 @@ export const LOGIN = `
 `;
 
 export const REGISTER = `
+    customRegister(input: $input) {
+        user {
+            username
+        }
+        jwt
+    }
 `;
 
 export const FORGET_PASSWORD = `
@@ -75,5 +81,20 @@ export const GET_USER_ORDERS = `
         paymentMethod
         isPaid
     }
-`
+`;
 
+export const IS_VALID_EMAIL = `
+    isValidEmail(email: $email)
+`;
+
+export const IS_VALID_USERNAME = `
+    isValidUsername(username: $username)
+`;
+
+export const IS_AVAILABLE_EMAIL = `
+    isAvailableEmail(email: $email)
+`;
+
+export const IS_AVAILABLE_USERNAME = `
+    isAvailableUsername(username: $username)
+`;

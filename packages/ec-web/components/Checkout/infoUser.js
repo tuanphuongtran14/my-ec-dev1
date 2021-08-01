@@ -3,8 +3,41 @@ import Header from '../Header/Header'
 import { Fragment, useEffect, useState } from "react";
 import Link from 'next/link';
 import axios from 'axios';
+import TinhThanh from './TinhThanh';
 
 const infoUser = () => {
+    useEffect(()=>
+    {
+
+        var main = document.getElementById("TinhThanh");    
+        var code = document.getElementById("Code")
+        var subs= document.getElementById("QuanHuyen");
+        main.addEventListener('change',()=>
+        {    
+
+            fetch("https://provinces.open-api.vn/api/d/")
+            .then(function(resp){
+                return resp.json();
+            })
+            .then(function(data){
+                while(subs.options.length>0)
+                {
+                    subs.options.remove(0);
+                }
+                var htmls= data.map(function(data){
+                    
+                    if (data.province_code==code.options[main.selectedIndex].text)
+                    {
+                        let option = new Option(data.name,data.name);
+                        subs.appendChild(option);
+                    }
+                });
+            })
+            .catch(function(err){
+                alert("Co loi roi");
+            });
+        })
+    })
 
     const [user, setUser] = useState();
     useEffect(async () => {
@@ -55,14 +88,7 @@ const infoUser = () => {
                     <label for="">Email</label>
                     <input type="text" class="form-control" id="mail" name="mail" placeholder=""  required></input>
                 </div>
-                <div className="formItem py-3">
-                    <label for="">Tỉnh thành</label>
-                    <input type="text" className="form-control" name="address1" id="address1" required defaultValue="" />
-                </div>
-                <div className="formItem py-3">
-                    <label for="">Quận, huyện</label>
-                    <input type="text" className="form-control" name="address2" id="address2" required defaultValue="" />
-                </div>
+                <TinhThanh></TinhThanh>
                 <div className="formItem py-3">
                     <label for="">Địa chỉ chi tiết</label>
                     <input type="text" className="form-control" name="address3" id="address3" required defaultValue="" />
@@ -85,14 +111,8 @@ const infoUser = () => {
                     <label for="">Email</label>
                     <input type="text" className="form-control" name="mail" id="mail" required defaultValue="" />
                 </div>
-                <div className="formItem py-3">
-                    <label for="">Tỉnh thành</label>
-                    <input type="text" className="form-control" name="address1" id="address1" required defaultValue="" />
-                </div>
-                <div className="formItem py-3">
-                    <label for="">Quận, huyện</label>
-                    <input type="text" className="form-control" name="address2" id="address2" required defaultValue="" />
-                </div>
+                <TinhThanh>
+                </TinhThanh>
                 <div className="formItem py-3">
                     <label for="">Địa chỉ chi tiết</label>
                     <input type="text" className="form-control" name="address3" id="address3" required defaultValue="" />
