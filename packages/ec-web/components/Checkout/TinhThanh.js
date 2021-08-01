@@ -10,6 +10,10 @@ const TinhThanh = () =>
     .then(function(data){
         var main = document.getElementById("TinhThanh");    
         var code=  document.getElementById("Code");    
+        while(main.options.length>0)
+                {
+                    main.options.remove(0);
+                }
         var htmls= data.map(function(data){
             let option = new Option(data.name,data.name);
             main.appendChild(option);
