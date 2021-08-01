@@ -1,14 +1,15 @@
 import React from 'react'
 import Head from 'next/head';
-import { Header, Footer, About } from "../../components";
+import { Header, Footer } from "../../components";
+import { About } from "../../components/About/About"
 
-export async function getStaticProps(ctx) {
-    return {
-        props: {},
-    }
-}
+// export async function getStaticProps(ctx) {
+//     return {
+//         props: {},
+//     }
+// }
 
-export default function () {
+const intro = () => {
     return (
         <>
             <Head>
@@ -16,9 +17,10 @@ export default function () {
                 <link rel="stylesheet" href="./css/about.css"/>
             </Head>
             <Header/>
-            <About/>
+            {/* <About/> */}
             <Footer/>        
         </>
     )
 }
 
+export default intro;

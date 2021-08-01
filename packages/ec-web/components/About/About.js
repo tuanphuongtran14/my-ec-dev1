@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from "next/image";
 
-const About = () => {
+export default function About() {
     return (
         <div className="container" style={{backgroundColor:"#fff",marginTop:"-30px"}}>
             <div className="tab">
@@ -99,4 +99,4 @@ const About = () => {
     )
 }
 
-export default About
+

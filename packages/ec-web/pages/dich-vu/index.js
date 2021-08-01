@@ -37,7 +37,7 @@ const servicepage = () => {
                     <p></p>
                     <p></p>
                     <h2 className="h2">1. Dịch vụ giao hàng thu tiền hộ của Viettel Post</h2>
-                    <img src="https://gumato.com/wp-content/uploads/2019/04/cach-ship-cod-viettel.jpg" class="rounded mx-auto d-block" alt="Responsive image"></img>
+                    <img src="https://gumato.com/wp-content/uploads/2019/04/cach-ship-cod-viettel.jpg" class="img-fluid rounded mx-auto d-block"  alt="..."></img>
                     <p className="text-center">Ship cod như thế nào</p>
                     <p>
                         <span className="text-bold">
@@ -74,7 +74,7 @@ const servicepage = () => {
                     </ul>
 
                     <h2 className="h2">2. Cách ship cod viettel như thế nào?</h2>
-                    <img src="	https://gumato.com/wp-content/uploads/2019/04/cach-ship-coo-viette-post.jpg" class="rounded mx-auto d-block" alt="Responsive image"></img>
+                    <img src="	https://gumato.com/wp-content/uploads/2019/04/cach-ship-coo-viette-post.jpg" class="img-fluid rounded mx-auto d-block" alt="..."></img>
                     <p className="text-center">hướng dẫn ship cod viettel</p>
                     <blockquote class="blockquote">
                         <div class="bg-light p-3">
@@ -96,7 +96,7 @@ const servicepage = () => {
                         Để có thể tiến hành sử dụng dịch vụ ship cod Viettel chúng ta cần truy cập vào website trực tuyến của Viettel Post và tạo tài khoản. Với tài khoản này chúng ta có thể tạo đơn hàng và theo dõi quá trình vận đơn di chuyển
                     </p>
                     <h4 className="h4"><b>Bước 2: Tạo đơn hàng</b></h4>
-                    <img src="https://gumato.com/wp-content/uploads/2019/04/dich-vi-ship-cod-cua-viettel.jpg" class="rounded mx-auto d-block" alt="Responsive image"></img>
+                    <img src="https://gumato.com/wp-content/uploads/2019/04/dich-vi-ship-cod-cua-viettel.jpg" class="img-fluid rounded mx-auto d-block" alt="..."></img>
                     <p className="text-center">cách ship cod viettel post</p>
                     <p>Sau khi đã có tài khoản cá nhân chúng ta có thể vào mục vận chuyển rồi sau đó nhấp vào biểu tượng tạo đơn và tiến hành điền đầy đủ tất cả các thông tin về người gửi và người nhận như họ tên, địa chỉ, số điện thoại cũng như số tiền cần thu hộ. Cuối cùng chúng ta nhấn xác nhận.</p>
                     <h4 className="h4"><b>Bước 3: chờ lấy hàng</b></h4>
@@ -104,7 +104,7 @@ const servicepage = () => {
                     <p>Khi hệ thống báo đơn hàng đã được tạo, chúng ta chỉ cần sửa đổi nhân viên của Viettel đến địa chỉ của chúng ta để nhận hàng. Trong thời gian này bạn có thể đóng gói sẵn hàng hóa của mình để giao cho nhân viên vận chuyển.</p>
 
                     <h4 className="h4"><b> Bước 4: chờ giao hàng và nhận cod</b></h4>
-                    <img src="	https://gumato.com/wp-content/uploads/2019/04/huong-dan-ship-cod-viettel.jpg" class="rounded mx-auto d-block" alt="Responsive image"></img>
+                    <img src="	https://gumato.com/wp-content/uploads/2019/04/huong-dan-ship-cod-viettel.jpg" class="img-fluid rounded mx-auto d-block" alt="..."></img>
                     <p className="text-center">ship cod viettel khi nào nhận được tiền</p>
 
                     <p>
@@ -112,7 +112,7 @@ const servicepage = () => {
                     </p>
 
                     <h2 className="h2">3. Những lợi thế khi sử dụng dịch vụ vận chuyển của viettel</h2>
-                    <img src="	https://gumato.com/wp-content/uploads/2019/04/ship-cod-viettel-nhu-the-nao.jpg" class="rounded mx-auto d-block" alt="Responsive image"></img>
+                    <img src="	https://gumato.com/wp-content/uploads/2019/04/ship-cod-viettel-nhu-the-nao.jpg" class="img-fluid rounded mx-auto d-block" alt="..."></img>
                     <p className="text-center">Viettel post ship cod có những ưu điểm gì</p>
 
                     <p>
@@ -126,7 +126,7 @@ const servicepage = () => {
                     <p>Với tác phong chuyên nghiệp, dịch vụ giao hàng và thu hộ tiền của Viettel có thể giúp chúng ta tiết kiệm tối đa thời gian trong vấn đề tạo đơn hàng và gửi hàng. Người gửi sẽ không cần phải bước chân ra khỏi nhà mà vẫn có thể gửi được hàng đến tay người nhận nhờ dịch vụ nhận hàng tại nhà của Viettel.</p>
 
                     <h3 className="h3">Cước phí ưu đãi</h3>
-                    <img src="https://gumato.com/wp-content/uploads/2019/04/ship-cod-viettel-2.jpg" class="rounded mx-auto d-block" alt="Responsive image"></img>
+                    <img src="https://gumato.com/wp-content/uploads/2019/04/ship-cod-viettel-2.jpg" class="img-fluid rounded mx-auto d-block" alt="..."></img>
                     <p className="text-center">ship cod viettel</p>
                     <p>Không giống như một số đơn vị tiến hành dịch vụ ship cod hiện nay luôn tính phí thu hộ tiền dù chúng ta vận chuyển khối lượng đơn hàng lớn hay nhỏ và khoảng cách vận chuyển gần hay xa. Tại Viettel post, cước phí này luôn được miễn phí đối với những đơn hàng giao trong nội tỉnh đặc biệt là nếu giao liên tỉnh thì mức phí cũng rất ưu đãi.</p>
 

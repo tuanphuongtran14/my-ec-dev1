@@ -23,6 +23,7 @@ export async function getServerSideProps() {
 export default function Category({ products }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(15);
+    
     const [filter, setFilter] = useState({
         brand: "0",
         price: "0",
@@ -33,7 +34,7 @@ export default function Category({ products }) {
     const indexOfLastProduct = productsPerPage * currentPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-
+     
     const paginate = pageNumber => (setCurrentPage(pageNumber))
 
     let isExist = (arr, x) => arr.includes(x);
@@ -70,7 +71,7 @@ export default function Category({ products }) {
     return (
         <>
             <Head>
-                <title>Category</title>
+                <title>Sản phẩm</title>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" key="title" />
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
                 {/* <!-- Bootstrap CSS --> */}
@@ -80,13 +81,14 @@ export default function Category({ products }) {
                 <link rel="stylesheet" href="./css/style.css" />
             </Head>
             <Header></Header>
-            <div className="bodyIndex" id="body">
+            <div id="body">
                 <div id="root">
                     <Banner />
+                    <hr />
                     <div className="container">
-                        <div className="bg-white mb-5 filter p-3 border">
+                        <div className="bg-white mb-5 filter p-3">
                             <div className="d-block py-3 row container-fluid">
-                                <select className="filter__option mr-2 my-2 col-3" onChange={handleFilterBrand}>
+                                <select className="filter__option mr-2 my-2 col-2" onChange={handleFilterBrand}>
                                     <option value="0" selected>Hãng...</option>
                                     {brandName}
                                 </select>
@@ -113,15 +115,19 @@ export default function Category({ products }) {
                                     <option value="128-den-256">128 - 256 GB</option>
                                     <option value="tren-512">512 GB trở lên</option>
                                 </select>
+                                <button className="btn col-1 border filter__option">
+                                    Lọc
+                                </button>
                             </div>
                             <div className="product-list product-list--non-slide border-0">
-                                <Product currentProducts={currentProducts} filter={filter} />
+                                <Product currentProducts={currentProducts} filter={filter}/>
                             </div>
                             <Pagination
                                 productsPerPage={productsPerPage}
-                                totalProducts={products.length}
                                 paginate={paginate}
                                 currentPage={currentPage}
+                                products={products}
+                                filter={filter}
                             />
                         </div>
                     </div>

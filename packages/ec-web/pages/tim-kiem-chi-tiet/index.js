@@ -114,7 +114,7 @@ export default function Index({ products }) {
         // localStorage.setItem('query', JSON.stringify(query))
 
         router.push({
-            pathname: '/result',
+            pathname: '/ket-qua-tim-kiem',
             query: query
         })
     };
@@ -267,18 +267,11 @@ export default function Index({ products }) {
     return (
         <>
             <Head>
-                <title>Advanced Search</title>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" key="title" />
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossOrigin="anonymous" />
-                <link rel="stylesheet" href="./vendors/flickity.min.css" />
-                <link rel="stylesheet" href="./css/style.css" />
-                {/* <link rel="stylesheet" href="./css/advancedSearch.css" /> */}
-                <script src="/js/advancedSearch.js"></script>
+                <title>Tìm kiếm chi tiết</title>
             </Head>
             <Header />
             <Banner />
-            <form action="/result" method='GET' id="myForm" name="myForm">
+            <form action="/ket-qua-tim-kiem" method='GET' id="myForm" name="myForm">
                 <div className="body_advanced container p-5" style={{ backgroundColor: '#FFFFFF' }}>
                     {/* ================================ FILTER GENERAL (Tổng quát)=============================== */}
                     <h3>Tổng quát</h3>
@@ -386,7 +379,6 @@ export default function Index({ products }) {
 
 
             <Footer />
-            <script src="/js/advancedSearch.js" ></script>
         </>
     );
 }

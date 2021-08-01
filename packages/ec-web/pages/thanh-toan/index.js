@@ -44,8 +44,8 @@ export default function Login() {
         const address1 = sessionStorage.getItem('address1');
         const address2 = sessionStorage.getItem('address2');
         const address3 = sessionStorage.getItem('address3');
-        if (!name || !phone || !mail || !address1 || !address2 || !address3 ) {
-            router.push("/checkout");
+        if (!name || !phone || !mail || !address1 || !address2 || !address3) {
+            router.push("/thong-tin-giao-hang");
         }
     }, [])
 
@@ -73,7 +73,7 @@ export default function Login() {
         // const
         const data = orderApi.checkout(name, phone, mail, address3, address2, address1, "COD");
         if (data)
-            router.push("/payment/success");
+            router.push("/thanh-toan/thanh-cong");
         console.log(data)
     }
 
@@ -312,9 +312,7 @@ export default function Login() {
                                 </div>
                             </div>
                         </div>
-                        {/* <Link href="/payment/success"> */}
-                            <button type="button" className="btn btn-success w-100 my-3" onClick={handleSubmit}>Xác nhận đơn hàng</button>
-                        {/* </Link> */}
+                        <button type="button" className="btn btn-success w-100 my-3" onClick={handleSubmit}>Xác nhận đơn hàng</button>
                     </div>
                 </div>
                 <div className="payment__product col-12 col-lg-4">

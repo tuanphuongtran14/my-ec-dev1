@@ -125,7 +125,7 @@ const NewsHot = () => {
                 <div className="banner-item col-lg-4">
                     <img src={process.env.NEXT_PUBLIC_API_URL+blog.thumbnail.url}/>
                     <h3>
-                        <a href={`/new/`+blog.slug}>{blog.title}</a>
+                        <a href={`/tin-tuc/`+blog.slug}>{blog.title}</a>
                     </h3>
                     <span className="category">Tin hot</span>
                     <span className="date" >18 Tháng Bảy, 2021</span>
@@ -150,7 +150,7 @@ const NewsList = () => {
                         </div>
                         <div className="col-lg-8 list-news__item-detail">
                             <h3>
-                                <a href={`/new/`+blog.slug}>{blog.title}</a>
+                                <a href={`/tin-tuc/`+blog.slug}>{blog.title}</a>
                             </h3>
                             <span className="category">Tin hot</span>
                             <span>18 Tháng Bảy, 2021</span>
@@ -185,7 +185,7 @@ const NewsHotList = () => {
                             </div>
                             <div className="col-lg-8 list-news-hot__item-detail">
                                 <h5>
-                                    <a href={`/new/`+blog.slug}>{blog.title}</a>
+                                    <a href={`/tin-tuc/`+blog.slug}>{blog.title}</a>
                                 </h5>
                                 <span className="category">Tin hot</span>
                                 <span>18 Tháng Bảy, 2021</span>
