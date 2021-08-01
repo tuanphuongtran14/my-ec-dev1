@@ -698,23 +698,25 @@ export default function Product({
     pageDots: false,
   };
 
-  let flkty;
+  const [flkty, setFlkty] = useState();
   useEffect(() => {
     var thumbnails = document.getElementsByClassName("thumbnail");
-
-    flkty.on("change", function (index) {
-      document.querySelector(".thumbnail.active").classList.remove("active");
-      thumbnails[index].classList.add("active");
-    });
-
-    for (let i = 0; i < thumbnails.length; i++) {
-      thumbnails[i].onclick = function () {
+    if(flkty) {
+      flkty.on("change", function (index) {
         document.querySelector(".thumbnail.active").classList.remove("active");
-        this.classList.add("active");
-        flkty.select(i, true, false);
-      };
+        thumbnails[index].classList.add("active");
+      });
+  
+      for (let i = 0; i < thumbnails.length; i++) {
+        thumbnails[i].onclick = function () {
+          document.querySelector(".thumbnail.active").classList.remove("active");
+          this.classList.add("active");
+          flkty.select(i, true, false);
+        };
+      }
+
     }
-  }, []);
+  });
 
   const reviewTab = useRef();
   const handleScroll = () => {
@@ -819,7 +821,7 @@ export default function Product({
     try {
       const client = graphqlClient(jwt);
 
-      const { dataCheck } = await client.mutate({
+      const { data } = await client.query({
         query: gql`
           query checkProductInWishList($productId: ID!) {
             checkProductInWishList(productId: $productId)
@@ -829,13 +831,23 @@ export default function Product({
           productId: productId,
         },
       });
-      if (dataCheck.checkProductInWishList == true) {
-        return "Đã thêm vào sản phẩm yêu thích";
-      } else return "Thêm vào sản phẩm yêu thích";
+      const btnAddToWishList = document.getElementById("btnAddToWishList");
+      if (data.checkProductInWishList == true) {
+        btnAddToWishList.innerHTML = `
+          <i class="fas fa-heart" aria-hidden="true"></i>
+          &nbsp;Đã thêm vào sản phẩm yêu thích
+        `;
+        btnAddToWishList.setAttribute("disabled", true);
+      }
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(async () => {
+    console.log("Ket qua ne");
+    console.log(await checkProductInWishList(product.id));
+  },[])
 
   return (
     <>
@@ -883,7 +895,8 @@ export default function Product({
                 options={flickityOptions}
                 reloadOnUpdate
                 static
-                flickityRef={(c) => (flkty = c)}
+                flickityRef={c => setFlkty(c)}
+                // flickityRef={flkty}
               >
                 {largePic()}
               </Flickity>
