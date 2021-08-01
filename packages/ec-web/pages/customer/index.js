@@ -6,7 +6,7 @@ export default function Customer() {
 
   const Address = (props) => (
     <div>
-      <label for="address" >{props.address}</label>
+      <label htmlFor="address" >{props.address}</label>
       <input className="input-address__radio" type="radio" id="address" name="address"/>
       <span className="delete-address"><a href="">Xóa</a></span><br/>
   </div>
@@ -69,44 +69,44 @@ export default function Customer() {
                         <div className="shadow">
                             <form className="account-detail__form">
                                 <div className="form-group row account-form-edit">
-                                    <label for="name" className="col-sm-2 col-form-label">Tên tài khoản</label>
+                                    <label htmlFor="name" className="col-sm-2 col-form-label">Tên tài khoản</label>
                                     <div className="col-sm-10">
                                         <input type="text" className="form-control" id="name" placeholder="Tên đăng nhập" value="Minh Tâm" disabled/>
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
-                                    <label for="name" className="col-sm-2 col-form-label">Họ tên</label>
+                                    <label htmlFor="name" className="col-sm-2 col-form-label">Họ tên</label>
                                     <div className="col-sm-10">
                                         <input type="text" className="form-control" id="name" placeholder="Đỗ Văn Sa"/>
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
-                                    <label for="phone" className="col-sm-2 col-form-label">Số điện thoại</label>
+                                    <label htmlFor="phone" className="col-sm-2 col-form-label">Số điện thoại</label>
                                     <div className="col-sm-10">
                                         <input type="text" className="form-control" id="phone" placeholder="123456789" />
                                     </div>
                                 </div>
                                 <div className="form-group row account-form-edit">
-                                    <label for="email" className="col-sm-2  col-form-label">Email</label>
+                                    <label htmlFor="email" className="col-sm-2  col-form-label">Email</label>
                                     <div className="col-sm-10">
                                         <input type="email" className="form-control" id="email" placeholder="xxxxx@gmail.com"/>
                                     </div>
                                 </div>
                                 <div className="form-group account-form-edit row">
-                                  <label className="input-label col-sm-2" for="gender">Giới tính</label>
+                                  <label className="input-label col-sm-2" htmlFor="gender">Giới tính</label>
                                   <div className="col-sm-10">
                                       <div className="custom-control custom-radio custom-control-inline">
                                           <input type="radio" id="male" name="gender" className="custom-control-input"/>
-                                          <label  for="male" className="custom-control-label">Nam</label>
+                                          <label  htmlFor="male" className="custom-control-label">Nam</label>
                                       </div>
                                       <div className="custom-control custom-radio custom-control-inline">
                                           <input type="radio" id="female"  name="gender" className="custom-control-input"/>
-                                          <label for="female" className="custom-control-label">Nữ</label>
+                                          <label htmlFor="female" className="custom-control-label">Nữ</label>
                                       </div>
                                   </div>
                                 </div>
                                 <div className="form-group account-form-edit row">
-                                  <label for="address" className="col-sm-2 col-form-label">Địa chỉ của bạn</label>
+                                  <label htmlFor="address" className="col-sm-2 col-form-label">Địa chỉ của bạn</label>
                                   <div className="col-sm-10">
                                     <Address 
                                       address='Đội 8 thôn 3 xã Tiên Mỹ huyện Tiên Phước tỉnh Quảng Nam'
@@ -121,7 +121,7 @@ export default function Customer() {
                                   </div>
                                 </div>
                                 <div className="form-group account-form-edit row">
-                                    <label for="add-address" className="col-sm-2 col-form-label">Thêm địa chỉ</label>
+                                    <label htmlFor="add-address" className="col-sm-2 col-form-label">Thêm địa chỉ</label>
                                     <input type="text" className="form-control" id="add-address" placeholder="Nhập vào chi tiết địa chỉ của bạn"/>
                                 </div>
                                 <div className="form-group row">
@@ -129,18 +129,18 @@ export default function Customer() {
                                   <div className="col-sm-10">
                                     <div className="form-check">
                                         <input className="form-check-input" type="checkbox" id="change-password" name="change-password"/>
-                                        <label className="form-check-label" for="change-password">
+                                        <label className="form-check-label" htmlFor="change-password">
                                             Thay đổi mật khẩu
                                         </label>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="form-group account-form-edit row" id="change-password__show">
-                                    <label for="old-password" className="col-sm-2 col-form-label">Mật khẩu cũ</label>
+                                    <label htmlFor="old-password" className="col-sm-2 col-form-label">Mật khẩu cũ</label>
                                     <input type="text" className="form-control" id="old-password" placeholder="Nhập mật khẩu cũ"/>
-                                    <label for="new-password" className="col-sm-2 col-form-label">Mật khẩu mới</label>
+                                    <label htmlFor="new-password" className="col-sm-2 col-form-label">Mật khẩu mới</label>
                                     <input type="text" className="form-control" id="new-password" placeholder="Nhập mật khẩu mới"/>
-                                    <label for="confirm-password" className="col-sm-2 col-form-label">Xác nhận mật khẩu mới</label>
+                                    <label htmlFor="confirm-password" className="col-sm-2 col-form-label">Xác nhận mật khẩu mới</label>
                                     <input type="text" className="form-control" id="confirm-password" placeholder="Nhập lại mật khẩu mới"/>
                                 </div>
                                 <div className="form-group row">

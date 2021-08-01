@@ -8,7 +8,7 @@ export async function getStaticProps(ctx) {
     }
 }
 
-export default function About() {
+export default function () {
     return (
         <>
             <Head>
@@ -21,3 +21,4 @@ export default function About() {
         </>
     )
 }
+

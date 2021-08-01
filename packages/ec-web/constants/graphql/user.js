@@ -25,6 +25,14 @@ export const FORGET_PASSWORD = `
     }
 `;
 
+export const RESET_PASSWORD = `
+    resetPassword(password: $password, passwordConfirmation: $passwordConfirmation, code: $code) {
+        user {
+            username
+        }
+    }
+`;
+
 export const ME = `
     customMe {
         id

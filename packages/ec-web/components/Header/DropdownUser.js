@@ -127,6 +127,7 @@ export default function DropdownUser() {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <a
+                                                href="#"
                                                 onClick={handleSignOut}
                                                 className={classNames(
                                                     active
@@ -136,7 +137,7 @@ export default function DropdownUser() {
                                                 )}
                                             >
                                                 <i
-                                                    className="fa fa-sign-out pr-2 "
+                                                    className="fa fa-sign-out-alt pr-2 "
                                                     aria-hidden="true"
                                                 />
                                                 Đăng xuất

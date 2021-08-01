@@ -18,7 +18,7 @@ export const getServerSideProps = withIronSession(async ({ req, res }) => {
     return { props: {} };
 });
 
-export default function () {
+export default function Login() {
     const [loginMessage, setLoginMessage] = useState();
     const [registerMessage, setRegisterMessage] = useState();
     const [forgetPwMessage, setForgetPwMessage] = useState();
@@ -93,6 +93,14 @@ export default function () {
                 )
             );
 
+        if(rgPw.length < 8) 
+            return setRegisterMessage(
+                displayMessage(
+                    "Vui lòng chọn mật khẩu có độ dài tối thiểu 8 ký tự",
+                    "warning"
+                )
+            );
+
         if(!rgCustomerNameIsValid)
             return setRegisterMessage(
                 displayMessage(
@@ -141,12 +149,12 @@ export default function () {
                     "success"
                 )
             );
-            backBtn.current.click();
             registerForm.current.reset();
             setRgCustomerNameIsValid();
             setRgEmailIsValid();
             setRgPhoneIsValid();
             setRgUsernameIsValid();
+            backBtn.current.click();
         }
         else {
             setRegisterMessage(
@@ -161,6 +169,8 @@ export default function () {
     };
 
     const handleForgetPassword = async e => {
+        e.preventDefault();
+
         if(!fpEmailIsValid)
             return setForgetPwMessage(
                 displayMessage(
@@ -168,7 +178,6 @@ export default function () {
                     "danger"
                 )
             );
-
         
         const forgetPwBtn = document.getElementById("forget-pw-btn");
         forgetPwBtn.setAttribute("disabled", true);
@@ -176,12 +185,14 @@ export default function () {
             <span class="spinner-border spinner-border-sm"></span>
             Đang yêu cầu... 
         `;
-        const { ok } = await userApi.forgetPassword(fpEmail);
+        const {forgotPassword: success} = await userApi.forgetPassword(fpEmail);
 
         forgetPwBtn.removeAttribute("disabled");
         forgetPwBtn.innerHTML = `Yêu cầu thay đổi mật khẩu`;
 
-        if(ok)
+        console.log(success);
+
+        if(success)
             return setForgetPwMessage(
                 displayMessage(
                     "Thành công, vui lòng kiểm tra email của bạn",
@@ -225,29 +236,17 @@ export default function () {
     const changeToResetPswdPage = e => {
         e.preventDefault();
         setPage("reset-password");
-    }
+    };
     
     const changeToRegisterPage = e => {
         e.preventDefault();
         setPage("register");
-    }
+    };
     
     const changeToLoginPage = e => {
         e.preventDefault();
         setPage("login");
-    }
-
-    useEffect(() => {
-        $(".toggle-password").click(function() {
-            $(this).toggleClass("fa-eye fa-eye-slash");
-            var input = $($(this).attr("toggle"));
-            if (input.attr("type") == "password") {
-              input.attr("type", "text");
-            } else {
-              input.attr("type", "password");
-            }
-        });
-    }, []);
+    };
 
     let form;
     if(page === "login") 
@@ -291,7 +290,7 @@ export default function () {
                     className="form-control mb-1"
                     placeholder="Tên tài khoản"
                     required
-                    autofocus
+                    autoFocus
                     onChange= {e => setLgUsername(e.target.value)}
                     value={lgUsername}
                 />
@@ -304,7 +303,19 @@ export default function () {
                     onChange= {e => setLgPw(e.target.value)}
                     value={lgPw}
                 />
-                <span toggle="#inputPassword" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <span 
+                    toggle="#inputPassword" 
+                    className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
+                    onClick={e => {
+                        $(e.target).toggleClass("fa-eye fa-eye-slash");
+                        var input = $($(e.target).attr("toggle"));
+                        if (input.attr("type") == "password") {
+                        input.attr("type", "text");
+                        } else {
+                        input.attr("type", "password");
+                        }
+                    }}
+                ></span>
                 <button 
                     id="login-btn" 
                     className="btn btn-success btn-block mb-1" 
@@ -317,7 +328,6 @@ export default function () {
                     <i className="fas fa-sign-in-alt mr-1" /> Đăng nhập
                 </button>
                 <hr />
-                {/* <p>Don't have an account!</p>  */}
                 <button
                     className="btn btn-primary btn-block"
                     type="submit"
@@ -329,7 +339,6 @@ export default function () {
                 <button
                     className="btn btn-info btn-block"
                     type="submit"
-                    id="btn-signup"
                     onClick={changeToResetPswdPage}
                 >
                     <i className="fas fa-lock mr-1" /> Quên mật khẩu?
@@ -342,12 +351,16 @@ export default function () {
         
     if(page === "reset-password") 
         form = (
-            <form action="/reset/password/" className="form-reset" onSubmit={handleForgetPassword} onKeyPress={
+            <form className="form-reset" onSubmit={handleForgetPassword} onKeyPress={
                 e => {
                     if (e.which === 13 && page === "reset-password") 
                         return handleForgetPassword(e);
                 }
-            }>      
+            }>
+                <h1 className="h3 mb-3 font-weight-normal text-center">
+                    Quên mật khẩu
+                </h1>
+                {forgetPwMessage}      
                 <input
                     type="email"
                     id="user-email"
@@ -367,23 +380,28 @@ export default function () {
                             return;
                         }
 
-                        const {valid: isValid} = await userApi.isAvailableEmail(email);
+                        const {valid: isValid} = await userApi.isValidEmail(email);
                         setFpEmailIsValid(isValid);
 
                         if(isValid)
                             setFpEmailTooltip();
                         else
-                            setFpEmailTooltip("Email này đã được đăng ký trước đó");
+                            setFpEmailTooltip("Email này không tồn tại trên hệ thống");
                     }}
                 />
                 {
                     fpEmail ? (
                         (fpEmailIsValid) ? 
-                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
-                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                            <span className="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span className="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
                     ) : ""
                 }
-                <button id="forget-pw-btn" className="btn btn-primary btn-block" type="submit">
+                <button 
+                    id="forget-pw-btn" 
+                    className="btn btn-primary btn-block" 
+                    type="submit"
+                    disabled={!(fpEmail && fpEmailIsValid)}
+                >
                     Yêu cầu thay đổi mật khẩu
                 </button>
                 <a href="#" id="cancel_reset" onClick={changeToLoginPage}>
@@ -394,7 +412,7 @@ export default function () {
 
     if(page === "register") 
         form = (
-            <form action="/signup/" className="form-signup" id="form-signup" onSubmit={handleRegister} ref={registerForm} onKeyPress={
+            <form className="form-signup" id="form-signup" onSubmit={handleRegister} ref={registerForm} onKeyPress={
                 e => {
                     if (e.which === 13 && page === "register") 
                         return handleRegister(e);
@@ -437,7 +455,7 @@ export default function () {
                     className="form-control"
                     placeholder="Họ và tên"
                     required
-                    autofocus
+                    autoFocus
                     onChange={e => {
                         const customerName = e.target.value;
                         setRgCustomerName(customerName);
@@ -451,8 +469,8 @@ export default function () {
                 {
                     rgCustomerName ? (
                         (rgCustomerNameIsValid) ? 
-                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
-                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                            <span className="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span className="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
                     ) : ""
                 }
                 <input
@@ -486,8 +504,8 @@ export default function () {
                 {
                     rgEmail ? (
                         (rgEmailIsValid) ? 
-                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
-                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                            <span className="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span className="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
                     ) : ""
                 }
                 <input
@@ -520,8 +538,8 @@ export default function () {
                 {
                     rgPhone ? (
                         (rgPhoneIsValid) ? 
-                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
-                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                            <span className="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span className="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
                     ) : ""
                 }
                 <input
@@ -549,8 +567,8 @@ export default function () {
                 {
                     rgUsername ? (
                         (rgUsernameIsValid) ? 
-                            <span class="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
-                            <span class="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
+                            <span className="fas fa-fw fa-check fa-sm text-success field-icon"></span> :
+                            <span className="fas fa-fw fa-times fa-sm text-danger field-icon"></span>
                     ) : ""
                 }
                 <input
@@ -561,7 +579,19 @@ export default function () {
                     required
                     onChange={e => setRgPw(e.target.value)} 
                 />
-                <span toggle="#user-pass" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <span 
+                    toggle="#user-pass" 
+                    className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
+                    onClick={e => {
+                        $(e.target).toggleClass("fa-eye fa-eye-slash");
+                        var input = $($(e.target).attr("toggle"));
+                        if (input.attr("type") == "password") {
+                        input.attr("type", "text");
+                        } else {
+                        input.attr("type", "password");
+                        }
+                    }}
+                ></span>
                 <input
                     type="password"
                     id="user-repeatpass"
@@ -570,7 +600,19 @@ export default function () {
                     required
                     onChange={e => setRgRepeatPw(e.target.value)} 
                 />
-                <span toggle="#user-repeatpass" class="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"></span>
+                <span 
+                    toggle="#user-repeatpass" 
+                    className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
+                    onClick={e => {
+                        $(e.target).toggleClass("fa-eye fa-eye-slash");
+                        var input = $($(e.target).attr("toggle"));
+                        if (input.attr("type") == "password") {
+                        input.attr("type", "text");
+                        } else {
+                        input.attr("type", "password");
+                        }
+                    }}
+                ></span>
                 <button id="register-btn" className="btn btn-primary btn-block" type="submit">
                     <i className="fas fa-user-plus mr-2" /> Đăng ký ngay
                 </button>

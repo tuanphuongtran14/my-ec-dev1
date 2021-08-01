@@ -55,7 +55,6 @@ export default function Product({
   const [displayNumber, setDisplayNumber] = useState(1);
   const [reload, setReload] = useState();
   const [idProduct, setIdProduct] = useState(product._id);
-  console.log(product);
   const regularPrice = product.regularPrice.toLocaleString("DE-de");
   const finalPrice = product.finalPrice.toLocaleString("DE-de");
   const router = useRouter();

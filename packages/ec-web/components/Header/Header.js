@@ -61,10 +61,13 @@ export default function Header() {
         }
 
         window.onscroll = function () {
+            const backToTopBtn = document.getElementById("backToTopID");
             if (window.scrollY >= 150) {
-                document.getElementById("backToTopID").style.display = "block"
+                if(backToTopBtn)
+                    backToTopBtn.style.display = "block";
             } else {
-                document.getElementById("backToTopID").style.display = "none"
+                if(backToTopBtn)
+                    backToTopBtn.style.display = "none";
             }
         };
 

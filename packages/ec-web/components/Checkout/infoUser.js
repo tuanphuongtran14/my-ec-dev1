@@ -43,28 +43,28 @@ const infoUser = () => {
         return (
             <div>
                 <div class="formItem py-3">
-                    <label for="">Họ và tên</label>
+                    <label htmlFor="">Họ và tên</label>
                     <input type="text" class="form-control" id="name" defaultValue={user.username} name="name" required></input>
                 </div>
                 <div class="formItem py-3">
-                    <label for="">Số điện thoại</label>
+                    <label htmlFor="">Số điện thoại</label>
                     <input type="text" class="form-control" id="phone" name="phone" defaultValue={user.phone} required  ></input>
                 </div>
 
                 <div class="formItem py-3">
-                    <label for="">Email</label>
+                    <label htmlFor="">Email</label>
                     <input type="text" class="form-control" id="mail" name="mail" placeholder=""  required></input>
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Tỉnh thành</label>
+                    <label htmlFor="">Tỉnh thành</label>
                     <input type="text" className="form-control" name="address1" id="address1" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Quận, huyện</label>
+                    <label htmlFor="">Quận, huyện</label>
                     <input type="text" className="form-control" name="address2" id="address2" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Địa chỉ chi tiết</label>
+                    <label htmlFor="">Địa chỉ chi tiết</label>
                     <input type="text" className="form-control" name="address3" id="address3" required defaultValue="" />
                 </div>
             </div>
@@ -74,27 +74,27 @@ const infoUser = () => {
         return (
             <div>
                 <div className="formItem py-3">
-                    <label for="">Họ và tên</label>
+                    <label htmlFor="">Họ và tên</label>
                     <input type="text" className="form-control" name="name" id="name" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Số điện thoại</label>
+                    <label htmlFor="">Số điện thoại</label>
                     <input type="text" className="form-control" name="phone" id="phone" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Email</label>
+                    <label htmlFor="">Email</label>
                     <input type="text" className="form-control" name="mail" id="mail" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Tỉnh thành</label>
+                    <label htmlFor="">Tỉnh thành</label>
                     <input type="text" className="form-control" name="address1" id="address1" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Quận, huyện</label>
+                    <label htmlFor="">Quận, huyện</label>
                     <input type="text" className="form-control" name="address2" id="address2" required defaultValue="" />
                 </div>
                 <div className="formItem py-3">
-                    <label for="">Địa chỉ chi tiết</label>
+                    <label htmlFor="">Địa chỉ chi tiết</label>
                     <input type="text" className="form-control" name="address3" id="address3" required defaultValue="" />
                 </div>
             </div>
