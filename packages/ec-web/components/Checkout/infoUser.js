@@ -14,18 +14,18 @@ const infoUser = () => {
         var subs= document.getElementById("QuanHuyen");
         main.addEventListener('change',()=>
         {    
-            while(subs.options.length>0)
-            {
-                subs.options.remove(0);
-            }
 
             fetch("https://provinces.open-api.vn/api/d/")
             .then(function(resp){
                 return resp.json();
             })
             .then(function(data){
-               
+                while(subs.options.length>0)
+                {
+                    subs.options.remove(0);
+                }
                 var htmls= data.map(function(data){
+                    
                     if (data.province_code==code.options[main.selectedIndex].text)
                     {
                         let option = new Option(data.name,data.name);

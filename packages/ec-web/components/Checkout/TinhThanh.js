@@ -43,13 +43,18 @@ const TinhThanh = () =>
 
     return(
         <div>
-            <select class="form-select" aria-label="Default select example" name="calc_shipping_provinces" id="TinhThanh" required="">
-            </select>
+            <div className="formItem py-3">
+                <label for="">Tỉnh/ Thành Phố</label>
+                <select class="form-control" aria-label="Default select example" name="calc_shipping_provinces" id="TinhThanh" required="">
+                </select>
+            </div>
             <select name="calc_shipping_provinces" id="Code" hidden required="">
             </select>
-            <select class="form-select" aria-label="Default select example" name="calc_shipping_district" id="QuanHuyen" required="">
-            </select>
-
+            <div className="formItem py-3">
+                <label for="">Quận/ Huyện</label>
+                <select class="form-control" aria-label="Default select example" name="calc_shipping_district" id="QuanHuyen" required="">
+                </select>
+            </div>
         </div>
         
   
