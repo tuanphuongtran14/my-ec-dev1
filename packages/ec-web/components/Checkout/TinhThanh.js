@@ -31,6 +31,10 @@ const TinhThanh = () =>
     })
     .then(function(data){
         var subs = document.getElementById("QuanHuyen");    
+        while(subs.options.length>0)
+                {
+                    subs.options.remove(0);
+                }
         var htmls= data.map(function(data){
             if (data.province_code == 1)
             {
