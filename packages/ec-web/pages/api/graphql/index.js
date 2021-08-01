@@ -16,7 +16,7 @@ async function handler(req, res) {
         
         // Excute query based on query's type
         if(type === 'query') {
-            const { data, error } = await apolloClient.query({
+            const { data, errors } = await apolloClient.query({
                 query: gql`${query}`,
                 variables,
                 context: {
@@ -25,14 +25,14 @@ async function handler(req, res) {
             });
 
             return res.json({
-                success: true,
-                error,
+                success: !errors,
+                errors,
                 data,
             });
         }
 
         if(type === 'mutation') {
-            const { data, error } = await apolloClient.mutate({
+            const { data, errors } = await apolloClient.mutate({
                 mutation: gql`${query}`,
                 variables,
                 context: {
@@ -41,15 +41,15 @@ async function handler(req, res) {
             });
 
             return res.json({
-                success: true,
-                error,
+                success: !errors,
+                errors,
                 data,
             });
         }
 
         // If type is not valid, return a message
         return res.json({
-            error: new Error('Action type is not valid. Type is only "query" or "mutation"'),
+            errors: new Error('Action type is not valid. Type is only "query" or "mutation"'),
             success: false,
         });
     } else {

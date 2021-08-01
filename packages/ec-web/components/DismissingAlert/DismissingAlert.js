@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 
-export default function DismissingAlert({ children, type, showTime }) {
+export default function DismissingAlert({ children, type, showTimeMs }) {
     const id = Math.floor(Math.random() * 100 + 1);
 
     useEffect(() => {
-        setTimeout(() => {
-            const notification = document.getElementById(id);
-            if (notification) fadeOut(notification, 400);
-        }, showTime * 1000 || 5000);
+        if(showTimeMs)
+            setTimeout(() => {
+                const notification = document.getElementById(id);
+                if (notification) fadeOut(notification, 400);
+            }, showTimeMs); 
     });
 
     useEffect(() => {

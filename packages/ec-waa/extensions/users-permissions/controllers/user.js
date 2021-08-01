@@ -40,15 +40,29 @@ module.exports = {
     async isValidUsername(ctx) {
         const { _username: username } = ctx.request.query;
 
-        const usernameIsValid = !(await strapi.query("user", "users-permissions").findOne({ username }));
+        const user = await strapi.query("user", "users-permissions").findOne({ username });
 
-        return usernameIsValid;
+        return user ? true : false;
     },
     async isValidEmail(ctx) {
         const { _email: email } = ctx.request.query;
 
-        const emailIsValid = !(await strapi.query("user", "users-permissions").findOne({ email }));
+        const user = await strapi.query("user", "users-permissions").findOne({ email });
 
-        return emailIsValid;
-    }
+        return user ? true : false;
+    },
+    async isAvailableEmail(ctx) {
+        const { _email: email } = ctx.request.query;
+
+        const emailIsAvailable = !(await strapi.query("user", "users-permissions").findOne({ email }));
+
+        return emailIsAvailable;
+    },
+    async isAvailableUsername(ctx) {
+        const { _username: username } = ctx.request.query;
+
+        const usernameIsAvailable = !(await strapi.query("user", "users-permissions").findOne({ username }));
+
+        return usernameIsAvailable;
+    },
 };
