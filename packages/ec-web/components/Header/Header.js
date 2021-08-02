@@ -191,7 +191,7 @@ export default function Header() {
                         />
                         <button type="submit" className="btn btn--searchGo" id="search-go"
                         >
-                            <div className="searchGo_text" href="./san-pham">
+                            <div className="searchGo_text">
                                 Go
                             </div>
                         </button>
