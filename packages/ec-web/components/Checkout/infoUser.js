@@ -45,9 +45,12 @@ const infoUser = () => {
             // Declare query & its variables
             const query = `
 					query {
-						me {
+						me: customMe {
 							id,
-							username,  
+							username,
+                            name,
+                            phone,
+                            email
 						}
 					}
 				`;
@@ -77,7 +80,7 @@ const infoUser = () => {
             <div>
                 <div class="formItem py-3">
                     <label htmlFor="">Họ và tên</label>
-                    <input type="text" class="form-control" id="name" defaultValue={user.username} name="name" required></input>
+                    <input type="text" class="form-control" id="name" defaultValue={user.name} name="name" required></input>
                 </div>
                 <div class="formItem py-3">
                     <label htmlFor="">Số điện thoại</label>
@@ -86,7 +89,7 @@ const infoUser = () => {
 
                 <div class="formItem py-3">
                     <label htmlFor="">Email</label>
-                    <input type="text" class="form-control" id="mail" name="mail" placeholder=""  required></input>
+                    <input type="text" class="form-control" id="mail" name="mail" placeholder=""  defaultValue={user.email} required></input>
                 </div>
                 <TinhThanh></TinhThanh>
                 <div className="formItem py-3">

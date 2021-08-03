@@ -515,7 +515,7 @@ html {
       justify-content: flex-start;
       margin-bottom: 1rem; } }
 
-.fa-star {
+.fa-star, .fa-star-half-alt {
   color: orange; }
 
 /*-------------------------*/

@@ -1,4 +1,5 @@
 import React from "react";
+import { RatingStars } from "../../components";
 
 export default function Review({stars, comment, username, postedTime}) {
     const displayTimeAgo = () => {
@@ -39,10 +40,10 @@ export default function Review({stars, comment, username, postedTime}) {
         let i = 1;
 
         for(i; i <= stars; i++)
-            result.push(<i className="fa fa-star fa-sm checked" />);
+            result.push(<i className="fas fa-star product__rating-icon fa-sm" />);
         
         for(i; i <= 5; i++)
-            result.push(<i className="fa fa-star-half-alt checked fa-sm" />);
+            result.push(<i className="far fa-star product__rating-icon fa-sm" />);
 
         return result;
     }
@@ -57,7 +58,7 @@ export default function Review({stars, comment, username, postedTime}) {
                 </div>
             </div>
             <span className="rating-result">
-                { displayStars() }
+                <RatingStars stars={stars} />
             </span>
             <p className="content">
                 { comment }
