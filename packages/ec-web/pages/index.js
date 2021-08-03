@@ -23,7 +23,6 @@ export async function getServerSideProps() {
 
 
 export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
-
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
@@ -142,7 +141,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         initialIndex: 0,
         freeScroll: true,
         imagesLoaded: true,
-        prevNextButtons: true,
+        prevNextButtons: false,
         pageDots: false,
         contain: true
     }
@@ -192,7 +191,6 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
             <Banner />
             {ProductList('Hot sales')}
             {ProductList('Mới nhất')}
-
             {/* Banner Iphone */}
             <div className="bannerIphone row mx-0">
                 <div className="bannerIphone--text col-5">

@@ -8,7 +8,7 @@ import {
 class OrderApi {
     async checkout(consigneeName, consigneePhone, email, addressLine1, district, city, paymentMethod) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -34,7 +34,7 @@ class OrderApi {
     }
     async cancelOrderById(orderId) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
