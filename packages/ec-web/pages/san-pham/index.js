@@ -87,8 +87,8 @@ export default function Category({ products }) {
                     <hr />
                     <div className="container">
                         <div className="bg-white mb-5 filter p-3">
-                            <div className="d-block py-3 row container-fluid">
-                                <select className="filter__option mr-2 my-2 col-2" onChange={handleFilterBrand}>
+                            <div className="filterBar d-block py-3 row container-fluid">
+                                <select className="filter__option mr-2 my-2 col-3" onChange={handleFilterBrand}>
                                     <option value="0" selected>Hãng...</option>
                                     {brandName}
                                 </select>
@@ -115,9 +115,6 @@ export default function Category({ products }) {
                                     <option value="128-den-256">128 - 256 GB</option>
                                     <option value="tren-512">512 GB trở lên</option>
                                 </select>
-                                <button className="btn col-1 border filter__option">
-                                    Lọc
-                                </button>
                             </div>
                             <div className="product-list product-list--non-slide border-0">
                                 <Product currentProducts={currentProducts} filter={filter}/>

@@ -253,7 +253,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                 </div>
                 <div className="bannerNews--content row">
                     <Link href="/tin-tuc/cach-cap-nhat-ios-15-beta-4-dje-su-dung-safari-voi-thiet-ke-giao-dien-moi-va-co-hieu-nang-iphone-on-djinh-hon">
-                        <div className="bannerNews--content__item card col-4">
+                        <div className="bannerNews--content__item card col-4 border-0">
                             <img src="https://photo2.tinhte.vn/data/attachment-files/2021/07/5567088_cach-cap-nhat-ios-15-beta-4_1280x720-800-resize.jpeg" className="card-img-top" alt="..." />
                             <div className="card-body">
                                 <h5 className="card-title">Cách cập nhật iOS 15 Beta 4 để sử dụng Safari với thiết kế giao diện mới và có hiệu năng iPhone ổn định hơn</h5>
@@ -262,7 +262,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         </div>
                     </Link>
                     <Link href="/tin-tuc/cac-dong-djien-thoai-tam-trung-djang-mua-2021-djen-tu-cac-ong-lon-djau-nganh-la-dan-cong-nghe-lau-nam-ban-dja-biet-het-chua">
-                        <div className="bannerNews--content__item card col-4">
+                        <div className="bannerNews--content__item card col-4 border-0">
                             <img src="https://i2.wp.com/shiftdelete.net/wp-content/uploads/2021/07/telefon-kameralari-izleniyor-mu-2.jpg?resize=1170%2C658&ssl=1" className="card-img-top" alt="..." />
                             <div className="card-body">
                                 <h5 className="card-title">Các dòng điện thoại tầm trung đáng mua 2021 đến từ các ông lớn đầu ngành, là dân công nghệ lâu năm, bạn đã biết hết chưa?</h5>
@@ -271,7 +271,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         </div>
                     </Link>
                     <Link href="/tin-tuc/loat-djien-thoai-vivo-y-giam-sau-het-y-mung-sinh-nhat-gia-djang-hoi-lam-djo-khong-sam-ve-thi-qua-phi">
-                        <div className="bannerNews--content__item card col-4">
+                        <div className="bannerNews--content__item card col-4 border-0">
                             <img src="https://cdn.tgdd.vn/Files/2021/04/29/1347335/vivoy725gxanh_den-10_800x450_800x450.jpg" className="card-img-top" alt="..." />
                             <div className="card-body">
                                 <h5 className="card-title">Loạt điện thoại Vivo Y giảm sâu hết ý mừng sinh nhật, giá đang hời lắm đó không sắm về thì quá phí</h5>
