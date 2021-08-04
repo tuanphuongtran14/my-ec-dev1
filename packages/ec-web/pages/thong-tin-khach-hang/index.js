@@ -23,18 +23,19 @@ const client = new ApolloClient({
 export default function Customer() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState({});
-  const [userOrder, setUserOrder] = useState({});
+  const [userOrder, setUserOrder] = useState([]);
   useEffect(async () => {
     const data = await userApi.me();
-    const orders = await userApi.getUserOrders();
+    const {orders} = await userApi.getUserOrders();
+
+    //console.log(data)
+    console.log(orders);
 
     setUserInfo(data.me);
     setUserOrder(orders);
-    //console.log(setUserOrder);
-    //console.log(data)
-    console.log(orders.orders);
-    console.log(userOrder);
-    console.log(userInfo);
+
+    //console.log(userOrder);
+    //console.log(userInfo);
   }, []);
 
   const Address = (props) => (
@@ -65,7 +66,7 @@ export default function Customer() {
   );
 
   const Order = () =>
-    userOrder.orders.map((order) => (
+  userOrder.map((order) => (
       <OrderProduct
         maDonHang={order.orderCode}
         tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
@@ -116,9 +117,8 @@ export default function Customer() {
     <div>
       <div className="container-fluid" style={{ backgroundColor: "#f0f0f0" }}>
         <div className="container py-4">
-          <div className="ro manage-resposive">
+          <div className="row manage-resposive">
             <div className="col-sm-3 col-md-3 col-lg-3 col-xl-3">
-              {/*<div className="row"  style={{paddingLeft: '0.9375em',width: '18.75em'}}>*/}
               <div
                 className="row"
                 style={{ paddingLeft: "15px", width: "300px" }}
@@ -126,8 +126,7 @@ export default function Customer() {
                 <div className="account">
                   <img
                     className="account__img"
-                    src="https://lh4.googleusercontent.com/-HBXyAHCrURI/AAAAAAAAAAI/AAAAAAAAAAA/AMZuucl3I6rOPCyi3anNHc8C8CKj9ItxMA/s96-c-rg-br100/photo.jpg"
-                    alt=""
+                    src="https://www.nicepng.com/png/full/136-1366211_group-of-10-guys-login-user-icon-png.png"                    alt=""
                   />
                   <div className="account__info">
                     Tài khoản của
@@ -141,7 +140,7 @@ export default function Customer() {
                     className="list-group-item list-group-item__edit"
                     id="account-event"
                   >
-                    <a href="" className="account-list-info">
+                    <a  className="account-list-info">
                       <i className="fas account-list-info__icon fa-user-circle"></i>
                       <span>Thông tin tài khoản</span>
                     </a>
@@ -150,7 +149,7 @@ export default function Customer() {
                     className="list-group-item list-group-item__edit"
                     id="order-event"
                   >
-                    <a href="" className="account-list-info">
+                    <a  className="account-list-info">
                       <i className="fas account-list-info__icon fa-th-list"></i>
                       <span>Quản lý đơn hàng</span>
                     </a>
@@ -353,6 +352,12 @@ export default function Customer() {
                       tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
                       giaSanPham="708.900"
                       trangThaiDonHang="Giao hàng thành công"
+                    />
+                     <OrderProduct
+                      maDonHang="12343242423"
+                      tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
+                      giaSanPham="708.900"
+                      trangThaiDonHang="Giao hàng thành công"
                     />*/}
                     <Order />
                   </tbody>
@@ -362,7 +367,6 @@ export default function Customer() {
           </div>
         </div>
       </div>
-      {/*<script src="./js/customer-info.js"/>*/}
     </div>
   );
 
@@ -372,12 +376,6 @@ export default function Customer() {
         <Head>
           <title>Thông tin tài khoản</title>
           <link rel="stylesheet" href="./css/customer-info.css" />
-          <link
-            rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v4.6.0/css/all.css"
-            integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
-            crossorigin="anonymous"
-          />
         </Head>
         <Header />
         <Customer />

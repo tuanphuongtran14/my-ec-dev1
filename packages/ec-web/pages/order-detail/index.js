@@ -1,11 +1,31 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
+import { userApi } from "../../apis";
+
+
+
 //import '../_app'
 //import '../_document'
 
 export default function OrderDetail() {
 
+    //const router = useRouter();
+    //const [orderDetail, setOrderDetail] = useState({});
+    ////const [userOrder, setUserOrder] = useState([]);
+    //useEffect(async () => {
+    //  const data = await userApi.me();
+    //  const {orders} = await userApi.getUserOrders();
+  
+    //  //console.log(data)
+    //  console.log(orders);
+  
+    //  setUserInfo(data.me);
+    //  setUserOrder(orders);
+  
+    //  //console.log(userOrder);
+    //  //console.log(userInfo);
+    //}, []);
   
   const OrderDetail = () => (
   <div>
