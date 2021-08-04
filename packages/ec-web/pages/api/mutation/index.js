@@ -39,8 +39,8 @@ async function handler(req, res) {
 }
 
 export default withIronSession(handler, {
-    password: 'DkAi0P2Aixgs9FWo66UMV3YdmksspNrW',
-    cookieName: process.env.APPLICATION_COOKIE_NAME,
+    password: process.env.NEXT_PUBLIC_APP_SECRET,
+    cookieName: process.env.NEXT_PUBLIC_APP_COOKIE_NAME,
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
         secure: process.env.NODE_ENV === "production",
