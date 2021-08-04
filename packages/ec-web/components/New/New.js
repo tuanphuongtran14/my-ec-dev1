@@ -8,7 +8,7 @@ import {
 } from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: 'http://localhost:1337/graphql',
+    uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
     cache: new InMemoryCache()
 });
 
@@ -199,7 +199,7 @@ const NewsHotList = () => {
 
 const NewsBody = () => {
     return (
-        <div className="container mt-4  px-0 mb-4 news" style={{"background-color": " #fff "}}>
+        <div className="newsBody container mt-4  px-0 mb-4 news" style={{"background-color": " #fff "}}>
             <NewsList/>
             <NewsHotList/>
         </div>
@@ -209,12 +209,14 @@ const NewsBody = () => {
 const New = () => {
     return (
         <ApolloProvider client={client}>
-            <nav className="breadcrumb breadcrumb--custom my-1">
-                <div className="container px-0 d-flex">
-                    <a className="breadcrumb-item" href="#">Trang chủ</a>
-                    <span className="breadcrumb-item active">Tin tức</span>
-                </div>
-            </nav>
+            <nav className="breadcrumb breadcrumb--custom pb-1">
+                    <div className="container">
+                        <a className="breadcrumb-item" href="/">
+                            Trang chủ
+                        </a>
+                        <span className="breadcrumb-item active">Tin tức</span>
+                    </div>
+                </nav>
             {/* <Carousel/> */}
             <div className="container px-0 mb-4" style={{"background-color": " #fff "}}>
                 <NewsHot/>

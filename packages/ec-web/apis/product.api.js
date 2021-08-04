@@ -16,7 +16,7 @@ class ProductApi {
     async getForHome(limit) {
         try {
             const { data: responseData } = await axiosClient.post(
-                "http://localhost:3000/api/graphql",
+                `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                 {
                     type: "query",
                     query: `
@@ -54,7 +54,7 @@ class ProductApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -86,7 +86,7 @@ class ProductApi {
     }
     async getBestSellers(limit) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "query",
                 query: `
@@ -104,7 +104,7 @@ class ProductApi {
     }
     async getNewArrivals(limit) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "query",
                 query: `
@@ -122,7 +122,7 @@ class ProductApi {
     }
     async getHotSales(limit) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "query",
                 query: `

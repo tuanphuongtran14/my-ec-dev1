@@ -4,7 +4,7 @@ import withIronSession from "../../../../helpers/customWithIronSession";
 async function handler(req, res) {
     const { id_token, access_token } = req.query;
     try {
-        const { data } = await axiosClient.get(`http://localhost:1337/auth/google/callback?id_token=${id_token}&access_token=${access_token}`);
+        const { data } = await axiosClient.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/callback?id_token=${id_token}&access_token=${access_token}`);
         req.session.set("user", {
             jwt: data.jwt,
             username: data.user.username,

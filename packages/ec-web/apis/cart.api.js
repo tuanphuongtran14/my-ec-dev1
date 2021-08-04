@@ -17,7 +17,7 @@ class CartApi {
     async getCart(cartId) {
         try {
             const { data: responseData } = await axiosClient.post(
-                "http://localhost:3000/api/graphql",
+                `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                 {
                     type: "query",
                     query: `
@@ -38,7 +38,7 @@ class CartApi {
     }
     async toggleSelectItem(cartId, itemId, value) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -58,7 +58,7 @@ class CartApi {
     }
     async toggleSelectAllItems(cartId, value) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -77,7 +77,7 @@ class CartApi {
     }
     async removeSelectedItems(cartId) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -95,7 +95,7 @@ class CartApi {
     }
     async removeItem(cartId, itemId) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -114,7 +114,7 @@ class CartApi {
     }
     async incrementQuantity(cartId, itemId, by) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -134,7 +134,7 @@ class CartApi {
     }
     async decrementQuantity(cartId, itemId, by) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -154,7 +154,7 @@ class CartApi {
     }
     async applyCoupon(cartId, couponCode) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -173,7 +173,7 @@ class CartApi {
     }
     async removeCoupon(cartId, couponCode) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `
@@ -192,7 +192,7 @@ class CartApi {
     }
     async changeItemColor(cartId, itemId, color) {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "mutation",
                 query: `

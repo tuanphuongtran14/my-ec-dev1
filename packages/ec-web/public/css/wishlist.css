@@ -19,9 +19,9 @@
     height:80px;
 }
 
-.wishlist-item{
-    display:flex;
-    align-items:center;
+.wishlistRow-thumbnail{
+    display: flex;
+    align-items: center;
 }
 
 .wishlist-item_text{
@@ -39,4 +39,17 @@
     min-height: 380px;
     line-height: 380px;
     background-color: orange;
+}
+
+@media only screen and (max-width: 768px) {
+    .wishlistRow-title
+    {
+        display: none !important;
+    }
+    .wishlist-item_img{ 
+        border: none;
+    }
+    .wishlistRow-buttons{
+        margin-left: 0 !important;
+    }
 }

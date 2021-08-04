@@ -10,6 +10,7 @@ import {
     GET_USER_CART,
     ME,
     FORGET_PASSWORD,
+    RESET_PASSWORD,
     GET_USER_ORDERS,
     IS_VALID_EMAIL,
     IS_VALID_USERNAME,
@@ -38,7 +39,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "mutation",
                         query,
@@ -90,7 +91,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "mutation",
                         query,
@@ -133,7 +134,52 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
+                    {
+                        type: "mutation",
+                        query,
+                        variables
+                    }
+                );
+                const { data, error, success } = responseData;
+                return success ? data : error;
+            } else { // Execute directly by apollo client
+                const headers = (jwt) ? { Authorization: `Bearer ${jwt}`, } : undefined;
+                const { data, error } = await apolloClient.mutate({
+                    mutation: gql`${query}`,
+                    variables,
+                    context: {
+                        headers
+                    },
+                });
+                return (!error) ? data : error; 
+            }
+        } catch (error) {
+            return {
+                error
+            };
+        }
+    }
+    async resetPassword(password, passwordConfirmation, code, options) {
+        try {
+            // Declare query need be used
+            const query = `
+                mutation($password: String!, $passwordConfirmation: String!, $code: String!) {
+                    resetPassword: ${RESET_PASSWORD},
+                }
+            `;
+            // Declare variables need be used
+            const variables = {
+                password,
+                passwordConfirmation,
+                code
+            };
+            // Start execute request
+            options = options ? options : { useAxiosClient: true };
+            const { useAxiosClient, jwt } = options;
+            if(useAxiosClient) { // Execute indirectly by axios client
+                const { data: responseData } = await axiosClient.post(
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "mutation",
                         query,
@@ -174,7 +220,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -217,7 +263,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -245,7 +291,7 @@ class UserApi {
     }
     async getUserOrders() {
         const { data: responseData } = await axiosClient.post(
-            "http://localhost:3000/api/graphql",
+            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
             {
                 type: "query",
                 query: `
@@ -276,7 +322,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -319,7 +365,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -362,7 +408,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -405,7 +451,7 @@ class UserApi {
             const { useAxiosClient, jwt } = options;
             if(useAxiosClient) { // Execute indirectly by axios client
                 const { data: responseData } = await axiosClient.post(
-                    "http://localhost:3000/api/graphql",
+                    `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                     {
                         type: "query",
                         query,
@@ -433,7 +479,7 @@ class UserApi {
     }
     async resendConfirmedEmail(email) {
         const { status } = await axiosClient.post(
-            `http://localhost:1337/auth/send-email-confirmation`, {
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/send-email-confirmation`, {
                 email, // user's email
             }
         );

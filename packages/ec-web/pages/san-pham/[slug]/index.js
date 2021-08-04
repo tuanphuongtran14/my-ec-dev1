@@ -55,7 +55,6 @@ export default function Product({
   const [displayNumber, setDisplayNumber] = useState(1);
   const [reload, setReload] = useState();
   const [idProduct, setIdProduct] = useState(product._id);
-  console.log(product);
   const regularPrice = product.regularPrice.toLocaleString("DE-de");
   const finalPrice = product.finalPrice.toLocaleString("DE-de");
   const router = useRouter();
@@ -206,7 +205,7 @@ export default function Product({
             <form action className="px-0">
               <p className="font-weight-bold my-2">Chỉnh sửa đánh giá</p>
               <div className="form-group w-100">
-                <label htmlFor>Đánh giá của bạn: </label>
+                <label>Đánh giá của bạn: </label>
                 <span className="rating-result ml-3">
                   {displayStars(stars)}
                 </span>
@@ -233,7 +232,7 @@ export default function Product({
           <form action className="px-0">
             <p className="font-weight-bold my-2">Đánh giá sản phẩm này</p>
             <div className="form-group w-100">
-              <label htmlFor>Đánh giá của bạn: </label>
+              <label>Đánh giá của bạn: </label>
               <span className="rating-result ml-3">{displayStars(stars)}</span>
               <textarea
                 className="form-control mb-3"
@@ -660,7 +659,7 @@ export default function Product({
     for (let i = 1; i <= stars; i++)
       result.push(
         <i
-          className="fa fa-star checked"
+          className="fas fa-star checked"
           aria-hidden="true"
           onClick={(event) => handleSelectStars(event, i)}
         />
@@ -669,7 +668,7 @@ export default function Product({
     for (let i = Math.floor(stars) + 1; i <= 5; i++)
       result.push(
         <i
-          className="fa fa-star-o checked"
+          className="far fa-star checked"
           aria-hidden="true"
           onClick={(event) => handleSelectStars(event, i)}
         />
@@ -699,23 +698,25 @@ export default function Product({
     pageDots: false,
   };
 
-  let flkty;
+  const [flkty, setFlkty] = useState();
   useEffect(() => {
     var thumbnails = document.getElementsByClassName("thumbnail");
-
-    flkty.on("change", function (index) {
-      document.querySelector(".thumbnail.active").classList.remove("active");
-      thumbnails[index].classList.add("active");
-    });
-
-    for (let i = 0; i < thumbnails.length; i++) {
-      thumbnails[i].onclick = function () {
+    if(flkty) {
+      flkty.on("change", function (index) {
         document.querySelector(".thumbnail.active").classList.remove("active");
-        this.classList.add("active");
-        flkty.select(i, true, false);
-      };
+        thumbnails[index].classList.add("active");
+      });
+  
+      for (let i = 0; i < thumbnails.length; i++) {
+        thumbnails[i].onclick = function () {
+          document.querySelector(".thumbnail.active").classList.remove("active");
+          this.classList.add("active");
+          flkty.select(i, true, false);
+        };
+      }
+
     }
-  }, []);
+  });
 
   const reviewTab = useRef();
   const handleScroll = () => {
@@ -786,6 +787,8 @@ export default function Product({
 
   const addToWishList = async (productId) => {
     try {
+      if(!isSignedIn)
+        return router.push("/dang-nhap");
       const btnWL = document.getElementById("btnAddToWishList");
       btnWL.setAttribute("disabled", true);
       btnWL.innerHTML = `
@@ -805,7 +808,6 @@ export default function Product({
           productId: productId,
         },
       });
-      // alert("dung hay khong " + dataWL.addProductToWishList);
 
       btnWL.removeAttribute("disabled");
       btnWL.innerHTML = `
@@ -820,7 +822,7 @@ export default function Product({
     try {
       const client = graphqlClient(jwt);
 
-      const { dataCheck } = await client.mutate({
+      const { data } = await client.query({
         query: gql`
           query checkProductInWishList($productId: ID!) {
             checkProductInWishList(productId: $productId)
@@ -830,13 +832,23 @@ export default function Product({
           productId: productId,
         },
       });
-      if (dataCheck.checkProductInWishList == true) {
-        return "Đã thêm vào sản phẩm yêu thích";
-      } else return "Thêm vào sản phẩm yêu thích";
+      const btnAddToWishList = document.getElementById("btnAddToWishList");
+      if (data.checkProductInWishList == true) {
+        btnAddToWishList.innerHTML = `
+          <i class="fas fa-heart" aria-hidden="true"></i>
+          &nbsp;Đã thêm vào sản phẩm yêu thích
+        `;
+        btnAddToWishList.setAttribute("disabled", true);
+      }
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(async () => {
+    console.log("Ket qua ne");
+    console.log(await checkProductInWishList(product.id));
+  },[])
 
   return (
     <>
@@ -884,7 +896,8 @@ export default function Product({
                 options={flickityOptions}
                 reloadOnUpdate
                 static
-                flickityRef={(c) => (flkty = c)}
+                flickityRef={c => setFlkty(c)}
+                // flickityRef={flkty}
               >
                 {largePic()}
               </Flickity>

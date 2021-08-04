@@ -57,7 +57,7 @@ export default function DropdownUser() {
                         >
                             <Menu.Items
                                 static
-                                className="bg-light font-weight-solid origin-top-right position-absolute top-20 mt-2 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                                className="dropMenu bg-light font-weight-solid origin-top-right position-absolute top-20 mt-2 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                                 style={{ zIndex: 10000000 }}
                             >
                                 <div className="py-2 ">
@@ -127,6 +127,7 @@ export default function DropdownUser() {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <a
+                                                href="#"
                                                 onClick={handleSignOut}
                                                 className={classNames(
                                                     active
@@ -136,7 +137,7 @@ export default function DropdownUser() {
                                                 )}
                                             >
                                                 <i
-                                                    className="fa fa-sign-out pr-2 "
+                                                    className="fas fa-sign-out-alt pr-2 "
                                                     aria-hidden="true"
                                                 />
                                                 Đăng xuất

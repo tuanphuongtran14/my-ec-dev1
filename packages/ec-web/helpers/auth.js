@@ -23,7 +23,7 @@ export const signIn = async (username, password) => {
 
     console.log("response");
     console.log(responseData);
-    const { data, errors } = responseData;
+    const { ok, errors } = responseData;
 
     const error = errors ? errors[0].extensions.exception.data.message[0].messages[0].id : null;
 
@@ -34,7 +34,7 @@ export const signIn = async (username, password) => {
         }
 
     return {
-        success: data ? data.ok : false,
+        success: ok,
     }
 };
 
@@ -67,7 +67,7 @@ export const signOut = async () => {
 // };
 export const useAuth = handler => withIronSession(handler, {
     password: 'DkAi0P2Aixgs9FWo66UMV3YdmksspNrW',
-    cookieName: process.env.APPLICATION_COOKIE_NAME,
+    cookieName: process.env.NEXT_PUBLIC_APP_COOKIE_NAME,
     // if your localhost is served on http:// then disable the secure flag
     cookieOptions: {
         secure: process.env.NODE_ENV === "production",

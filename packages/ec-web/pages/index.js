@@ -23,7 +23,6 @@ export async function getServerSideProps() {
 
 
 export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
-
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
@@ -142,7 +141,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         initialIndex: 0,
         freeScroll: true,
         imagesLoaded: true,
-        prevNextButtons: true,
+        prevNextButtons: false,
         pageDots: false,
         contain: true
     }
@@ -192,7 +191,6 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
             <Banner />
             {ProductList('Hot sales')}
             {ProductList('Mới nhất')}
-
             {/* Banner Iphone */}
             <div className="bannerIphone row mx-0">
                 <div className="bannerIphone--text col-5">
@@ -202,7 +200,9 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             khi giao dịch, kết nối iPhone mới với nhà cung cấp dịch vụ của bạn và thiết lập nhanh chóng.
                             Bạn cũng có thể trò chuyện với Chuyên gia bất cứ lúc nào.
                         </p>
-                        <button className="bannerIphone--text__btn px-3 py-2">Khám phá ngay</button>
+                        <Link href="/ket-qua-tim-kiem?name=iphone">
+                            <button className="bannerIphone--text__btn px-3 py-2">Khám phá ngay</button>
+                        </Link>
                     </div>
                 </div>
                 <div className="bannerIphone--img col-7 px-0">
@@ -225,7 +225,9 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             tất cả trong một thao tác. Và với chipset nhanh nhất của Galaxy, loại kính mạnh nhất,
                             5G và pin dùng cả ngày, Ultra dễ dàng tạo nên tên tuổi của mình.
                         </p>
-                        <button className="bannerSamsung--text__btn px-3 py-2">Khám phá ngay</button>
+                        <Link href="/ket-qua-tim-kiem?name=samsung">
+                            <button className="bannerSamsung--text__btn px-3 py-2">Khám phá ngay</button>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -244,7 +246,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
             {ProductList('Bán chạy')}
 
-             {/* Banner News */}
+            {/* Banner News */}
             <div className="bannerNews row">
                 <div className=" col-12 d-flex justify-content-center align-items-center pb-3">
                     <Link href="new">
@@ -253,28 +255,28 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                 </div>
                 <div className="bannerNews--content row">
                     <Link href="/tin-tuc/cach-cap-nhat-ios-15-beta-4-dje-su-dung-safari-voi-thiet-ke-giao-dien-moi-va-co-hieu-nang-iphone-on-djinh-hon">
-                        <div className="bannerNews--content__item card col-4">
-                            <img src="https://photo2.tinhte.vn/data/attachment-files/2021/07/5567088_cach-cap-nhat-ios-15-beta-4_1280x720-800-resize.jpeg" class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Cách cập nhật iOS 15 Beta 4 để sử dụng Safari với thiết kế giao diện mới và có hiệu năng iPhone ổn định hơn</h5>
+                        <div className="bannerNews--content__item card col-4 border-0">
+                            <img src="https://photo2.tinhte.vn/data/attachment-files/2021/07/5567088_cach-cap-nhat-ios-15-beta-4_1280x720-800-resize.jpeg" className="card-img-top" alt="..." />
+                            <div className="card-body">
+                                <h5 className="card-title">Cách cập nhật iOS 15 Beta 4 để sử dụng Safari với thiết kế giao diện mới và có hiệu năng iPhone ổn định hơn</h5>
 
                             </div>
                         </div>
                     </Link>
                     <Link href="/tin-tuc/cac-dong-djien-thoai-tam-trung-djang-mua-2021-djen-tu-cac-ong-lon-djau-nganh-la-dan-cong-nghe-lau-nam-ban-dja-biet-het-chua">
-                        <div className="bannerNews--content__item card col-4">
-                            <img src="https://i2.wp.com/shiftdelete.net/wp-content/uploads/2021/07/telefon-kameralari-izleniyor-mu-2.jpg?resize=1170%2C658&ssl=1" class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Các dòng điện thoại tầm trung đáng mua 2021 đến từ các ông lớn đầu ngành, là dân công nghệ lâu năm, bạn đã biết hết chưa?</h5>
+                        <div className="bannerNews--content__item card col-4 border-0">
+                            <img src="https://i2.wp.com/shiftdelete.net/wp-content/uploads/2021/07/telefon-kameralari-izleniyor-mu-2.jpg?resize=1170%2C658&ssl=1" className="card-img-top" alt="..." />
+                            <div className="card-body">
+                                <h5 className="card-title">Các dòng điện thoại tầm trung đáng mua 2021 đến từ các ông lớn đầu ngành, là dân công nghệ lâu năm, bạn đã biết hết chưa?</h5>
 
                             </div>
                         </div>
                     </Link>
                     <Link href="/tin-tuc/loat-djien-thoai-vivo-y-giam-sau-het-y-mung-sinh-nhat-gia-djang-hoi-lam-djo-khong-sam-ve-thi-qua-phi">
-                        <div className="bannerNews--content__item card col-4">
-                            <img src="https://cdn.tgdd.vn/Files/2021/04/29/1347335/vivoy725gxanh_den-10_800x450_800x450.jpg" class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Loạt điện thoại Vivo Y giảm sâu hết ý mừng sinh nhật, giá đang hời lắm đó không sắm về thì quá phí</h5>
+                        <div className="bannerNews--content__item card col-4 border-0">
+                            <img src="https://cdn.tgdd.vn/Files/2021/04/29/1347335/vivoy725gxanh_den-10_800x450_800x450.jpg" className="card-img-top" alt="..." />
+                            <div className="card-body">
+                                <h5 className="card-title">Loạt điện thoại Vivo Y giảm sâu hết ý mừng sinh nhật, giá đang hời lắm đó không sắm về thì quá phí</h5>
 
                             </div>
                         </div>

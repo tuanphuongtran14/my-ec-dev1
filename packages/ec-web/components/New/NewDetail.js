@@ -8,7 +8,7 @@ import {
 } from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: 'http://localhost:1337/graphql',
+    uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
     cache: new InMemoryCache()
 });
 
@@ -82,12 +82,17 @@ const ListNews = () => {
 const NewDetail = (props) => {
     return (
         <ApolloProvider client={client}>
-        <nav className="breadcrumb breadcrumb--custom my-1">
-            <div className="container px-0 d-flex">
-                <a className="breadcrumb-item" href="#">Trang chủ</a>
-                <span className="breadcrumb-item active">Tin tức</span>
-            </div>
-        </nav>
+        <nav className="breadcrumb breadcrumb--custom pb-1">
+                    <div className="container">
+                        <a className="breadcrumb-item" href="/">
+                            Trang chủ
+                        </a>
+                        <a className="breadcrumb-item" href="/tin-tuc">
+                            Tin tức
+                        </a>
+                        <span className="breadcrumb-item active">{props.title}</span>
+                    </div>
+                </nav>
         <div className="container mt-4 pt-28 px-0 mb-4" style={{"background-color": "#fff"}}>
             <div className="list-category">
                 <span className="category"><a href="">Tin hot</a></span>
@@ -104,7 +109,7 @@ const NewDetail = (props) => {
                 <div className="news-detail__image">
                     <img src={process.env.NEXT_PUBLIC_API_URL+props.url}/>
                 </div>
-                <div className="overflow-auto" id="news-detail__description" dangerouslySetInnerHTML={{
+                <div className="newsInfo" id="news-detail__description" dangerouslySetInnerHTML={{
                                         __html: props.description,
                 }}>
                 </div>

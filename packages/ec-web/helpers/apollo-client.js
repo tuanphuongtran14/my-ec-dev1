@@ -2,7 +2,7 @@ import {ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 function graphqlClient(authToken) {
     const options = {
-        uri: "http://localhost:1337/graphql",
+        uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
         cache: new InMemoryCache(),
     };
 

@@ -55,12 +55,6 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-.bodyIndex {
-  background-color: #F8F9FA;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-image: url(https://images.unsplash.com/photo-1562555135-133684c2bb84?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1880&q=80); }
-
 body {
   background-color: #FFF; }
 
@@ -311,6 +305,11 @@ html {
       text-decoration: none;
       font-size: 0.9rem; }
 
+@media only screen and (max-width: 768px) {
+  .dropMenu {
+    width: 35vh;
+    right: 0; } }
+
 /*-------------------------*/
 /* 2.6. Fontawesome CSS
 /*-------------------------*/
@@ -521,7 +520,7 @@ html {
       justify-content: flex-start;
       margin-bottom: 1rem; } }
 
-.fa-star {
+.fa-star, .fa-star-half-alt {
   color: orange; }
 
 /*-------------------------*/
@@ -891,20 +890,28 @@ ul.product-details__bonus {
 /*=================================================================================*/
 /* 6. Footer Section
 /*=================================================================================*/
-.footer .footer__title {
-  font-size: 1rem;
-  display: block;
-  padding-bottom: .75rem; }
+.footer {
+  background-color: #252525 !important; }
+  .footer .footer__title {
+    font-size: 1rem;
+    display: block;
+    padding-bottom: .75rem; }
 
 /*=================================================================================*/
 /* 7. Category Page Section
 /*=================================================================================*/
-.filter .filter__option {
+.filterBar .filter__option {
   display: inline-block;
   border: 1px solid #ddd;
   border-radius: 5px;
   cursor: pointer;
   padding: 8px 10px; }
+
+@media only screen and (max-width: 768px) {
+  .filterBar {
+    display: block; }
+    .filterBar .filter__option {
+      max-width: 100%; } }
 
 /*=================================================================================*/
 /* 8. Pagination Section
@@ -1336,10 +1343,10 @@ footer a {
       border: 1px solid #F8F9FA;
       color: #15191C; }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 812px) {
   .bannerIphone {
     display: flexbox;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     flex-direction: column-reverse;
     justify-content: flex-end;
     clear: both; }
@@ -1348,7 +1355,8 @@ footer a {
       padding-top: 10%;
       padding-bottom: 10%; }
     .bannerIphone .bannerIphone--img {
-      max-width: 100%; } }
+      max-width: 100%;
+      height: 100%; } }
 
 .bannerSamsung .bannerSamsung--img {
   background-image: url("https://images.unsplash.com/photo-1611282104291-6bd45ca8bf93?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80");

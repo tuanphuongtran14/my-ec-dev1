@@ -61,10 +61,13 @@ export default function Header() {
         }
 
         window.onscroll = function () {
+            const backToTopBtn = document.getElementById("backToTopID");
             if (window.scrollY >= 150) {
-                document.getElementById("backToTopID").style.display = "block"
+                if(backToTopBtn)
+                    backToTopBtn.style.display = "block";
             } else {
-                document.getElementById("backToTopID").style.display = "none"
+                if(backToTopBtn)
+                    backToTopBtn.style.display = "none";
             }
         };
 
@@ -121,7 +124,7 @@ export default function Header() {
                     {/* <button type="button" className=" btn btn--no-outline px-0 my-0">
                     </button> */}
                     <div>
-                    <i className="fa fa-phone mr-2" aria-hidden="true"></i> Hotline: 0396042357</div>
+                    <i className="fas fa-phone-alt mr-2" aria-hidden="true"></i> Hotline: 0396042357</div>
                     <DropdownUser></DropdownUser>
                 </div>
             </div>
@@ -188,7 +191,7 @@ export default function Header() {
                         />
                         <button type="submit" className="btn btn--searchGo" id="search-go"
                         >
-                            <div className="searchGo_text" href="./san-pham">
+                            <div className="searchGo_text">
                                 Go
                             </div>
                         </button>
