@@ -406,6 +406,23 @@
         font-size: 13px;
     }
 
-
+    .newsInfo img{
+        width: 100%;
+    }
 
 /* New detail --end */
+
+@media only screen and (max-width: 768px){
+    .banner-child{
+        display: none;
+    }
+    .news{
+        flex-direction: column;
+    }
+    .newsBody{
+        flex-direction: column;
+    }
+    .newsInfo img{
+        width: -webkit-fill-available;
+    }
+}

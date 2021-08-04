@@ -1464,7 +1464,7 @@ section {
 
 .box01 {
   margin: 30px auto 0;
-  max-width: 830px;
+  /* max-width: 830px; */
   padding: 0 15px;
 }
 
@@ -1502,7 +1502,7 @@ section {
 }
 
 .box02 {
-  max-width: 830px;
+  /* max-width: 830px; */
   margin: 65px auto 0;
   padding: 0 15px;
 }
@@ -2963,4 +2963,27 @@ ul li:nth-child(4) .symbol-vision i {
   width: 80%;
   line-height: 24px;
   text-align: left;
+}
+
+@media only screen and (max-width: 768px){
+    .block .main-img{
+        display: none;
+        /* visibility: hidden; */
+        /* width: 0; */
+    }
+    .block .main-text{
+        width: 100% !important;
+    }
+    .block:nth-child(odd) .main-text{
+        padding-left: 0;
+    }
+    .block__number{
+        flex-direction: column;
+    }
+    .block__number li{
+        padding: 1rem 0;
+    }
+    .block__number li::before{
+        width: 0;
+    }
 }

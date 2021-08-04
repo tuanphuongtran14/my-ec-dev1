@@ -305,6 +305,11 @@ html {
       text-decoration: none;
       font-size: 0.9rem; }
 
+@media only screen and (max-width: 768px) {
+  .dropMenu {
+    width: 35vh;
+    right: 0; } }
+
 /*-------------------------*/
 /* 2.6. Fontawesome CSS
 /*-------------------------*/

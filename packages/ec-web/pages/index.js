@@ -202,7 +202,9 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             khi giao dịch, kết nối iPhone mới với nhà cung cấp dịch vụ của bạn và thiết lập nhanh chóng.
                             Bạn cũng có thể trò chuyện với Chuyên gia bất cứ lúc nào.
                         </p>
-                        <button className="bannerIphone--text__btn px-3 py-2">Khám phá ngay</button>
+                        <Link href="/ket-qua-tim-kiem?name=iphone">
+                            <button className="bannerIphone--text__btn px-3 py-2">Khám phá ngay</button>
+                        </Link>
                     </div>
                 </div>
                 <div className="bannerIphone--img col-7 px-0">
@@ -225,7 +227,9 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             tất cả trong một thao tác. Và với chipset nhanh nhất của Galaxy, loại kính mạnh nhất,
                             5G và pin dùng cả ngày, Ultra dễ dàng tạo nên tên tuổi của mình.
                         </p>
-                        <button className="bannerSamsung--text__btn px-3 py-2">Khám phá ngay</button>
+                        <Link href="/ket-qua-tim-kiem?name=samsung">
+                            <button className="bannerSamsung--text__btn px-3 py-2">Khám phá ngay</button>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -244,7 +248,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
             {ProductList('Bán chạy')}
 
-             {/* Banner News */}
+            {/* Banner News */}
             <div className="bannerNews row">
                 <div className=" col-12 d-flex justify-content-center align-items-center pb-3">
                     <Link href="new">

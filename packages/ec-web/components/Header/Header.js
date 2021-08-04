@@ -124,7 +124,7 @@ export default function Header() {
                     {/* <button type="button" className=" btn btn--no-outline px-0 my-0">
                     </button> */}
                     <div>
-                    <i className="fa fa-phone mr-2" aria-hidden="true"></i> Hotline: 0396042357</div>
+                    <i className="fas fa-phone-alt mr-2" aria-hidden="true"></i> Hotline: 0396042357</div>
                     <DropdownUser></DropdownUser>
                 </div>
             </div>

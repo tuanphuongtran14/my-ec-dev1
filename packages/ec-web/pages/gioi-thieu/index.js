@@ -1,13 +1,7 @@
 import React from 'react'
 import Head from 'next/head';
 import { Header, Footer } from "../../components";
-import { About } from "../../components/About/About"
-
-// export async function getStaticProps(ctx) {
-//     return {
-//         props: {},
-//     }
-// }
+import About from "../../components/About/About"
 
 const intro = () => {
     return (
@@ -17,7 +11,7 @@ const intro = () => {
                 <link rel="stylesheet" href="./css/about.css"/>
             </Head>
             <Header/>
-            {/* <About/> */}
+            <About/>
             <Footer/>        
         </>
     )
