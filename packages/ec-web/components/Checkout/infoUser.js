@@ -44,15 +44,15 @@ const infoUser = () => {
         try {
             // Declare query & its variables
             const query = `
-					query {
-						me: customMe {
-							id,
-							username,
+                    query {
+                        me: customMe {
+                            id,
+                            username,
                             name,
                             phone,
                             email
-						}
-					}
+                        }
+                    }
 				`;
 
             const { data: responseData } = await axios({

@@ -55,6 +55,9 @@ export default function Login() {
         const cartLengthSession = sessionStorage.getItem('cartLength');
         if (cartLengthSession > 0)
             setCartLength(true)
+
+        const amount = sessionStorage.getItem('finalAmount');
+        document.getElementById('amount').value = amount
     }, [])
 
     if (cartLength === 0) {
@@ -121,6 +124,54 @@ export default function Login() {
                                         </div>
                                         <div id="collapseVnpay" className="collapse" aria-labelledby="headingVnpay" data-parent="#thanhtoan">
                                             <div className="card-body mx-auto">
+                                                <div>
+                                                    <div className="formItem py-3">
+                                                        <label htmlFor="">Loại hàng hóa</label>
+                                                        <input type="text" className="form-control" name="orderType" id="orderType" required defaultValue="" value="Điện thoại" placeholder='Điện thoại' disabled/>
+                                                    </div>
+                                                    <div className="formItem py-3">
+                                                        <label htmlFor="">Số tiền</label>
+                                                        <input type="text" className="form-control" name="amount" id="amount" required defaultValue="" placeholder='Số tiền' disabled/>
+                                                    </div>
+                                                    <div className="formItem py-3">
+                                                        <label htmlFor="">Nội dung thanh toán</label>
+                                                        <input type="text" className="form-control" name="orderDescription" id="orderDescription" required defaultValue="" placeholder='Nội dung thanh toán' />
+                                                    </div>
+                                                    <div className="formItem py-3">
+                                                        <label htmlFor="">Ngân hàng</label>
+                                                        <select className="form-control" name="bankCode" id="bankCode" required defaultValue="">
+                                                            <option value=''>Không chọn</option>
+                                                            <option value='VNPAYQR'>Ngân hàng VNPAYQR</option>
+                                                            <option value='NCB'>Ngân hàng NCB</option>
+                                                            <option value='SCB'>Ngân hàng SCB</option>
+                                                            <option value='SACOMBANK'>Ngân hàng SACOMBANK</option>
+                                                            <option value='EXIMBANK'>Ngân hàng EXIMBANK</option>
+                                                            <option value='MSBANK'>Ngân hàng MSBANK</option>
+                                                            <option value='NAMABANK'>Ngân hàng NAMABANK</option>
+                                                            <option value='VISA'>Ngân hàng VISA</option>
+                                                            <option value='VNMART'>Ngân hàng VNMART</option>
+                                                            <option value='VIETINBANK'>Ngân hàng VIETINBANK</option>
+                                                            <option value='VIETCOMBANK'>Ngân hàng VIETCOMBANK</option>
+                                                            <option value='HDBANK'>Ngân hàng HDBANK</option>
+                                                            <option value='DONGABANK'>Ngân hàng DONGABANK</option>
+                                                            <option value='TPBANK'>Ngân hàng TPBANK</option>
+                                                            <option value='OJB'>Ngân hàng OJB</option>
+                                                            <option value='BIDV'>Ngân hàng BIDV</option>
+                                                            <option value='TECHCOMBANK'>Ngân hàng TECHCOMBANK</option>
+                                                            <option value='VPBANK'>Ngân hàng VPBANK</option>
+                                                            <option value='AGRIBANK'>Ngân hàng AGRIBANK</option>
+                                                            <option value='MBBANK'>Ngân hàng MBBANK</option>
+                                                            <option value='ACB'>Ngân hàng ACB</option>
+                                                            <option value='OCB'>Ngân hàng OCB</option>
+                                                            <option value='SHB'>Ngân hàng SHB</option>
+                                                            <option value='IVB'>Ngân hàng IVB</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" className="btn btn-success w-100 my-3">
+                                                        Thanh toán Reirect
+                                                    </button>
+                                                </div>
+                                                {/* ============================ */}
                                                 <h4 className="text-center text-success">Hướng dẫn thanh toán bằng VNPAY</h4>
                                                 <ol className="container">
                                                     <li className="my-2">Đăng nhập vào ứng dụng Mobile Banking mà bạn muốn thanh toán</li>
@@ -130,6 +181,7 @@ export default function Login() {
                                                     </li>
                                                     <li className="my-2"><p>Scan mã QR phía trên để thanh toán.</p></li>
                                                 </ol>
+                                                {/* =============================== */}
                                                 <h4 className="text-center text-success mt-5">Ứng dụng Mobile Banking hỗ trợ VNPAY</h4>
                                                 <div className="col-3 d-inline-block" id="colors">
                                                     <img style={{ maxWidth: "8rem" }}

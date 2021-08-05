@@ -811,6 +811,44 @@ html{
             border: 1px solid #d70018;
         }
     }
+    .versionDisabled {
+        font-size: 0.8rem;
+        text-align: center;
+
+        background-color: #fff;
+
+        border: 1px solid #ddd;
+        -moz-box-shadow: 0 2px 3px 0 rgba(0,0,0,.15);
+        -webkit-box-shadow: 0 2px 3px 0 rgba(0,0,0,.15);
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,.15);
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        
+        padding: 5px;
+
+        margin-right: 10px;
+        margin-bottom: 10px;
+
+        cursor: not-allowed;
+        opacity: 0.75;
+
+        width: calc((100% / 3) - 10px);
+        max-width: 120px;
+        min-width: 103px;
+
+        .version__price {
+            color: #d70018;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+        }
+    }
+}
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 /*-------------------------*/
