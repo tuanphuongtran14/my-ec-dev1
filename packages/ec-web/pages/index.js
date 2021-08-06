@@ -1,40 +1,49 @@
 import Head from "next/head";
 import { Header, Footer, Banner, RatingStars } from "../components";
-import React, { useState,useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import Link from "next/link"
 import Flickity from "react-flickity-component";
 import { productApi } from "../apis";
 
 export async function getServerSideProps() {
-    const {
+    const { data: {
         productHotSale,
         productsBestSell,
         productsBestNew,
-        productRelated
-    } = await productApi.getForHome('oppo-a54');
+    }} = await productApi.getForHome();
 
     return {
         props: {
             productHotSale,
             productsBestSell,
             productsBestNew,
-            productRelated
         },
     };
 }
 
 
-export default function Home({ productHotSale, productsBestSell, productsBestNew,productRelated }) {
-    const [slugProduct,setSlugProduct]= useState('oppo-a54')
+export default function Home({ productHotSale, productsBestSell, productsBestNew}) {
+    const [productRelated,setProductRelated]=useState([])
+    const [slug,setSlug]=useState('')
+    // let slug = 'oppo'
+    useEffect(()=>{
+        let slugLocal = window.localStorage.getItem('slug')
+        console.log(JSON.parse(slugLocal))
+        async function getProductRelated(){
+            const {data:{productRelated}} = await productApi.getForHome('realme-c15');
+            console.log(productRelated)
+            setProductRelated(productRelated) 
+        }
+        getProductRelated()
+    },[])
 
     useEffect(()=>{
-        const slug = JSON.stringify(slugProduct)
-        window.localStorage.setItem('slug', slug)
-        console.log(window.localStorage.getItem('slug'))
-    },[slugProduct])
-    const setSlugFromLocalStorage = (slug) => {
-        setSlugProduct(slug)
-        localStorage.setItem('slug',JSON.stringify(slugProduct))
+        window.localStorage.setItem('slug',JSON.stringify(slug))
+    },[slug])
+
+
+    const setSlugHandler = (slug) => {
+        setSlug(slug)
     }
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
@@ -43,7 +52,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
         return (
             <Link  href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "hotsales"}>
-                <div className="product">
+                <div onClick={setSlugHandler.bind(this,product.slug)} className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
                         <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
