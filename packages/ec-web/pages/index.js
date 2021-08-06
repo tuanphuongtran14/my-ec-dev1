@@ -10,7 +10,7 @@ export async function getServerSideProps() {
         productHotSale,
         productsBestSell,
         productsBestNew,
-    }} = await productApi.getForHome('oppo-a54');
+    }} = await productApi.getForHome();
 
     return {
         props: {
@@ -22,28 +22,27 @@ export async function getServerSideProps() {
 }
 
 
-export default function Home({ productHotSale, productsBestSell, productsBestNew}) {
+export default function Home({ productHotSale, productsBestSell, productsBestNew}){
     const [productRelated,setProductRelated]=useState([])
-    const [slug,setSlug]=useState('')
-    // let slug = 'oppo'
+    const [display,setDisplay]= useState(false)
     useEffect(()=>{
-        let slugLocal = window.localStorage.getItem('slug')
-        console.log(JSON.parse(slugLocal))
+        if(window.localStorage.getItem('slug')){
+            var slugPr = window.localStorage.getItem('slug')
+            setDisplay(true)
+        }
         async function getProductRelated(){
-            const {data:{productRelated}} = await productApi.getForHome('realme-c15');
+            const {data:{productRelated}} = await productApi.getForHome(JSON.parse(slugPr));
             console.log(productRelated)
+            if(productRelated.length === 0){
+                setDisplay(false)
+            }
             setProductRelated(productRelated) 
         }
         getProductRelated()
     },[])
 
-    useEffect(()=>{
-        window.localStorage.setItem('slug',JSON.stringify(slug))
-    },[slug])
-
-
-    const setSlugHandler = (slug) => {
-        setSlug(slug)
+    const setSlugHandler = (slugProduct) => {
+        window.localStorage.setItem('slug',JSON.stringify(slugProduct))
     }
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
@@ -90,7 +89,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
         return (
             <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "newarrival"}>
-                <div className="product">
+                <div onClick={setSlugHandler.bind(this,product.slug)} className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
                         <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
@@ -128,7 +127,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
         return (
             <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "bestsellers"}>
-                <div className="product">
+                <div onClick={setSlugHandler.bind(this,product.slug)} className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
                         <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
@@ -166,7 +165,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
 
         return (
             <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "newarrival"}>
-                <div className="product">
+                <div onClick={setSlugHandler.bind(this,product.slug)} className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
                         <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
@@ -233,7 +232,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                                     typeCategory === 'Hot sales' ? HotSale :
                                     typeCategory === 'Bán chạy' ? bestSeller :
                                     typeCategory === 'Mới nhất' ? productsNew :
-                                    typeCategory === 'Sản phẩm liên quan' ? productsRelated : ''
+                                    typeCategory === 'Đề xuất' ? productsRelated : ''
                                 }
                             </Flickity>
                         </div>
@@ -252,8 +251,8 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
             </Head>
             <Header />
             <Banner />
-            {ProductList('Sản phẩm liên quan')}
             {ProductList('Hot sales')}
+            {display && ProductList('Đề xuất')}
             {ProductList('Mới nhất')}
             {/* Banner Iphone */}
             <div className="bannerIphone row mx-0">
