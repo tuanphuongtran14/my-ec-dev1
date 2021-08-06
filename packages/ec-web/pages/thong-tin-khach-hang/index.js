@@ -26,7 +26,7 @@ export default function Customer() {
   const [userOrder, setUserOrder] = useState([]);
   useEffect(async () => {
     const data = await userApi.me();
-    const {orders} = await userApi.getUserOrders();
+    const { data: { orders }} = await userApi.getUserOrders();
 
     //console.log(data)
     console.log(orders);

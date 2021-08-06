@@ -73,11 +73,9 @@ export default function Login() {
         const address1 = sessionStorage.getItem('address1');
         const address2 = sessionStorage.getItem('address2');
         const address3 = sessionStorage.getItem('address3');
-        // const
-        const data = orderApi.checkout(name, phone, mail, address3, address2, address1, "COD");
+        const { data } = orderApi.checkout(name, phone, mail, address3, address2, address1, "COD");
         if (data)
             router.push("/thanh-toan/thanh-cong");
-        console.log(data)
     }
 
     return (

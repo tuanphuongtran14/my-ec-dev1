@@ -9,7 +9,7 @@ export default function Header() {
     useEffect(async () => {
         const cartId = localStorage.getItem("cartId");
 
-        const data = await userApi.getUserCart(cartId);
+        const { data } = await userApi.getUserCart(cartId);
 
         if (data && data.cart) {
             localStorage.setItem('cartId', data.cart._id);

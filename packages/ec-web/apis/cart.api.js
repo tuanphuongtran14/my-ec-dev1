@@ -1,5 +1,6 @@
 
 import axiosClient from "./clients/axiosClient";
+import callApi from "./functions/callApi";
 import {
     GET_CART,
     TOGGLE_SELECT_ITEM,
@@ -14,201 +15,126 @@ import {
 } from "../constants/graphql/cart";
 
 class CartApi {
-    async getCart(cartId) {
-        try {
-            const { data: responseData } = await axiosClient.post(
-                `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-                {
-                    type: "query",
-                    query: `
-                        query($cartId: ID!) {
-                            cart: ${GET_CART},
-                        }
-                    `,
-                    variables: {
-                        cartId
-                    },
-                }
-            );
-            const { data, error, success } = responseData;
-            return success ? data : error;
-        } catch (error) {
-            return {};
-        }
-    }
-    async toggleSelectItem(cartId, itemId, value) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $itemId: ID!, $value: Boolean!) {
-                        cart: ${TOGGLE_SELECT_ITEM},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    itemId,
-                    value
-                },
+    getCart(cartId, options) {
+        const query = `
+            query($cartId: ID!) {
+                cart: ${GET_CART},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId
+        };
+        return callApi.query(query, variables, options);
     }
-    async toggleSelectAllItems(cartId, value) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $value: Boolean!) {
-                        cart: ${TOGGLE_SELECT_ALL_ITEMS},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    value
-                },
+    toggleSelectItem(cartId, itemId, value, options) {
+        const query = `
+            mutation($cartId: ID!, $itemId: ID!, $value: Boolean!) {
+                cart: ${TOGGLE_SELECT_ITEM},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+            itemId,
+            value
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async removeSelectedItems(cartId) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!) {
-                        cart: ${REMOVE_SELECTED_ITEMS},
-                    }
-                `,
-                variables: {
-                    cartId,
-                },
+    toggleSelectAllItems(cartId, value, options) {
+        const query = `
+            mutation($cartId: ID!, $value: Boolean!) {
+                cart: ${TOGGLE_SELECT_ALL_ITEMS},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+            value
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async removeItem(cartId, itemId) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $itemId: ID!) {
-                        cart: ${REMOVE_ITEM},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    itemId,
-                },
+    removeSelectedItems(cartId, options) {
+        const query = `
+            mutation($cartId: ID!) {
+                cart: ${REMOVE_SELECTED_ITEMS},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async incrementQuantity(cartId, itemId, by) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $itemId: ID!, $by: Int!) {
-                        cart: ${INCREMENT_QUANTITY},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    itemId,
-                    by
-                },
+    async removeItem(cartId, itemId, options) {
+        const query = `
+            mutation($cartId: ID!, $itemId: ID!) {
+                cart: ${REMOVE_ITEM},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+            itemId,
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async decrementQuantity(cartId, itemId, by) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $itemId: ID!, $by: Int!) {
-                        cart: ${DECREMENT_QUANTITY},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    itemId,
-                    by
-                },
+    incrementQuantity(cartId, itemId, by, options) {
+        const query = `
+            mutation($cartId: ID!, $itemId: ID!, $by: Int!) {
+                cart: ${INCREMENT_QUANTITY},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+            itemId,
+            by
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async applyCoupon(cartId, couponCode) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $couponCode: String!) {
-                        cart: ${APPLY_COUPON},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    couponCode
-                },
+    decrementQuantity(cartId, itemId, by, options) {
+        const query = `
+            mutation($cartId: ID!, $itemId: ID!, $by: Int!) {
+                cart: ${DECREMENT_QUANTITY},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+            itemId,
+            by
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async removeCoupon(cartId, couponCode) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $couponCode: String!) {
-                        cart: ${REMOVE_COUPON},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    couponCode
-                },
+    applyCoupon(cartId, couponCode, options) {
+        const query = `
+            mutation($cartId: ID!, $couponCode: String!) {
+                cart: ${APPLY_COUPON},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+            couponCode
+        };
+        return callApi.mutate(query, variables, options);
     }
-    async changeItemColor(cartId, itemId, color) {
-        const { data: responseData } = await axiosClient.post(
-            `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
-            {
-                type: "mutation",
-                query: `
-                    mutation($cartId: ID!, $itemId: ID!, $color: String!) {
-                        cart: ${CHANGE_ITEM_COLOR},
-                    }
-                `,
-                variables: {
-                    cartId,
-                    itemId,
-                    color
-                },
+    removeCoupon(cartId, options) {
+        const query = `
+            mutation($cartId: ID!) {
+                cart: ${REMOVE_COUPON},
             }
-        );
-        const { data, error, success } = responseData;
-        return success ? data : error;
+        `;
+        const variables = {
+            cartId,
+        };
+        return callApi.mutate(query, variables, options);
+    }
+    changeItemColor(cartId, itemId, color, options) {
+        const query = `
+            mutation($cartId: ID!, $itemId: ID!, $color: String!) {
+                cart: ${CHANGE_ITEM_COLOR},
+            }
+        `;
+        const variables = {
+            cartId,
+            itemId,
+            color
+        };
+        return callApi.mutate(query, variables, options);
     }
 }
 

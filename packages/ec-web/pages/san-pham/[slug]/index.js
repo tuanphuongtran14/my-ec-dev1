@@ -13,11 +13,11 @@ import { useRouter } from "next/router";
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
-    const {
+    const { data: {
         product,
         relatedProducts,
         reviewList,
-    } = await productApi.getForProductPage(params.slug, {
+    }} = await productApi.getForProductPage(params.slug, {
         useAxiosClient: false,
         jwt,
     });
@@ -440,7 +440,7 @@ export default function Product({
     const refreshReviews = async () => {
         try {
             // Declare query & its variables
-            const { reviewList } = await reviewApi.getProductReviews(slug);
+            const { data: { reviewList } } = await reviewApi.getProductReviews(slug);
             setReviews([]);
             setUserReview(null);
             setReviews(reviewList.reviews);
@@ -448,7 +448,8 @@ export default function Product({
             setOverviews(reviewList.overviews);
 
             return true;
-        } catch {
+        } catch(error) {
+            console.log(error);
             return false;
         }
     };
@@ -466,7 +467,7 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const { newReview } = await reviewApi.createReview(slug, comment, stars);
+            const {data: { newReview } } = await reviewApi.createReview(slug, comment, stars);
 
             await refreshReviews();
 
@@ -494,7 +495,7 @@ export default function Product({
                 Đang xóa... 
             `;
 
-            const { deletedReview } = await reviewApi.deleteReview(userReview._id);
+            const { data: { deletedReview } }= await reviewApi.deleteReview(userReview._id);
 
             if (deletedReview) {
                 $(`#deleteConfirm`).modal("hide");
@@ -526,7 +527,7 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const { review } = await reviewApi.editReview(
+            const {data: { review }} = await reviewApi.editReview(
                 userReview._id,
                 comment,
                 stars
