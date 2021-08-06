@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Header, Footer, Banner, RatingStars } from "../components";
+import React, { useState,useEffect } from "react";
 import Link from "next/link"
-import React from "react";
 import Flickity from "react-flickity-component";
 import { productApi } from "../apis";
 
@@ -9,26 +9,40 @@ export async function getServerSideProps() {
     const {
         productHotSale,
         productsBestSell,
-        productsBestNew
-    } = await productApi.getForHome();
+        productsBestNew,
+        productRelated
+    } = await productApi.getForHome('oppo-a54');
 
     return {
         props: {
             productHotSale,
             productsBestSell,
-            productsBestNew
+            productsBestNew,
+            productRelated
         },
     };
 }
 
 
-export default function Home({ productHotSale, productsBestSell, productsBestNew }) {
+export default function Home({ productHotSale, productsBestSell, productsBestNew,productRelated }) {
+    const [slugProduct,setSlugProduct]= useState('oppo-a54')
+
+    useEffect(()=>{
+        const slug = JSON.stringify(slugProduct)
+        window.localStorage.setItem('slug', slug)
+        console.log(window.localStorage.getItem('slug'))
+    },[slugProduct])
+    const setSlugFromLocalStorage = (slug) => {
+        setSlugProduct(slug)
+        localStorage.setItem('slug',JSON.stringify(slugProduct))
+    }
     const HotSale = productHotSale.map((product) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
+        // onClick={setSlugFromLocalStorage.bind(this,product.slug)}
 
         return (
-            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "hotsales"}>
+            <Link  href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "hotsales"}>
                 <div className="product">
                     <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
                     <span className="product__title">
@@ -137,6 +151,44 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
     }
     )
 
+    const productsRelated = productRelated.map((product) => {
+        const regularPrice = product.regularPrice.toLocaleString("DE-de");
+        const finalPrice = product.finalPrice.toLocaleString("DE-de");
+
+        return (
+            <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} key={product.id + "newarrival"}>
+                <div className="product">
+                    <img src={process.env.NEXT_PUBLIC_API_URL + product.thumbnail.url} alt="" className="product__img mb-4" style={{ maxHeight: "204px", maxWidth: "204px" }} />
+                    <span className="product__title">
+                        <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`} className="text-dark">
+                            {product.name}
+                        </Link>
+                    </span>
+                    <div className="product__price">
+                        {product.salesPercentage === 0 ?
+                            null :
+                            <span className="sales-price">{finalPrice}₫</span>
+                        }
+                        <span className="regular-price">{regularPrice}₫</span>
+                    </div>
+                    <div className="product__rating">
+                        <RatingStars stars={product.stars} />
+                        <span>({product.votes} đánh giá)</span>
+                    </div>
+                    {
+                        product.salesPercentage != 0 ?
+                            <div className="product__box-sticker">
+                                <p className="sticker-percent">{product.salesPercentage}%</p>
+                            </div>
+                            : null
+                    }
+
+                </div>
+            </Link>
+        )
+    }
+    )
+
     const flickityOptions = {
         initialIndex: 0,
         freeScroll: true,
@@ -168,9 +220,11 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                                 reloadOnUpdate // default false
                                 static // default false
                             >
-                                {typeCategory === 'Hot sales' ? HotSale :
+                                {
+                                    typeCategory === 'Hot sales' ? HotSale :
                                     typeCategory === 'Bán chạy' ? bestSeller :
-                                        typeCategory === 'Mới nhất' ? productsNew : ''
+                                    typeCategory === 'Mới nhất' ? productsNew :
+                                    typeCategory === 'Sản phẩm liên quan' ? productsRelated : ''
                                 }
                             </Flickity>
                         </div>
@@ -189,6 +243,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
             </Head>
             <Header />
             <Banner />
+            {ProductList('Sản phẩm liên quan')}
             {ProductList('Hot sales')}
             {ProductList('Mới nhất')}
             {/* Banner Iphone */}
@@ -243,7 +298,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                     </p>
                 </div>
             </div>
-
+            
             {ProductList('Bán chạy')}
 
             {/* Banner News */}

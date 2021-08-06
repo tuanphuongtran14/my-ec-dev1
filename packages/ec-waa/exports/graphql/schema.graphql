@@ -2511,6 +2511,7 @@ type Mutation {
   resetPassword(password: String!, passwordConfirmation: String!, code: String!): UsersPermissionsLoginPayload
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
   customRegister(input: CustomUsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
+  changePassword(currentPassword: String!, newPassword: String!, confirmNewPassword: String!): Boolean!
   addItemToCart(cartId: ID!, newItem: CartItemInput!): UserCart!
   removeItemFromCart(cartId: ID!, itemId: ID!): UserCart!
   changeItemColor(cartId: ID!, itemId: ID!, color: String!): UserCart!

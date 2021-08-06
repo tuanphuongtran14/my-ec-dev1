@@ -6,7 +6,8 @@ import { Header, Footer, Modal, CartItem } from '../../components';
 import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-export default function CartPagex({ isSignedIn }) {
+
+export default function CartPage() {
     const [items, setItems] = useState([]);
     const [coupon, setCoupon] = useState({});
     const [enableMutilRemove, setEnableMutilRemove] = useState(false);
@@ -14,35 +15,24 @@ export default function CartPagex({ isSignedIn }) {
         totalAmount: 0,
         finalAmount: 0,
     });
+    const [someOutOfStock, setSomeOutOfStock] = useState(false);
     const route = useRouter();
-    // ************* START: Fetch cart first time ************** //
+
     useEffect(() => {
         fetchCart();
     }, []);
 
-    // ********* START: Track selection to turn on select all ********* //
     useEffect(() => {
         const selectedItems = items.filter(item => {
+            if(item)
             return item.selected;
         });
 
-        if(selectedItems.length === items.length && items.length > 0)
-            document.getElementById("customCheckAll").checked = true;
-        else   
-            document.getElementById("customCheckAll").checked = false;
+        document.getElementById("customCheckAll").checked = (selectedItems.length === items.length && items.length > 0);
+        setEnableMutilRemove(selectedItems.length > 0)
 
-        if(selectedItems.length > 0){
-        
-            setEnableMutilRemove(true);
-        } 
-        else {
-      
-            setEnableMutilRemove(false);
-        }
-            
     },[items]);
 
-    // ************* START: Set state for new cart ************** //
     const setNewCart = (newCart) => {
         localStorage.setItem("cartId", newCart._id);
         setItems([]);
@@ -57,24 +47,21 @@ export default function CartPagex({ isSignedIn }) {
         setItems(newCart.items);
     }
 
-    // ************** START: Fetch cart first time  *************** //
     const fetchCart = async () => {
         try {
-            const data = await cartApi.getCart(localStorage.getItem("cartId"));
-
-            setNewCart(data.cart);
-
-        } catch(error) {
+            const { data: { cart } } = await cartApi.getCart(localStorage.getItem("cartId"));
+            setNewCart(cart);
+        } 
+        catch(error) {
             console.log(error);
         }
     };  
 
-    // ********** START: Process toggle select all items  ********** //
     const toggleSelectAll = async e => {
         const value = e.target.checked;
 
         try {
-            const data = await cartApi.toggleSelectAllItems(localStorage.getItem("cartId"), value);
+            const { data } = await cartApi.toggleSelectAllItems(localStorage.getItem("cartId"), value);
 
             setNewCart(data.cart);
 
@@ -88,12 +75,10 @@ export default function CartPagex({ isSignedIn }) {
         }
     }
 
-    // ********** START: Process delete selected items  *********** //
     const removeSelectedItems = async () => {
         try {
-            const data = await cartApi.removeSelectedItems(localStorage.getItem('cartId'));
-
-            setNewCart(data.cart);
+            const { data: { cart } } = await cartApi.removeSelectedItems(localStorage.getItem('cartId'));
+            setNewCart(cart);
         } catch(error) {
             console.log(error);
         }
@@ -103,25 +88,24 @@ export default function CartPagex({ isSignedIn }) {
         $(`#removeMutilConfirm`).modal();
     }            
 
-    // *************** START: Process apply coupon *************** //
     const applyCoupon = async () => {
         const couponCode = document.getElementById('couponInput').value;
         try {
-            const data = await cartApi.applyCoupon(localStorage.getItem('cartId'), couponCode);
-            setNewCart(data.cart);
+            const { data: { cart } } = await cartApi.applyCoupon(localStorage.getItem('cartId'), couponCode);
+            setNewCart(cart);
         } catch(error) {
-            console.log(error);
             setCoupon({
                 wrong: true
             });
         } 
     }
 
-    // *************** START: Process remove coupon *************** //
-  
-  // *************** START: Process click thanh toan *************** //
+    const removeCoupon = async () => {
+        const { data: { cart }, errors } = await cartApi.removeCoupon(localStorage.getItem('cartId'));
+        !errors && setNewCart(cart);
+    }
 
-    const clickPaỵ = () =>{
+    const clickPay = () =>{
         const selectedItemLength = localStorage.getItem('selectedItemLength');
             if (selectedItemLength < 1)
                 toast.info(`Hiện bạn chưa chọn sản phẩm nào để mua `, {
@@ -136,9 +120,6 @@ export default function CartPagex({ isSignedIn }) {
             else 
               route.push('/thong-tin-giao-hang');
   };
-  
-
-
   
     return (
         <>
@@ -188,7 +169,7 @@ export default function CartPagex({ isSignedIn }) {
                                             />
                                             <label
                                                 className="custom-control-label"
-                                                for="customCheckAll"
+                                                htmlFor="customCheckAll"
                                             >
                                                 Chọn tất cả
                                             </label>
@@ -209,7 +190,7 @@ export default function CartPagex({ isSignedIn }) {
                             </div>
                         </div>
                         { 
-                            items.map((item, index) => <CartItem item={item} index={index} setNewCart={setNewCart} />)
+                            items.map((item, index) => <CartItem item={item} index={index} setNewCart={setNewCart} setSomeOutOfStock={setSomeOutOfStock} />)
                         }
                     </div>
                     <div className="box-left-12 box-right-3-lg">
@@ -285,7 +266,7 @@ export default function CartPagex({ isSignedIn }) {
                                 <hr />
                                
                                 <a
-                                    className="text-white btn btn--buy-now btn-block" onClick = {clickPaỵ}
+                                    className="text-white btn btn--buy-now btn-block" onClick = {clickPay}
                                 >
                                     {" "}
                                     Thanh toán{" "}

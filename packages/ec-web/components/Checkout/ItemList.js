@@ -53,6 +53,7 @@ const itemList = () => {
         });
         setItems(data.cart.items.filter(item => item.selected === true)); 
         setTotals(data.cart.finalAmount)
+        sessionStorage.setItem('finalAmount', data.cart.finalAmount)
       }
       catch{
         

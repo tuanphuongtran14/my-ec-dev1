@@ -585,6 +585,31 @@ html {
       display: block; }
     .product-details__versions .version.active {
       border: 1px solid #d70018; }
+  .product-details__versions .versionDisabled {
+    font-size: 0.8rem;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    padding: 5px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: not-allowed;
+    opacity: 0.75;
+    width: calc((100% / 3) - 10px);
+    max-width: 120px;
+    min-width: 103px; }
+    .product-details__versions .versionDisabled .version__price {
+      color: #d70018;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: block; }
+
+.disabledbutton {
+  pointer-events: none;
+  opacity: 0.4; }
 
 /*-------------------------*/
 /* 5.4. Product Price

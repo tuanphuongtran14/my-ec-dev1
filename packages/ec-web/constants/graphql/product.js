@@ -62,6 +62,9 @@ export const GET_PRODUCT_DETAIL_BY_SLUG = `
         thumbnail {
             url
         }
+        options{
+            quantityInStock
+        }
         fullDesc
         condition
         warranty

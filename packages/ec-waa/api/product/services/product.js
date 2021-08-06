@@ -1,7 +1,5 @@
-'use strict';
-const {
-    ObjectID
-} = require('mongodb');
+"use strict";
+const { ObjectID } = require("mongodb");
 
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-services)
@@ -10,245 +8,23 @@ const {
 
 module.exports = {
     async search(filter, limit, skip, sort) {
-        // ============== Start handle filter ===================
-        // If filter is undefined, change it to empty object in order to avoid errors
-        if (!filter)
-            filter = {};
-
-        // Initial filter variable in order to execute query to db
-        let query = {};
-
-        let queryMore = {};
-
-        // If user query brand, add it to more conditions
-        if (filter.brand)
-            queryMore['brand.name'] = filter.brand;
-
-        // If id_ne exist, find products whose id is not equal id_ne
-        if (filter.id_ne)
-            query['_id'] = {
-                $nin: [new ObjectID(filter.id_ne)]
-            }
-
-        // If user query product id, add it to query conditions
-        if (filter.id)
-            query['_id'] = new ObjectID(filter.id);
-
-        // // If user query name, add it to query conditions
-        // if (filter.name)
-        //     query['$text'] = {
-        //         $search: filter.name
-        //     };
-
-        // If user query slug, add it to query conditions
-        if (filter.slug)
-            query['slug'] = filter.slug;
-
-        // If user query min price, add it to query conditions
-        if (filter.minPrice)
-            query['finalPrice'] = {
-                $gte: Number(filter.minPrice)
-            };
-
-        // If user query max price, add it to query conditions
-        if (filter.maxPrice)
-            query['finalPrice'] = {
-                ...query['finalPrice'],
-                $lte: Number(filter.maxPrice)
-            };
-
-        // If user query min ram, add it to query conditions
-        if (filter.minRam)
-            query['ram'] = {
-                $gte: Number(filter.minRam)
-            };
-
-        // If user query max ram, add it to query conditions
-        if (filter.maxRam)
-            query['ram'] = {
-                ...query['ram'],
-                $lte: Number(filter.maxRam)
-            };
-
-        // If user query screen panel, add it to query conditions
-        if (filter.screenPanel)
-            query['screenPanel'] = filter.screenPanel;
-
-        // If user query screen resolution, add it to query conditions
-        if (filter.screenResolution)
-            query['screenResolution'] = filter.screenResolution;
-
-        // If user query min ram, add it to query conditions
-        if (filter.minScreenSize)
-            query['screenSize'] = {
-                $gte: Number(filter.minScreenSize)
-            };
-
-        // If user query max ram, add it to query conditions
-        if (filter.maxScreenSize)
-            query['screenSize'] = {
-                ...query['screenSize'],
-                $lte: Number(filter.maxScreenSize)
-            };
-
-        // If user query platform, add it to query conditions
-        if (filter.platform)
-            query['platformName'] = filter.platform;
-
-        // If user query min battery capacity, add it to query conditions
-        if (filter.minBatteryCapacity)
-            query['batteryCapacity'] = {
-                $gte: Number(filter.minBatteryCapacity)
-            };
-
-        // If user query max battery capacity,, add it to query conditions
-        if (filter.maxBatteryCapacity)
-            query['batteryCapacity'] = {
-                ...query['batteryCapacity'],
-                $lte: Number(filter.maxBatteryCapacity)
-            };
-
-        // =============== End handle filter ====================
-
-
-        // ================ Start handle sort ===================
-        // If sort is passed into, add it to option variable
-        // Create sortContent variable to contain sort options
-        let sortContent = {
-            updatedAt: -1
-        };
-        if (sort) {
-            sortContent = {};
-            // Add sort options to sortContent variable
-            sort.forEach(element => {
-                const [key, value] = element.split(':');
-                if (value.toLowerCase() === 'asc')
-                    sortContent[key] = 1;
-
-                if (value.toLowerCase() === 'desc')
-                    sortContent[key] = -1;
-            });
-        }
-
-
-        // ================= End handle sort ====================
-        let products = await strapi.query('product').model
-            .aggregate([
-                {
-                    "$match": query
-                },
-                { 
-                    "$lookup": {
-                        "from": "brands",
-                        "localField": "brand",
-                        "foreignField": "_id",
-                        "as": "brand"
-                    }
-                },
-                {
-                    "$unwind": {
-                        "path": "$brand",
-                        "preserveNullAndEmptyArrays": true
-                    }
-                },
-                { 
-                    "$lookup": {
-                        "from": "upload_file",
-                        "localField": "thumbnail",
-                        "foreignField": "_id",
-                        "as": "thumbnail"
-                    }
-                },
-                {
-                    "$unwind": {
-                        "path": "$thumbnail",
-                        "preserveNullAndEmptyArrays": true
-                    }
-                },
-                { 
-                    "$lookup": {
-                        "from": "components_product_options",
-                        "let": { "optionIds": "$options.ref" },
-                        "pipeline": [
-                            { "$match": { "$expr": { "$in": ["$_id", "$$optionIds"] } } },
-                            { 
-                                "$lookup": {
-                                    "from": "upload_file",
-                                    "let": { "imageIds": "$images" },
-                                    "pipeline": [
-                                        { "$match": { "$expr": { "$in": ["$_id", "$$imageIds"] } } },
-                                    ],
-                                    "as": "images"
-                                }
-                            },
-                        ],
-                        "as": "options"
-                    }
-                },
-                {
-                    "$addFields": {
-                        "total_sold": {
-                            "$sum": "$options.soldQuantity"
-                        }
-                    }
-                },
-                {
-                    "$match": queryMore
-                },
-                {
-                    "$sort": sortContent
-                },
-                {
-                    "$skip": skip || 0
-                },
-                {
-                    "$limit": limit || 100
-                },
-            ]);
-
-        if(filter.name)
-            products = products.filter(product => {
-                return removeVietnameseTones(product.name.toLowerCase()).indexOf(removeVietnameseTones(filter.name.toLowerCase())) !== -1;
-            });
-            
-        return products;
+        return await findProductsByAggregation(filter, limit, skip, sort);
     },
 
     async findRelatedBySlug(slug, limit, skip, sort) {
-        // ================ Start handle filter ===================
-        // Retrieve product by slug
-        const [ product ] = await strapi.query('product').model.aggregate([{
-                "$match": {
-                    slug: slug
-                }
-            },
-            {
-                "$lookup": {
-                    "from": "brands",
-                    "localField": "brand",
-                    "foreignField": "_id",
-                    "as": "brand"
-                }
-            },
-            {
-                "$unwind": "$brand"
-            }
-        ]);
-
-        // Get product's attribute need to compare
+        // Retrieve information of product that need to find its relateds
         const {
+            _id,
             ram,
             finalPrice,
             batteryCapacity,
             screenPanel,
             screenSize,
-            platformName,
-            brand
-        } = product;
+            brand,
+        } = await this.findProductBySlug(slug);
 
-        // Create filter varible
-        const query = {
-            _id: { $nin: [new ObjectID(product._id)] },
+        const filter = {
+            _id: { $nin: [new ObjectID(_id)] },
             $or: [
                 {
                     brand: brand._id,
@@ -257,136 +33,143 @@ module.exports = {
                     finalPrice: {
                         $gt: finalPrice - 2000000,
                         $lt: finalPrice + 2000000,
-                    }
+                    },
                 },
                 {
                     ram: {
                         $gt: ram - 2,
-                        $lt: ram + 2
+                        $lt: ram + 2,
                     },
                     batteryCapacity: {
                         $gt: batteryCapacity - 1000,
-                        $lt: batteryCapacity + 1000
+                        $lt: batteryCapacity + 1000,
                     },
                     screenSize: {
                         $gt: screenSize - 0.5,
-                        $lt: screenSize + 0.5
+                        $lt: screenSize + 0.5,
                     },
-                    screenPanel: screenPanel
+                    screenPanel: screenPanel,
                 },
-            ]
+            ],
         };
-        // ================ Start handle filter ===================
-        
-        // ================ Start handle sort ===================
-        // If sort is passed into, add it to option variable
-        // Create sortContent variable to contain sort options
-        let sortContent = {
-            createdAt: -1
-        };
-        if (sort) {
-            sortContent = {};
-            // Add sort options to sortContent variable
-            sort.forEach(element => {
-                const [key, value] = element.split(':');
-                if (value.toLowerCase() === 'asc')
-                    sortContent[key] = 1;
 
-                if (value.toLowerCase() === 'desc')
-                    sortContent[key] = -1;
-            });
-        }
+        return await findProductsByAggregation(filter, limit, skip, sort);
+    },
 
+    async findProductBySlug(slug) {
+        if(!slug) throw new Error("You must pass slug parameter");
 
-        // ================= End handle sort ====================
+        // Using destructuring because the result is an array had one element
+        const [ product ] = await findProductsByAggregation({ slug }, 1);
 
-        const relatedProducts = await strapi.query('product').model.aggregate([
-            { 
-                "$match": query 
-            },
-            {
-                "$lookup": {
-                    "from": "brands",
-                    "let": { "brandId": "$brand" },
-                    "pipeline": [
-                        {
-                            "$match": { "$expr": { "$eq": ["$_id", "$$brandId"] } }
-                        }
-                    ],
-                    "as": "brand"
-                }
-            },
-            {
-              "$unwind": {
-                "path": "$brand",
-                "preserveNullAndEmptyArrays": true
-              }
-            },
-            {
-                "$lookup": {
-                    "from": "upload_file",
-                    "let": { "thumbnailId": "$thumbnail" },
-                    "pipeline": [
-                        {
-                            "$match": { "$expr": { "$eq": ["$_id", "$$thumbnailId"] } }
-                        }
-                    ],
-                    "as": "thumbnail"
-                }
-            },
-            {
-              "$unwind": {
-                "path": "$thumbnail",
-                "preserveNullAndEmptyArrays": true
-              }
-            },
-            {
-                "$lookup": {
-                    "from": "components_product_options",
-                    "let": { "optionIds": "$options.ref" },
-                    "pipeline": [
-                        {
-                            "$match": { "$expr": { "$in": ["$_id", "$$optionIds"] } },
-                        },
-                        {
-                            "$lookup": {
-                                "from": "upload_file",
-                                "let": { "imageIds": "$images" },
-                                "pipeline": [
-                                    {
-                                        "$match": { "$expr": { "$in": ["$_id", "$$imageIds"] } }
-                                    }
-                                ],
-                                "as": "images"
-                            }
-                        },
-                    ],
-                    "as": "options"
-                }
-            },
-            {
-                "$sort": sortContent
-            },
-            {
-                "$skip": skip || 0
-            },
-            {
-                "$limit": limit || 100
-            },
-        ]);
-
-        return relatedProducts;
+        return product;
     }
 };
 
+function parseFilterForAggregation(filter) {
+    if (!filter) return {};
+
+    const {
+        id,
+        id_ne,
+        name,
+        slug,
+        minPrice,
+        maxPrice,
+        minRam,
+        maxRam,
+        screenPanel,
+        screenResolution,
+        minScreenSize,
+        maxScreenSize,
+        platform,
+        minBatteryCapacity,
+        maxBatteryCapacity,
+        brand,
+    } = filter;
+
+    const result = {
+        _id: {
+            $eq: id ? new ObjectId(id) : undefined,
+            $ne: id_ne ? new ObjectId(id_ne) : undefined,
+        },
+        name,
+        slug,
+        finalPrice: {
+            $gte: minPrice ? Number(minPrice) : undefined,
+            $lte: maxPrice ? Number(maxPrice) : undefined,
+        },
+        ram: {
+            $gte: minRam ? Number(minRam) : undefined,
+            $lte: maxRam ? Number(maxRam) : undefined,
+        },
+        screenPanel,
+        screenResolution,
+        screenSize: {
+            $gte: minScreenSize ? Number(minScreenSize) : undefined,
+            $lte: maxScreenSize ? Number(maxScreenSize) : undefined,
+        },
+        platformName: platform,
+        batteryCapacity: {
+            $gte: minBatteryCapacity ? Number(minBatteryCapacity) : undefined,
+            $lte: maxBatteryCapacity ? Number(maxBatteryCapacity) : undefined,
+        },
+        brand: {
+            name: brand,
+        },
+    };
+
+    return removeUndefinedFieldsFromObj(result);
+}
+
+function parseSortForAggregation(sort) {
+    // Default sorting by updated date
+    if(!sort) return {
+        updatedAt: -1,
+    };
+
+    const result = {};
+    // Sort is an array like ["price:desc", "ram:asc"]
+    sort.forEach(element => {
+        // Element is a string like "ram:asc"
+        const [key, value] = element.split(":");
+
+        switch (value.toLowerCase()) {
+            case "asc":
+                result[key] = 1;
+                break;
+            case "desc":
+                result[key] = -1;
+                break;
+        }
+    });
+
+    return result;
+}
+
+function removeUndefinedFieldsFromObj(obj) {
+    let result = obj;
+    // Use JSON parse to remove fields that is undefined
+    result = JSON.parse(JSON.stringify(result));
+    // But maybe some fields is empty object, start removing them
+    for (const key in result) {
+        if (
+            typeof result[key] === "object" &&
+            Object.keys(result[key]).length === 0
+        )
+            delete result[key];
+    }
+    return result;
+}
+
 function removeVietnameseTones(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
-    str = str.replace(/đ/g,"d");
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
     str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
     str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
     str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
@@ -400,10 +183,109 @@ function removeVietnameseTones(str) {
     str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
     // Remove extra spaces
     // Bỏ các khoảng trắng liền nhau
-    str = str.replace(/ + /g," ");
+    str = str.replace(/ + /g, " ");
     str = str.trim();
     // Remove punctuations
     // Bỏ dấu câu, kí tự đặc biệt
-    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
+    str = str.replace(
+        /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+        " "
+    );
     return str;
+}
+
+async function findProductsByAggregation(filter, limit, skip, sort) {
+    // Split name to process later
+    const name = filter ? filter.name : undefined;
+    name && delete filter.name;
+    
+    filter = parseFilterForAggregation(filter);
+    sort = parseSortForAggregation(sort);
+
+    let products = await strapi.query("product").model.aggregate([
+        {
+            $lookup: {
+                from: "brands",
+                localField: "brand",
+                foreignField: "_id",
+                as: "brand",
+            },
+        },
+        {
+            $unwind: {
+                path: "$brand",
+                preserveNullAndEmptyArrays: true,
+            },
+        },
+        {
+            $match: filter,
+        },
+        {
+            $lookup: {
+                from: "upload_file",
+                localField: "thumbnail",
+                foreignField: "_id",
+                as: "thumbnail",
+            },
+        },
+        {
+            $unwind: {
+                path: "$thumbnail",
+                preserveNullAndEmptyArrays: true,
+            },
+        },
+        {
+            $lookup: {
+                from: "components_product_options",
+                let: { optionIds: "$options.ref" },
+                pipeline: [
+                    { $match: { $expr: { $in: ["$_id", "$$optionIds"] } } },
+                    {
+                        $lookup: {
+                            from: "upload_file",
+                            let: { imageIds: "$images" },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $in: ["$_id", "$$imageIds"],
+                                        },
+                                    },
+                                },
+                            ],
+                            as: "images",
+                        },
+                    },
+                ],
+                as: "options",
+            },
+        },
+        {
+            $addFields: {
+                total_sold: {
+                    $sum: "$options.soldQuantity",
+                },
+            },
+        },
+        {
+            $sort: sort,
+        },
+        {
+            $skip: Number(skip) || 0,
+        },
+        {
+            $limit: Number(limit) || 100,
+        },
+    ]);
+
+    if (name)
+        products = products.filter((product) => {
+            return (
+                removeVietnameseTones(product.name.toLowerCase()).indexOf(
+                    removeVietnameseTones(name.toLowerCase())
+                ) !== -1
+            );
+        });
+
+    return products;
 }

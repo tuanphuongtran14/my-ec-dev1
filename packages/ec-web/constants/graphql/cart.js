@@ -262,9 +262,8 @@ export const APPLY_COUPON = `
 `;
 
 export const REMOVE_COUPON = `
-    applyCoupon(
-        cartId: $cartId,
-        couponCode: $couponCode
+    removeCoupon(
+        cartId: $cartId
     ) {
         _id
         items {
@@ -327,4 +326,3 @@ export const CHANGE_ITEM_COLOR = `
         couponIsValid
     }
 `;
-

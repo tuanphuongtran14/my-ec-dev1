@@ -380,7 +380,7 @@ export default function Login() {
                             return;
                         }
 
-                        const {valid: isValid} = await userApi.isValidEmail(email);
+                        const { data: {valid: isValid} } = await userApi.isValidEmail(email);
                         setFpEmailIsValid(isValid);
 
                         if(isValid)
@@ -492,7 +492,7 @@ export default function Login() {
                             return;
                         }
 
-                        const {valid: isValid} = await userApi.isAvailableEmail(email);
+                        const { data: {valid: isValid} } = await userApi.isAvailableEmail(email);
                         setRgEmailIsValid(isValid);
 
                         if(isValid)
@@ -555,7 +555,7 @@ export default function Login() {
                         const username = e.target.value;
                         setRgUsername(username);
 
-                        const {valid: isValid} = await userApi.isAvailableUsername(username);
+                        const { data: {valid: isValid}} = await userApi.isAvailableUsername(username);
                         setRgUsernameIsValid(isValid);
 
                         if(isValid)
