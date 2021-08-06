@@ -13,21 +13,24 @@ import {
 } from "../constants/graphql/review";
 
 class ProductApi {
-    async getForHome(limit) {
+    async getForHome(slug) {
         try {
             const { data: responseData } = await axiosClient.post(
                 `${process.env.NEXT_PUBLIC_DOMAIN}/api/graphql`,
                 {
                     type: "query",
                     query: `
-                        query($limit: Int!) {
+                        query($limit: Int!,$slug:String!) {
                             productsBestNew: ${GET_NEW_ARRIVALS},
                             productsBestSell: ${GET_BEST_SELLERS},
                             productHotSale: ${GET_HOT_SALES},
+                            productRelated:${GET_RELATED_PRODUCTS}
                         }
                     `,
                     variables: {
-                        limit: limit || 10,
+                        limit: 10,
+                        slug
+                        
                     },
                 }
             );

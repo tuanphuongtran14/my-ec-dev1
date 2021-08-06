@@ -10,6 +10,7 @@ import { graphqlClient, gql } from "../../../helpers/apollo-client";
 import { useRouter } from "next/router";
 // import $ from "jquery";
 
+
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
