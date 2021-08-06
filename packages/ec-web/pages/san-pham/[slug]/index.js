@@ -127,6 +127,10 @@ export default function Product({
         }
     };
 
+    useEffect(()=>{
+        $('#colors div:not(".versionDisabled"):first').addClass("active")
+    })
+
     // Các lựa chọn màu sắc
     const colorOption = () => {
         if (product.options) {
@@ -150,7 +154,8 @@ export default function Product({
                     return (
                         <div
                             // className={ $('.product-details__versions div:not(".versionDisabled"):first') ? "version active" : "version"}
-                            className={ index === 1 ? "version active" : "version"}
+                            // className={ index === 1 ? "version active" : "version"}
+                            className="version"
                             onClick={() => setSelectedColor(option.color)}
                         >
                             {option.color}
