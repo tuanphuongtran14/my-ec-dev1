@@ -270,11 +270,11 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                     </div>
                 </div>
                 <div className="bannerIphone--img col-7 px-0">
-                    <img
+                    {/* <img
                         src="./img/iphoneWallPaper.jpg"
                         style={{ width: '100%' }}
                     >
-                    </img>
+                    </img> */}
                 </div>
             </div>
 
