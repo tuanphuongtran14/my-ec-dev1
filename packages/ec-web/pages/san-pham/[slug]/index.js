@@ -44,7 +44,8 @@ export default function Product({
     jwt,
 }) {
     const [stars, setStars] = useState(5);
-    const [selectedColor, setSelectedColor] = useState(product.options[0].color);
+    // const [selectedColor, setSelectedColor] = useState(product.options[0].color);
+    const [selectedColor, setSelectedColor] = useState(product.options.find(option => option.quantityInStock > 0).color)
     const [userReview, setUserReview] = useState(reviewList.userReview);
     const [reviews, setReviews] = useState(reviewList.reviews);
     const [overviews, setOverviews] = useState(reviewList.overviews);
@@ -130,7 +131,7 @@ export default function Product({
 
     useEffect(()=>{
         $('#colors div:not(".versionDisabled"):first').addClass("active")
-    })
+    },[])
 
     // Các lựa chọn màu sắc
     const colorOption = () => {
@@ -139,7 +140,8 @@ export default function Product({
                 if (option.quantityInStock <= 0){
                     return (
                         <div
-                            className={option.quantityInStock <= 0 ? "versionDisabled" : ''}
+                            className="versionDisabled"
+                            style={{pointerEvents: "none"}}
                         >
                             {option.color}
                             <span className="version__price">
@@ -154,8 +156,6 @@ export default function Product({
                 else {
                     return (
                         <div
-                            // className={ $('.product-details__versions div:not(".versionDisabled"):first') ? "version active" : "version"}
-                            // className={ index === 1 ? "version active" : "version"}
                             className="version"
                             onClick={() => setSelectedColor(option.color)}
                         >
