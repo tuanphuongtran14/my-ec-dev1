@@ -1,42 +1,21 @@
 import Head from "next/head";
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Header, Footer } from "../../components";
 import { userApi } from "../../apis";
-import { orderApi } from "../../apis";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Link from 'next/link'
-
-import {
-    ApolloClient,
-    InMemoryCache,
-    ApolloProvider,
-    useQuery,
-    gql,
-} from "@apollo/client";
-
-const client = new ApolloClient({
-    uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
-    cache: new InMemoryCache(),
-});
 
 export default function Customer() {
-  const router = useRouter();
-  const [userInfo, setUserInfo] = useState({});
-  const [userOrder, setUserOrder] = useState([]);
-  useEffect(async () => {
-    const data = await userApi.me();
-    const { data: { orders }} = await userApi.getUserOrders();
+    const [userInfo, setUserInfo] = useState({});
+    const [userOrder, setUserOrder] = useState([]);
+    useEffect(async () => {
+        const {
+            data: { me: user },
+        } = await userApi.me();
+        const {
+            data: { orders },
+        } = await userApi.getUserOrders();
 
-        //console.log(data)
-        console.log(orders);
-
-        setUserInfo(data.me);
+        setUserInfo(user);
         setUserOrder(orders);
-
-        //console.log(userOrder);
-        //console.log(userInfo);
     }, []);
 
     const Address = (props) => (
@@ -58,11 +37,9 @@ export default function Customer() {
     const OrderProduct = (props) => (
         <tr className="control-show__order">
             <td>
-                <Link href="/order-detail/[id]" as={`/order-detail/${props.idDonHang}`}>
-                    <a href="">{props.maDonHang}</a>
-                </Link>
+                <a href="">{props.maDonHang}</a>
             </td>
-            <td>{props.tenSanPham}</td>
+            <td>{props.diaChiGiaoHang}</td>
             <td className="order-moble">{props.giaSanPham} ₫</td>
             <td className="order-moble">{props.trangThaiDonHang}</td>
         </tr>
@@ -71,11 +48,10 @@ export default function Customer() {
     const Order = () =>
         userOrder.map((order) => (
             <OrderProduct
-                idDonHang={order.id}
                 maDonHang={order.orderCode}
-                tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
-                giaSanPham="708.900"
-                trangThaiDonHang="Giao hàng thành công"
+                diaChiGiaoHang={order.addressLine1}
+                giaSanPham={order.finalAmount}
+                trangThaiDonHang={order.status}
             />
         ));
 
@@ -119,7 +95,10 @@ export default function Customer() {
 
     const Customer = () => (
         <div>
-            <div className="container-fluid" style={{ backgroundColor: "#f0f0f0" }}>
+            <div
+                className="container-fluid"
+                style={{ backgroundColor: "#f0f0f0" }}
+            >
                 <div className="container py-4">
                     <div className="row manage-resposive">
                         <div className="col-sm-3 col-md-3 col-lg-3 col-xl-3">
@@ -130,7 +109,8 @@ export default function Customer() {
                                 <div className="account">
                                     <img
                                         className="account__img"
-                                        src="https://www.nicepng.com/png/full/136-1366211_group-of-10-guys-login-user-icon-png.png" alt=""
+                                        src="https://www.nicepng.com/png/full/136-1366211_group-of-10-guys-login-user-icon-png.png"
+                                        alt=""
                                     />
                                     <div className="account__info">
                                         Tài khoản của
@@ -159,7 +139,10 @@ export default function Customer() {
                                         </a>
                                     </li>
                                     <li className="list-group-item list-group-item__edit">
-                                        <a href="" className="account-list-info wish-list-event">
+                                        <a
+                                            href=""
+                                            className="account-list-info wish-list-event"
+                                        >
                                             <i className="fas account-list-info__icon fa-sign-out-alt"></i>
                                             <span>Đăng xuất</span>
                                         </a>
@@ -172,62 +155,77 @@ export default function Customer() {
                             id="show-account"
                         >
                             <div className="">
-                                <h2 className="account-detail__title">Thông tin tài khoản</h2>
+                                <h2 className="account-detail__title">
+                                    Thông tin tài khoản
+                                </h2>
                             </div>
                             <div className="shadow">
                                 <form className="account-detail__form">
-                                    <div className="form-group row account-form-edit">
-                                        <label for="name" className="col-sm-2 col-form-label">
+                                    <div className="form-group row account-form-edit container">
+                                        <label
+                                            for="name"
+                                            className="col-sm-2 col-form-label"
+                                        >
                                             Tên người dùng
                                         </label>
-                                        <div className="col-sm-10">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="name"
-                                                value={userInfo.username}
-                                                disabled
-                                            />
-                                        </div>
+                                        {/*<div className="col-sm-10">
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        value={userInfo.username}
+                        disabled
+                      />
+                    </div>*/}
+                                        <input
+                                            type="text"
+                                            className="form-control col-sm-10"
+                                            id="name"
+                                            value={userInfo.username}
+                                            disabled
+                                        />
                                     </div>
-                                    <div className="form-group row account-form-edit">
-                                        <label for="name" className="col-sm-2 col-form-label">
+                                    <div className="form-group row account-form-edit container">
+                                        <label
+                                            for="name"
+                                            className="col-sm-2 col-form-label"
+                                        >
                                             Họ tên
                                         </label>
-                                        <div className="col-sm-10">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="name"
-                                                placeholder={userInfo.name}
-                                            />
-                                        </div>
+                                        <input
+                                            type="text"
+                                            className="form-control col-sm-10"
+                                            id="name"
+                                            placeholder={userInfo.name}
+                                        />
                                     </div>
-                                    <div className="form-group row account-form-edit">
-                                        <label for="phone" className="col-sm-2 col-form-label">
+                                    <div className="form-group row account-form-edit container">
+                                        <label
+                                            for="phone"
+                                            className="col-sm-2 col-form-label"
+                                        >
                                             Số điện thoại
                                         </label>
-                                        <div className="col-sm-10">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="phone"
-                                                placeholder={userInfo.phone}
-                                            />
-                                        </div>
+                                        <input
+                                            type="text"
+                                            className="form-control col-sm-10"
+                                            id="phone"
+                                            placeholder={userInfo.phone}
+                                        />
                                     </div>
-                                    <div className="form-group row account-form-edit">
-                                        <label for="email" className="col-sm-2  col-form-label">
+                                    <div className="form-group row account-form-edit container">
+                                        <label
+                                            for="email"
+                                            className="col-sm-2  col-form-label"
+                                        >
                                             Email
                                         </label>
-                                        <div className="col-sm-10">
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                id="email"
-                                                placeholder={userInfo.email}
-                                            />
-                                        </div>
+                                        <input
+                                            type="email"
+                                            className="form-control col-sm-10"
+                                            id="email"
+                                            placeholder={userInfo.email}
+                                        />
                                     </div>
                                     {/*<div className="form-group account-form-edit row">
                                   <label for="address" className="col-sm-2 col-form-label">Địa chỉ của bạn</label>
@@ -268,7 +266,7 @@ export default function Customer() {
                                         </div>
                                     </div>
                                     <div
-                                        className="form-group account-form-edit row"
+                                        className="form-group account-form-edit row container"
                                         id="change-password__show"
                                     >
                                         <label
@@ -279,7 +277,7 @@ export default function Customer() {
                                         </label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className="form-control col-sm-10"
                                             id="old-password"
                                             placeholder="Nhập mật khẩu cũ"
                                         />
@@ -291,7 +289,7 @@ export default function Customer() {
                                         </label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className="form-control col-sm-10"
                                             id="new-password"
                                             placeholder="Nhập mật khẩu mới"
                                         />
@@ -303,7 +301,7 @@ export default function Customer() {
                                         </label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className="form-control col-sm-10"
                                             id="confirm-password"
                                             placeholder="Nhập lại mật khẩu mới"
                                         />
@@ -311,7 +309,10 @@ export default function Customer() {
                                     <div className="form-group row">
                                         <div className="col-sm-2"></div>
                                         <div className="col-sm-10">
-                                            <button type="submit" className="btn btn-primary">
+                                            <button
+                                                type="submit"
+                                                className="btn btn-primary"
+                                            >
                                                 Cập nhập
                                             </button>
                                         </div>
@@ -325,44 +326,36 @@ export default function Customer() {
                             style={{ backgroundColor: "#f0f0f0" }}
                         >
                             <div className="">
-                                <h2 className="account-detail__title ">Đơn hàng của bạn</h2>
+                                <h2 className="account-detail__title ">
+                                    Đơn hàng của bạn
+                                </h2>
                             </div>
                             <div
                                 className="manage-order shadow"
-                                style={{ backgroundColor: "#fff", padding: "20px" }}
+                                style={{
+                                    backgroundColor: "#fff",
+                                    padding: "20px",
+                                }}
                             >
-                                <table>
+                                <table style={{ width: "100%" }}>
                                     <thead>
                                         <tr className="control-show__order">
                                             <th>Mã đơn hàng</th>
-                                            <th column4>Sản phẩm</th>
-                                            <th className="order-moble">Tổng tiền</th>
-                                            <th className="order-moble">Trạng thái đơn hàng</th>
+                                            <th
+                                                column="4"
+                                                className="order-moble"
+                                            >
+                                                Địa chỉ giao hàng
+                                            </th>
+                                            <th className="order-moble">
+                                                Tổng tiền
+                                            </th>
+                                            <th className="order-moble">
+                                                Trạng thái đơn hàng
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {/*{
-                                userOrder.orders.map(order=>(
-                                  <OrderProduct 
-                                    maDonHang={order.consigneeName}
-                                    tenSanPham='Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng'
-                                    giaSanPham='708.900'
-                                    trangThaiDonHang='Giao hàng thành công'
-                                  />
-                                ))
-                              }*/}
-                                        {/*<OrderProduct
-                      maDonHang="12343242423"
-                      tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
-                      giaSanPham="708.900"
-                      trangThaiDonHang="Giao hàng thành công"
-                    />
-                     <OrderProduct
-                      maDonHang="12343242423"
-                      tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
-                      giaSanPham="708.900"
-                      trangThaiDonHang="Giao hàng thành công"
-                    />*/}
                                         <Order />
                                     </tbody>
                                 </table>

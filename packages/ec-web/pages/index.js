@@ -10,7 +10,12 @@ export async function getServerSideProps() {
         productHotSale,
         productsBestSell,
         productsBestNew,
+<<<<<<< HEAD
     }} = await productApi.getForHome();
+=======
+        productRelated
+    }} = await productApi.getForHome('oppo-a54');
+>>>>>>> c60aafc5e694ce64703459fb5e333d6da91c3793
 
     return {
         props: {
