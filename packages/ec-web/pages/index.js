@@ -6,12 +6,12 @@ import Flickity from "react-flickity-component";
 import { productApi } from "../apis";
 
 export async function getServerSideProps() {
-    const {
+    const { data: {
         productHotSale,
         productsBestSell,
         productsBestNew,
         productRelated
-    } = await productApi.getForHome('oppo-a54');
+    }} = await productApi.getForHome('oppo-a54');
 
     return {
         props: {
