@@ -53,7 +53,9 @@ module.exports = {
             ],
         };
 
-        return await findProductsByAggregation(filter, limit, skip, sort);
+        return await findProductsByAggregation(filter, limit, skip, sort, {
+            useParseFilter: false
+        });
     },
 
     async findProductBySlug(slug) {
@@ -194,12 +196,21 @@ function removeVietnameseTones(str) {
     return str;
 }
 
-async function findProductsByAggregation(filter, limit, skip, sort) {
+async function findProductsByAggregation(filter, limit, skip, sort, options) {
     // Split name to process later
     const name = filter ? filter.name : undefined;
     name && delete filter.name;
+
+    // Default useParseFilter is true
+    !options && (options = {
+        useParseFilter: true
+    });
+
+    const {
+        useParseFilter
+    } = options;
     
-    filter = parseFilterForAggregation(filter);
+    useParseFilter && (filter = parseFilterForAggregation(filter));
     sort = parseSortForAggregation(sort);
 
     let products = await strapi.query("product").model.aggregate([

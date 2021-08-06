@@ -142,6 +142,7 @@ export default function Product({
                         <div
                             className="versionDisabled"
                             style={{pointerEvents: "none"}}
+                            key={`option${index}`}
                         >
                             {option.color}
                             <span className="version__price">
@@ -158,6 +159,7 @@ export default function Product({
                         <div
                             className="version"
                             onClick={() => setSelectedColor(option.color)}
+                            key={`option${index}`}
                         >
                             {option.color}
                             <span className="version__price">
