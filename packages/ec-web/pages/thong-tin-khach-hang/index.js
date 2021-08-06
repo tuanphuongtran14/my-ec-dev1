@@ -27,15 +27,10 @@ export default function Customer() {
   useEffect(async () => {
     const data = await userApi.me();
     const {orders} = await userApi.getUserOrders();
-
     //console.log(data)
-    console.log(orders);
-
+    //console.log(orders);
     setUserInfo(data.me);
     setUserOrder(orders);
-
-    //console.log(userOrder);
-    //console.log(userInfo);
   }, []);
 
   const Address = (props) => (
@@ -59,7 +54,7 @@ export default function Customer() {
       <td>
         <a href="">{props.maDonHang}</a>
       </td>
-      <td>{props.tenSanPham}</td>
+      <td>{props.diaChiGiaoHang}</td>
       <td className="order-moble">{props.giaSanPham} ₫</td>
       <td className="order-moble">{props.trangThaiDonHang}</td>
     </tr>
@@ -69,9 +64,9 @@ export default function Customer() {
   userOrder.map((order) => (
       <OrderProduct
         maDonHang={order.orderCode}
-        tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
-        giaSanPham="708.900"
-        trangThaiDonHang="Giao hàng thành công"
+        diaChiGiaoHang={order.addressLine1}
+        giaSanPham={order.finalAmount}
+        trangThaiDonHang={order.status}
       />
     ));
 
@@ -172,58 +167,50 @@ export default function Customer() {
               </div>
               <div className="shadow">
                 <form className="account-detail__form">
-                  <div className="form-group row account-form-edit">
+                  <div className="form-group row account-form-edit container">
                     <label for="name" className="col-sm-2 col-form-label">
                       Tên người dùng
                     </label>
-                    <div className="col-sm-10">
-                      <input
+                    <input
                         type="text"
-                        className="form-control"
+                        className="form-control col-sm-10"
                         id="name"
                         value={userInfo.username}
                         disabled
                       />
-                    </div>
                   </div>
-                  <div className="form-group row account-form-edit">
+                  <div className="form-group row account-form-edit container">
                     <label for="name" className="col-sm-2 col-form-label">
                       Họ tên
                     </label>
-                    <div className="col-sm-10">
-                      <input
+                    <input
                         type="text"
-                        className="form-control"
+                        className="form-control col-sm-10"
                         id="name"
                         placeholder={userInfo.name}
                       />
-                    </div>
                   </div>
-                  <div className="form-group row account-form-edit">
+                  <div className="form-group row account-form-edit container">
                     <label for="phone" className="col-sm-2 col-form-label">
                       Số điện thoại
                     </label>
-                    <div className="col-sm-10">
-                      <input
+                    <input
                         type="text"
-                        className="form-control"
+                        className="form-control col-sm-10"
                         id="phone"
                         placeholder={userInfo.phone}
                       />
-                    </div>
                   </div>
-                  <div className="form-group row account-form-edit">
+                  <div className="form-group row account-form-edit container">
                     <label for="email" className="col-sm-2  col-form-label">
                       Email
                     </label>
-                    <div className="col-sm-10">
-                      <input
+                     <input
                         type="email"
-                        className="form-control"
+                        className="form-control col-sm-10"
                         id="email"
                         placeholder={userInfo.email}
                       />
-                    </div>
                   </div>
                   {/*<div className="form-group account-form-edit row">
                                   <label for="address" className="col-sm-2 col-form-label">Địa chỉ của bạn</label>
@@ -264,7 +251,7 @@ export default function Customer() {
                     </div>
                   </div>
                   <div
-                    className="form-group account-form-edit row"
+                    className="form-group account-form-edit row container"
                     id="change-password__show"
                   >
                     <label
@@ -275,7 +262,7 @@ export default function Customer() {
                     </label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control col-sm-10"
                       id="old-password"
                       placeholder="Nhập mật khẩu cũ"
                     />
@@ -287,7 +274,7 @@ export default function Customer() {
                     </label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control col-sm-10"
                       id="new-password"
                       placeholder="Nhập mật khẩu mới"
                     />
@@ -299,7 +286,7 @@ export default function Customer() {
                     </label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control col-sm-10"
                       id="confirm-password"
                       placeholder="Nhập lại mật khẩu mới"
                     />
@@ -327,38 +314,16 @@ export default function Customer() {
                 className="manage-order shadow"
                 style={{ backgroundColor: "#fff", padding: "20px" }}
               >
-                <table>
+                <table style={{width: "100%"}}>
                   <thead>
                     <tr className="control-show__order">
                       <th>Mã đơn hàng</th>
-                      <th column4>Sản phẩm</th>
+                      <th className="order-moble">Địa chỉ giao hàng</th>
                       <th className="order-moble">Tổng tiền</th>
                       <th className="order-moble">Trạng thái đơn hàng</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {/*{
-                                userOrder.orders.map(order=>(
-                                  <OrderProduct 
-                                    maDonHang={order.consigneeName}
-                                    tenSanPham='Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng'
-                                    giaSanPham='708.900'
-                                    trangThaiDonHang='Giao hàng thành công'
-                                  />
-                                ))
-                              }*/}
-                    {/*<OrderProduct
-                      maDonHang="12343242423"
-                      tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
-                      giaSanPham="708.900"
-                      trangThaiDonHang="Giao hàng thành công"
-                    />
-                     <OrderProduct
-                      maDonHang="12343242423"
-                      tenSanPham="Bàn phím cơ DareU EK880 RGB Brown Switch - Hàng chính hãng"
-                      giaSanPham="708.900"
-                      trangThaiDonHang="Giao hàng thành công"
-                    />*/}
                     <Order />
                   </tbody>
                 </table> 
