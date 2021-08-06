@@ -10,16 +10,18 @@ import {
     GET_PRODUCT_REVIEWS,
 } from "../constants/graphql/review";
 class ProductApi {
-    getForHome(limit, options) {
+    getForHome(slug, limit, options) {
         const query = `
-            query($limit: Int!) {
+            query($limit: Int!, $slug:String!) {
                 productsBestNew: ${GET_NEW_ARRIVALS},
                 productsBestSell: ${GET_BEST_SELLERS},
                 productHotSale: ${GET_HOT_SALES},
+                productRelated:${GET_RELATED_PRODUCTS}
             }
         `;
         const variables = {
             limit: limit || 10,
+            slug
         };
         return callApi.query(query, variables, options);
     }
