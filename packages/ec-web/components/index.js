@@ -6,6 +6,7 @@ import Review from "./Review/Review";
 import About from "./About/About"
 import RatingStars from "./RatingStars/RatingStars";
 import CartItem from "./CartItem/CartItem";
+import Product from './Category/product';
 
 export {
     Header,
@@ -16,4 +17,5 @@ export {
     CartItem,
     Banner,
     About,
+    Product
 };

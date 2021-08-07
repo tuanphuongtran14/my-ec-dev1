@@ -100,6 +100,8 @@ export const GET_RELATED_PRODUCTS = `
         regularPrice,
         finalPrice,
         salesPercentage
+        stars
+        votes
     }
 `
 

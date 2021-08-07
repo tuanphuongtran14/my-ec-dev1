@@ -1745,13 +1745,6 @@ footer a {
         width:250px !important;
         margin: 0 auto;
     }
-    .field-icon {
-        float: right;
-        margin-top: -30px;
-        position: relative;
-        left: -1rem;
-        z-index: 2;
-      }
         
     /* Mobile */
     @media screen and (max-width:500px){
@@ -1787,6 +1780,14 @@ footer a {
         // }
         
     }
+}
+
+.field-icon {
+    float: right;
+    margin-top: -30px;
+    position: relative;
+    left: -1rem;
+    z-index: 2;
 }
 
 /* 13. HomeSection

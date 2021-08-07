@@ -22,12 +22,12 @@ module.exports = {
             screenSize,
             brand,
         } = await this.findProductBySlug(slug);
-
+        
         const filter = {
             _id: { $nin: [new ObjectID(_id)] },
             $or: [
                 {
-                    brand: brand._id,
+                    'brand.name': brand.name,
                 },
                 {
                     finalPrice: {
@@ -116,9 +116,7 @@ function parseFilterForAggregation(filter) {
             $gte: minBatteryCapacity ? Number(minBatteryCapacity) : undefined,
             $lte: maxBatteryCapacity ? Number(maxBatteryCapacity) : undefined,
         },
-        brand: {
-            name: brand,
-        },
+        'brand.name': brand,
     };
 
     return removeUndefinedFieldsFromObj(result);
@@ -211,6 +209,7 @@ async function findProductsByAggregation(filter, limit, skip, sort, options) {
     } = options;
     
     useParseFilter && (filter = parseFilterForAggregation(filter));
+    console.log(filter);
     sort = parseSortForAggregation(sort);
 
     let products = await strapi.query("product").model.aggregate([

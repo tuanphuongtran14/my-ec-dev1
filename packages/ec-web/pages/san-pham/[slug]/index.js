@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
-import { Header, Footer, Modal, Review, RatingStars } from "../../../components";
+import { Header, Footer, Modal, Review, RatingStars, Product } from "../../../components";
 import { useAuth } from "../../../helpers/auth";
 import axios from "axios";
 import Flickity from "react-flickity-component";
@@ -35,7 +35,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     };
 });
 
-export default function Product({
+export default function ProductPage({
     product,
     reviewList,
     isSignedIn,
@@ -57,7 +57,7 @@ export default function Product({
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
     const router = useRouter();
     // Sản phẩm liên quan
-    const relatedProduct = relatedProducts.slice(1, 5).map((product, index) => {
+    const relatedProduct = relatedProducts.slice(0, 4).map((product, index) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
         return (
@@ -77,12 +77,8 @@ export default function Product({
                     <span className="regular-price">{regularPrice}₫</span>
                 </div>
                 <div className="product__rating">
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <span>(472 đánh giá)</span>
+                    <RatingStars key={"related" + index} stars={product.stars} />
+                    <span>({product.votes} đánh giá)</span>
                 </div>
                 {product.salespercentage > 0 ? (
                     <div className="product__box-sticker">
@@ -101,13 +97,11 @@ export default function Product({
             return product.options.map((option, index) => {
                 return option.images.map((image, index) => {
                     return (
-                        <>
-                            <img
-                                className="product-image"
-                                src={process.env.NEXT_PUBLIC_API_URL + image.url}
-                                alt=""
-                            />
-                        </>
+                        <img
+                            className="product-image"
+                            src={process.env.NEXT_PUBLIC_API_URL + image.url}
+                            alt=""
+                        />
                     );
                 });
             });
