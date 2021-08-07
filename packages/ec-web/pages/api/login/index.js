@@ -4,7 +4,7 @@ import withIronSession from "../../../helpers/customWithIronSession";
 async function handler(req, res) {
     if (req.method !== "POST")
         return res.json({
-            message: "This API only works with GET method",
+            message: "This API only works with POST method",
             ok: false,
         });
 
