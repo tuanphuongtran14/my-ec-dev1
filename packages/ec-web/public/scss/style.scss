@@ -231,12 +231,16 @@ html{
 /*-------------------------*/
 .bd-top--fake-bg,
 .bd-top-left--fake-bg {
-    border-top: 20px solid $bodyColor;
+    border-top: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    margin-top: 20px;
 }
 
 .bd-top-left--fake-bg {
     padding: 0 0;
-    border-left: 20px solid $bodyColor;
+    border-right: 1px solid #dee2e6;
+    border-left: none !important;
+    // margin-left: 10px;
     @media only screen and (max-width: 991px) {
         border-left: none;
     }
