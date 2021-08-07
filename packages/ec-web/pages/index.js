@@ -74,11 +74,10 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         }
         async function getProductRelated() {
             const { data: { productRelated } } = await productApi.getForHome(JSON.parse(slugPr));
-            console.log(productRelated)
             if (productRelated.length === 0) {
                 setDisplay(false)
             }
-            setProductRelated(productRelated)
+            setProductRelated([...productRelated,...productHotSale])
         }
         getProductRelated()
     }, [])
