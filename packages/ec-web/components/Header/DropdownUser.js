@@ -17,7 +17,7 @@ export default function DropdownUser() {
     // Fetch user information
     useEffect(async () => {
         try {
-            const data = await userApi.me();
+            const { data } = await userApi.me();
             setUser(data.me);
         } catch {
             return false;

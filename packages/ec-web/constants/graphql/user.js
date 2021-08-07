@@ -33,6 +33,14 @@ export const RESET_PASSWORD = `
     }
 `;
 
+export const CHANGE_PASSWORD = `
+    changePassword(
+        currentPassword: $currentPassword,
+        newPassword: $newPassword,
+        confirmNewPassword: $confirmNewPassword,
+    )
+`;
+
 export const ME = `
     customMe {
         id

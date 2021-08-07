@@ -46,6 +46,7 @@ module.exports = {
     `,
     mutation: `
         customRegister(input: CustomUsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
+        changePassword(currentPassword: String!, newPassword: String!, confirmNewPassword: String!): Boolean!,
     `,
     resolver: {
         Query: {
@@ -71,6 +72,10 @@ module.exports = {
             },
         },
         Mutation: {
+            changePassword: {
+                description: 'Change password by enter current password and new password',
+                resolver: 'plugins::users-permissions.user.changePassword',
+            },
             customRegister: {
                 description: "Register a user, but allow for additional User fields.",
                 resolverOf: "plugins::users-permissions.auth.register",

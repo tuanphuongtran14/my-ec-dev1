@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
-import { Header, Footer, Modal, Review, RatingStars } from "../../../components";
+import { Header, Footer, Modal, Review, RatingStars, Product } from "../../../components";
 import { useAuth } from "../../../helpers/auth";
 import axios from "axios";
 import Flickity from "react-flickity-component";
@@ -10,14 +10,15 @@ import { graphqlClient, gql } from "../../../helpers/apollo-client";
 import { useRouter } from "next/router";
 // import $ from "jquery";
 
+
 export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
-    const {
+    const { data: {
         product,
         relatedProducts,
         reviewList,
-    } = await productApi.getForProductPage(params.slug, {
+    }} = await productApi.getForProductPage(params.slug, {
         useAxiosClient: false,
         jwt,
     });
@@ -34,7 +35,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     };
 });
 
-export default function Product({
+export default function ProductPage({
     product,
     reviewList,
     isSignedIn,
@@ -43,7 +44,8 @@ export default function Product({
     jwt,
 }) {
     const [stars, setStars] = useState(5);
-    const [selectedColor, setSelectedColor] = useState(product.options[0].color);
+    // const [selectedColor, setSelectedColor] = useState(product.options[0].color);
+    const [selectedColor, setSelectedColor] = useState(product.options.find(option => option.quantityInStock > 0).color)
     const [userReview, setUserReview] = useState(reviewList.userReview);
     const [reviews, setReviews] = useState(reviewList.reviews);
     const [overviews, setOverviews] = useState(reviewList.overviews);
@@ -55,7 +57,7 @@ export default function Product({
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
     const router = useRouter();
     // Sản phẩm liên quan
-    const relatedProduct = relatedProducts.slice(1, 5).map((product, index) => {
+    const relatedProduct = relatedProducts.slice(0, 4).map((product, index) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
         return (
@@ -75,12 +77,8 @@ export default function Product({
                     <span className="regular-price">{regularPrice}₫</span>
                 </div>
                 <div className="product__rating">
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <span>(472 đánh giá)</span>
+                    <RatingStars key={"related" + index} stars={product.stars} />
+                    <span>({product.votes} đánh giá)</span>
                 </div>
                 {product.salespercentage > 0 ? (
                     <div className="product__box-sticker">
@@ -99,13 +97,11 @@ export default function Product({
             return product.options.map((option, index) => {
                 return option.images.map((image, index) => {
                     return (
-                        <>
-                            <img
-                                className="product-image"
-                                src={process.env.NEXT_PUBLIC_API_URL + image.url}
-                                alt=""
-                            />
-                        </>
+                        <img
+                            className="product-image"
+                            src={process.env.NEXT_PUBLIC_API_URL + image.url}
+                            alt=""
+                        />
                     );
                 });
             });
@@ -127,6 +123,10 @@ export default function Product({
         }
     };
 
+    useEffect(()=>{
+        $('#colors div:not(".versionDisabled"):first').addClass("active")
+    },[])
+
     // Các lựa chọn màu sắc
     const colorOption = () => {
         if (product.options) {
@@ -134,7 +134,9 @@ export default function Product({
                 if (option.quantityInStock <= 0){
                     return (
                         <div
-                            className={option.quantityInStock <= 0 ? "versionDisabled" : ''}
+                            className="versionDisabled"
+                            style={{pointerEvents: "none"}}
+                            key={`option${index}`}
                         >
                             {option.color}
                             <span className="version__price">
@@ -149,9 +151,9 @@ export default function Product({
                 else {
                     return (
                         <div
-                            // className={ $('.product-details__versions div:not(".versionDisabled"):first') ? "version active" : "version"}
-                            className={ index === 1 ? "version active" : "version"}
+                            className="version"
                             onClick={() => setSelectedColor(option.color)}
+                            key={`option${index}`}
                         >
                             {option.color}
                             <span className="version__price">
@@ -440,7 +442,7 @@ export default function Product({
     const refreshReviews = async () => {
         try {
             // Declare query & its variables
-            const { reviewList } = await reviewApi.getProductReviews(slug);
+            const { data: { reviewList } } = await reviewApi.getProductReviews(slug);
             setReviews([]);
             setUserReview(null);
             setReviews(reviewList.reviews);
@@ -448,7 +450,8 @@ export default function Product({
             setOverviews(reviewList.overviews);
 
             return true;
-        } catch {
+        } catch(error) {
+            console.log(error);
             return false;
         }
     };
@@ -466,7 +469,7 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const { newReview } = await reviewApi.createReview(slug, comment, stars);
+            const {data: { newReview } } = await reviewApi.createReview(slug, comment, stars);
 
             await refreshReviews();
 
@@ -494,7 +497,7 @@ export default function Product({
                 Đang xóa... 
             `;
 
-            const { deletedReview } = await reviewApi.deleteReview(userReview._id);
+            const { data: { deletedReview } }= await reviewApi.deleteReview(userReview._id);
 
             if (deletedReview) {
                 $(`#deleteConfirm`).modal("hide");
@@ -526,7 +529,7 @@ export default function Product({
                 Đang gửi... 
             `;
 
-            const { review } = await reviewApi.editReview(
+            const {data: { review }} = await reviewApi.editReview(
                 userReview._id,
                 comment,
                 stars

@@ -7,37 +7,40 @@
 
 module.exports = {
     async search(ctx) {
-        const filter = ctx.query._filter;
-        const sort = ctx.query._sort;
-        const skip = Number(ctx.query._skip);
-        const limit = Number(ctx.query._limit);
+        const {
+            _filter: filter,
+            _sort: sort,
+            _skip: skip,
+            _limit: limit,
+        } = ctx.query;
 
-        // Search and return products which match filter
-        const products = await strapi.services.product.search(filter, limit, skip, sort);
-
-        
-        return products;
+        return await strapi.services.product.search(filter, limit, skip, sort);
     },
 
     async findSimilar(ctx) {
-        const id = ctx.query._id;
-        const sort = ctx.query._sort;
-        const skip = Number(ctx.query._skip);
-        const limit = Number(ctx.query._limit);
+        const {
+            _id: id,
+            _sort: sort,
+            _skip: skip,
+            _limit: limit,
+        } = ctx.query;
 
-
-        // Find product based on id
-        const product = await strapi.query('product').findOne({id: id});
+        // Retrieve product need to find its similars
+        const {
+            ram,
+            screenSize,
+            batteryCapacity,
+        } = await strapi.query('product').findOne({id});
 
         // Create filter to find similar products
         const filter = {
-            minRam: product.ram - 2,
-            maxRam: product.ram + 2,
-            minScreenSize: product.screenSize - 0.5,
-            maxScreenSize: product.screenSize + 0.5,
-            minBatteryCapacity: product.batteryCapacity - 1000,
-            maxBatteryCapacity: product.batteryCapacity + 1000,
-            id_ne: product.id,
+            minRam: ram - 2,
+            maxRam: ram + 2,
+            minScreenSize: screenSize - 0.5,
+            maxScreenSize: screenSize + 0.5,
+            minBatteryCapacity: batteryCapacity - 1000,
+            maxBatteryCapacity: batteryCapacity + 1000,
+            id_ne: id,
         }
 
         // Search and return products which match filter
@@ -45,10 +48,12 @@ module.exports = {
     },
 
     async findRelatedBySlug(ctx) {
-        const slug = ctx.query._slug;
-        const sort = ctx.query._sort;
-        const skip = Number(ctx.query._skip);
-        const limit = Number(ctx.query._limit);
+        const {
+            _slug: slug,
+            _sort: sort,
+            _skip: skip,
+            _limit: limit,
+        } = ctx.query;
 
         // Search and return products which match filter
         return await strapi.services.product.findRelatedBySlug(slug, limit, skip, sort);
