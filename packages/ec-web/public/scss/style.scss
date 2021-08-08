@@ -1030,6 +1030,7 @@ ul.product-details__bonus {
     }
 }
 
+
 .product-list {
     &.product-list--non-slide {
         display: flex;
@@ -1071,11 +1072,41 @@ ul.product-details__bonus {
         .product__title {
             font-weight: 600;
             color: #4d4d4d;
+            // position: relative;
 
             a {
                 font-weight: 600;
                 color: #4d4d4d;
             }
+            .hovercard { 
+                position: absolute; 
+                z-index: 100;
+                left: 142%;
+                top: 0px;
+                // overflow: auto;
+                transform: translateX(-50%);
+                @media only screen and (max-width: 992px) {
+                    display: none;
+                }
+            }
+            .tooltiptext {
+                display: flex; 
+                flex-direction: column; 
+                justify-content: flex-start; 
+                background-color: $bodyColor;
+                padding: 0;
+                color: black; 
+                line-height: 15px;
+                transition: 1s;
+                width: 400px;
+                table{
+                    margin-bottom: 0;
+                    tr{
+                        border: 1px solid black;
+                    }
+                }
+            }
+            
         }
         .product__price {
             margin: .5rem 0;
@@ -1148,6 +1179,7 @@ ul.product-details__bonus {
                 }
             }
         }
+        
     }
 }
 

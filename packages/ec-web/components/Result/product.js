@@ -15,6 +15,46 @@ const pro = ({ currentProducts }) => {
                     <Link href="/san-pham/[slug]" as={`/san-pham/${product.slug}`}>
                        <a>{product.name}</a> 
                     </Link>
+                    <span className="hovercard">
+                        <div className="tooltiptext">
+                            <table className="table">
+                                <thead className="thead-dark">
+                                    <tr>
+                                        <th colSpan={2}>Màn hình</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td scope="row">Kích thước màn hình</td>
+                                        <td>{product.screenSize}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row">Công nghệ màn hình</td>
+                                        <td>{product.screenPanel}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row">Độ phân giải</td>
+                                        <td>{product.screenResolution}</td>
+                                    </tr>
+                                </tbody>
+                                <thead className="thead-dark">
+                                    <tr>
+                                        <th colSpan={2}>Cấu hình</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td scope="row">CPU</td>
+                                        <td>{product.cpu}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row">GPU</td>
+                                        <td>{product.gpu}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </span>
                 </span>
                 <div className="product__price">
                     {product.salesPercentage === 0 ?
