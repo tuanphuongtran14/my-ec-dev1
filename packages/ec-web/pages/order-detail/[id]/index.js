@@ -50,9 +50,12 @@ export default function OrderDetail({ order }) {
     const item = order.items.map(item => {
         return (
              <div class="row order-detail__item">
-                <div class="col-sm-4 col-info col-info--product">
+                <div class="col-sm-2 col-info col-info--product">
                     <img class="order-detail__img" src={process.env.NEXT_PUBLIC_API_URL + item.product.thumbnail.url} />
-                    <span class="order-detail__info">{item.product.name}</span>
+                    {/*<span class="order-detail__info">{item.product.name}</span>*/}
+                </div>
+                <div class="col-sm-2 col-info">
+                    <p class="order-detail__info">{item.product.name}</p>
                 </div>
                 <div class="col-sm-2 col-info">
                     <p class="order-detail__info">{item.unitPrice.toLocaleString("DE-de")} ₫</p>
@@ -98,8 +101,11 @@ export default function OrderDetail({ order }) {
                                     </div>
                                 </div>*/}
                                 <div class="row order-detail__heading">
-                                    <div class="col-sm-4 order-detail__title">
+                                    <div class="col-sm-2 order-detail__title">
                                         <h5>Sản phẩm</h5>
+                                    </div>
+                                    <div class="col-sm-2 order-detail__title">
+                                        {/*<h5>Giá</h5>*/}
                                     </div>
                                     <div class="col-sm-2 order-detail__title">
                                         <h5>Giá</h5>

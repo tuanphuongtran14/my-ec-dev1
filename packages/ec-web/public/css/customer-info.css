@@ -294,7 +294,7 @@
 }
 
 .order-detail__img {
-    width: 60%;
+    width: 100%;
 }
 
 .order-detail__info {
@@ -333,6 +333,10 @@
 }
 
 .final-price__title p {
+    margin: 6px 0;
+    font-size: 18px;
+}
+.final-price__title p b {
     margin: 6px 0;
     font-size: 18px;
 }
