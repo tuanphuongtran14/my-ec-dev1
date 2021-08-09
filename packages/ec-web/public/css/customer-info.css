@@ -67,7 +67,7 @@
 
 .account__info {
     flex: 1 1 0%;
-    font-size: 13px;
+    font-size: 18px;
     line-height: 15px;
     color: rgb(51, 51, 51);
     font-weight: 300;
@@ -75,7 +75,7 @@
 }
 
 .account__info strong {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 19px;
     font-weight: 700;
     display: block;
@@ -103,19 +103,19 @@
 
 /* Thông tin tài khoản */
 .account-detail__title {
-    font-size: 18px;
+    font-size: 24px;
     line-height: 21px;
     font-weight: 300;
     margin: 20px 0px 15px;
 }
 
 .account-form-edit label {
-    font-size: 13px;
+    font-size: 16px;
     margin: 6px 0;
 }
 
 .account-form-edit input {
-    font-size: 14px;
+    font-size: 16px;
     width: 80%;
     margin: 6px 0;
 
@@ -143,7 +143,7 @@
 
 .manage-order th {
     min-width: 140px;
-    padding-bottom: 15px;
+    padding-bottom: 16px;
     color: rgb(120, 120, 120);
     font-size: 15px;
     font-weight: 400;
@@ -151,7 +151,7 @@
 }
 
 .manage-order td {
-    font-size: 13px;
+    font-size: 16px;
     line-height: 30px;
     color: rgb(51, 51, 51);
 }
@@ -188,7 +188,7 @@
 /* --- Bill detail start */
 
 .bill-detail__title {
-    font-size: 18px;
+    font-size: 24px;
     line-height: 21px;
     font-weight: 500;
     margin: 20px 0px 15px;
@@ -255,3 +255,142 @@
 
 
 /* --- Bill detail end */
+
+/* Order-detail-start */
+.container-fluid {
+    background-color: #f0f0f0;
+}
+
+.order-detail {
+    background-color: #fff ;
+    padding-top: 16px;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+
+.link-button {
+    display: flex;
+    margin: 16px 8px;
+}
+
+
+.link-button__item  a {
+    padding: 6px 14px;
+    border: 1px solid #d70018;
+    margin: 16px 8px;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    cursor: pointer;
+    color: #333;
+}
+
+.link-button__item a:hover {
+   cursor: pointer;
+   background-color: #b60015;
+   color: #fff;
+}
+
+.order-detail__img {
+    width: 60%;
+}
+
+.order-detail__info {
+    /*padding: 0;*/
+    line-height: 100%;
+    margin: 0;
+    font-size: 18px;
+}
+
+.col-info {
+    align-self: center;
+}
+
+.col-info--product {
+    /*display: block;*/
+}
+
+.order-detail__heading {
+    /*display: none;*/
+}
+
+.order-detail__item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgb(244, 244, 244);
+}
+
+.final-price {
+    margin: 12px 8px;
+    align-content: flex-end;
+    justify-content: flex-end;
+
+}
+
+.final-price__title {
+    text-align: right;
+}
+
+.final-price__title p {
+    margin: 6px 0;
+    font-size: 18px;
+}
+
+.final-price__value {
+    /*text-align: right;*/
+    text-align: left;
+}
+
+.final-price__value p {
+    margin: 6px 0;
+    font-size: 18px;
+}
+
+.order-detail__title h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.order-detail__moble {
+    /*flex-direction: column;*/
+
+}
+
+
+/*order-detail-responsive-start*/
+
+@media only screen and (min-width: 768px) and (max-width: 1024px){
+    .order-detail__title {
+        font-size: 16px;
+    }
+    .order-detail__info {
+        font-size: 16px;
+    }
+    .final-price__title p {
+        font-size: 16px;
+    }
+    .final-price__value p {
+        font-size: 16px;
+    }
+    
+}
+
+@media only screen and (min-width: 600px) and (max-width: 800px){
+    .order-detail__title {
+        font-size: 16px;
+    }
+    .order-detail__info {
+        font-size: 16px;
+    }
+    .final-price__title p {
+        font-size: 16px;
+    }
+    .final-price__value p {
+        font-size: 16px;
+    }    
+}
+
+/*order-detail-responsive-end*/
+
+/* Order-detail-end */
