@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Banner from '../../components/Banner/Banner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Pagination from '../../components/Result/pagination';
 import Product from '../../components/Result/product';
 import client from '../../components/Category/apolloClient'
@@ -38,6 +38,11 @@ export async function getServerSideProps({ query }) {
                     brand{
                         name
                     }
+                    screenSize
+                    screenPanel
+                    screenResolution
+                    cpu
+                    gpu
                 }
             }
         `,
@@ -73,6 +78,68 @@ export default function Result({ products }) {
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
     const paginate = pageNumber => (setCurrentPage(pageNumber))
+
+    useEffect(() => {
+        // Hide all hovercar first time
+        $(".hovercard").hide();
+
+        $(".product__title").hover(
+            function () {
+                const elems = this;
+                const curClass = elems.className; // current class clicked.
+                const windowHeight = $(window).height();
+                const windowWidth = $(window).width();
+
+                const left = elems.offsetLeft;
+                const top = elems.offsetTop;
+                const linkHeight = $(this).height();
+                const linkWidth = $(this).width();
+                const bottom = windowHeight - top - linkHeight;
+                const right = windowWidth - left - linkWidth;
+                const topbottom = top < bottom ? bottom : top;
+                const leftright = left < right ? right : left;
+
+                const tooltiph = $(this).find(".hovercard").height();
+                const tooltipw = $(this).find(".hovercard").width();
+
+                if (topbottom == bottom && leftright == right) {
+                    var yPos = top + 45;
+                    var xPos = left + linkWidth + 10;
+                    $(this).find(".hovercard").css("top", yPos + "px");
+                    $(this).find(".hovercard").css("left", xPos + "px");
+                }
+
+                if (topbottom == bottom && leftright == left) {
+                    //done
+                    var yPos = top + 45;
+                    var xPos = right + linkWidth + 10;
+                    $(this).find(".hovercard").css("top", yPos + "px");
+                    $(this).find(".hovercard").css("right", xPos + "px");
+                }
+
+                if (topbottom == top && leftright == right) {
+                    //done
+                    var xPos = left + linkWidth + 10;
+                    var yPos = top - tooltiph - linkHeight / 2 - 45;
+                    $(this).find(".hovercard").css("top", yPos + "px");
+                    $(this).find(".hovercard").css("left", xPos + "px");
+                }
+
+                if (topbottom == top && leftright == left) {
+                    var yPos = top - tooltiph - linkHeight / 2;
+                    var xPos = left - tooltipw - linkWidth - 45;
+                    $(this).find(".hovercard").css("top", yPos + "px");
+                    $(this).find(".hovercard").css("left", xPos + "px");
+                }
+
+                $(this).find(".hovercard").fadeIn("fast");
+            },
+
+            function () {
+                $(this).find(".hovercard").fadeOut("fast");
+            }
+        );
+    });
 
     return (
         <>

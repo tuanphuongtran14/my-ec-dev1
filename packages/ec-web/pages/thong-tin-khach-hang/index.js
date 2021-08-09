@@ -5,6 +5,8 @@ import { userApi } from "../../apis";
 import { signOut } from "../../helpers/auth";
 import { useRouter } from "next/router";
 import Link from "next/link"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function Customer() {
@@ -48,6 +50,21 @@ export default function Customer() {
         setUserInfo(user);
         setUserOrder(orders);
     }, []);
+
+    //const [userInfo, setUserInfo] = useState({});
+    //const [userOrder, setUserOrder] = useState([]);
+    //useEffect(async () => {
+    //    const {
+    //        data: { me: user },
+    //    } = await userApi.me();
+    //    const {
+    //        data: { orders },
+    //    } = await userApi.getUserOrders();
+
+    //    setUserInfo(user);
+    //    setUserOrder(orders);
+    //}, []);
+
 
     const Address = (props) => (
         <div>
@@ -95,6 +112,77 @@ export default function Customer() {
                 trangThaiDonHang={order.status}
             />
         ));
+        const notifyNotMatchPwd = () => toast.warn('Mật khẩu bạn nhập không khớp nhau', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    
+        const notifyChangePwdFailure  = () => toast.error('Có lỗi xảy ra trong quá trình thay đổi mật khẩu', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    
+        const notifyChangePwdSuccessfully = () => toast.success('Thay đổi mật khẩu mới thành công', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    
+        const handleChangePassword = async e => {
+            const currentPwd = document.getElementById('current-password').value;
+            const newPwd = document.getElementById('new-password').value;
+            const confirmedPwd = document.getElementById('confirmed-password').value;
+    
+            if(newPwd !== confirmedPwd)
+                return notifyNotMatchPwd();
+    
+            const { 
+                data, 
+                errors 
+            } = await userApi.changePassword(currentPwd, newPwd, confirmedPwd);
+            
+            return !errors ? data.changePassword : false;
+        };
+    
+        const handleSubmitUpdateProfile = async e => {
+            e.preventDefault();
+            const btn = e.target;
+            const wantToChangePwd = document.getElementById('change-password').checked;
+    
+            btn.setAttribute("disabled", true);
+            btn.innerHTML = `
+                <span class="spinner-border spinner-border-sm"></span>
+                Đang gửi... 
+            `;
+    
+            if(wantToChangePwd) {
+                const changedPassword = await handleChangePassword();
+                
+                // If new passwords is not match, handleChangePassword will notify and return an string
+                if(typeof changedPassword === 'string')
+                    return;
+    
+                const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
+                notify();
+            }
+    
+            btn.removeAttribute("disabled");
+            btn.innerHTML = "Cập nhật"
+        };
 
     useEffect(() => {
         function customerToggle() {
@@ -302,41 +390,86 @@ export default function Customer() {
                                         id="change-password__show"
                                     >
                                         <label
-                                            for="old-password"
+                                            for="current-password"
                                             className="col-sm-2 col-form-label"
                                         >
-                                            Mật khẩu cũ
+                                            Mật khẩu hiện tại
                                         </label>
-                                        <input
-                                            type="text"
-                                            className="form-control col-sm-10"
-                                            id="old-password"
-                                            placeholder="Nhập mật khẩu cũ"
-                                        />
+                                        <div className="col-sm-10 px-0">
+                                            <input
+                                                type="password"
+                                                className="form-control w-100"
+                                                id="current-password"
+                                                placeholder="Nhập mật khẩu cũ"
+                                            />
+                                            <span 
+                                                toggle="#current-password" 
+                                                className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
+                                                onClick={e => {
+                                                    $(e.target).toggleClass("fa-eye fa-eye-slash");
+                                                    var input = $($(e.target).attr("toggle"));
+                                                    if (input.attr("type") == "password") {
+                                                    input.attr("type", "text");
+                                                    } else {
+                                                    input.attr("type", "password");
+                                                    }
+                                                }}
+                                            ></span>
+                                        </div>
                                         <label
                                             for="new-password"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Mật khẩu mới
                                         </label>
-                                        <input
-                                            type="text"
-                                            className="form-control col-sm-10"
-                                            id="new-password"
-                                            placeholder="Nhập mật khẩu mới"
-                                        />
+                                        <div className="col-sm-10 px-0">
+                                            <input
+                                                type="password"
+                                                className="form-control w-100"
+                                                id="new-password"
+                                                placeholder="Nhập mật khẩu cũ"
+                                            />
+                                            <span 
+                                                toggle="#new-password" 
+                                                className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
+                                                onClick={e => {
+                                                    $(e.target).toggleClass("fa-eye fa-eye-slash");
+                                                    var input = $($(e.target).attr("toggle"));
+                                                    if (input.attr("type") == "password") {
+                                                    input.attr("type", "text");
+                                                    } else {
+                                                    input.attr("type", "password");
+                                                    }
+                                                }}
+                                            ></span>
+                                        </div>
                                         <label
-                                            for="confirm-password"
+                                            for="confirmed-password"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Xác nhận mật khẩu mới
                                         </label>
-                                        <input
-                                            type="text"
-                                            className="form-control col-sm-10"
-                                            id="confirm-password"
-                                            placeholder="Nhập lại mật khẩu mới"
-                                        />
+                                        <div className="col-sm-10 px-0">
+                                            <input
+                                                type="password"
+                                                className="form-control w-100"
+                                                id="confirmed-password"
+                                                placeholder="Nhập mật khẩu cũ"
+                                            />
+                                            <span 
+                                                toggle="#confirmed-password" 
+                                                className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
+                                                onClick={e => {
+                                                    $(e.target).toggleClass("fa-eye fa-eye-slash");
+                                                    var input = $($(e.target).attr("toggle"));
+                                                    if (input.attr("type") == "password") {
+                                                    input.attr("type", "text");
+                                                    } else {
+                                                    input.attr("type", "password");
+                                                    }
+                                                }}
+                                            ></span>
+                                        </div>
                                     </div>
                                     <div className="form-group row">
                                         <div className="col-sm-2"></div>
@@ -344,6 +477,7 @@ export default function Customer() {
                                             <button
                                                 type="submit"
                                                 className="btn btn-primary"
+                                                onClick={handleSubmitUpdateProfile}
                                             >
                                                 Cập nhập
                                             </button>

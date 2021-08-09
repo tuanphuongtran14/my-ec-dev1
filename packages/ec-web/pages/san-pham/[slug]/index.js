@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
-import { Header, Footer, Modal, Review, RatingStars } from "../../../components";
+import { Header, Footer, Modal, Review, RatingStars, Product } from "../../../components";
 import { useAuth } from "../../../helpers/auth";
 import axios from "axios";
 import Flickity from "react-flickity-component";
@@ -35,7 +35,7 @@ export const getServerSideProps = useAuth(async ({ req, res, params }) => {
     };
 });
 
-export default function Product({
+export default function ProductPage({
     product,
     reviewList,
     isSignedIn,
@@ -57,7 +57,7 @@ export default function Product({
     const finalPrice = product.finalPrice.toLocaleString("DE-de");
     const router = useRouter();
     // Sản phẩm liên quan
-    const relatedProduct = relatedProducts.slice(1, 5).map((product, index) => {
+    const relatedProduct = relatedProducts.slice(0, 4).map((product, index) => {
         const regularPrice = product.regularPrice.toLocaleString("DE-de");
         const finalPrice = product.finalPrice.toLocaleString("DE-de");
         return (
@@ -77,12 +77,8 @@ export default function Product({
                     <span className="regular-price">{regularPrice}₫</span>
                 </div>
                 <div className="product__rating">
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <i className="fa product__rating-icon fa-star" aria-hidden="true" />
-                    <span>(472 đánh giá)</span>
+                    <RatingStars key={"related" + index} stars={product.stars} />
+                    <span>({product.votes} đánh giá)</span>
                 </div>
                 {product.salespercentage > 0 ? (
                     <div className="product__box-sticker">
@@ -101,13 +97,11 @@ export default function Product({
             return product.options.map((option, index) => {
                 return option.images.map((image, index) => {
                     return (
-                        <>
-                            <img
-                                className="product-image"
-                                src={process.env.NEXT_PUBLIC_API_URL + image.url}
-                                alt=""
-                            />
-                        </>
+                        <img
+                            className="product-image"
+                            src={process.env.NEXT_PUBLIC_API_URL + image.url}
+                            alt=""
+                        />
                     );
                 });
             });
@@ -142,6 +136,7 @@ export default function Product({
                         <div
                             className="versionDisabled"
                             style={{pointerEvents: "none"}}
+                            key={`option${index}`}
                         >
                             {option.color}
                             <span className="version__price">
@@ -158,6 +153,7 @@ export default function Product({
                         <div
                             className="version"
                             onClick={() => setSelectedColor(option.color)}
+                            key={`option${index}`}
                         >
                             {option.color}
                             <span className="version__price">
@@ -1210,23 +1206,6 @@ export default function Product({
             <Footer />
             {/* <!-- Optional JavaScript --> */}
             <script src="/vendors/flickity.pkgd.min.js"></script>
-            <script src="/js/main.js"></script>
-            {/* <!-- jQuery first, then Popper.js, then Bootstrap JS --> */}
-            <script
-                src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                crossOrigin="anonymous"
-            ></script>
-            <script
-                src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-                crossOrigin="anonymous"
-            ></script>
-            <script
-                src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-                crossOrigin="anonymous"
-            ></script>
         </>
     );
 }

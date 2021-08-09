@@ -231,12 +231,16 @@ html{
 /*-------------------------*/
 .bd-top--fake-bg,
 .bd-top-left--fake-bg {
-    border-top: 20px solid $bodyColor;
+    border-top: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    margin-top: 20px;
 }
 
 .bd-top-left--fake-bg {
     padding: 0 0;
-    border-left: 20px solid $bodyColor;
+    border-right: 1px solid #dee2e6;
+    border-left: none !important;
+    // margin-left: 10px;
     @media only screen and (max-width: 991px) {
         border-left: none;
     }
@@ -1026,6 +1030,7 @@ ul.product-details__bonus {
     }
 }
 
+
 .product-list {
     &.product-list--non-slide {
         display: flex;
@@ -1067,11 +1072,41 @@ ul.product-details__bonus {
         .product__title {
             font-weight: 600;
             color: #4d4d4d;
+            // position: relative;
 
             a {
                 font-weight: 600;
                 color: #4d4d4d;
             }
+            .hovercard { 
+                position: absolute; 
+                z-index: 100;
+                left: 142%;
+                top: 0px;
+                // overflow: auto;
+                transform: translateX(-50%);
+                @media only screen and (max-width: 992px) {
+                    display: none;
+                }
+            }
+            .tooltiptext {
+                display: flex; 
+                flex-direction: column; 
+                justify-content: flex-start; 
+                background-color: $bodyColor;
+                padding: 0;
+                color: black; 
+                line-height: 15px;
+                transition: 1s;
+                width: 400px;
+                table{
+                    margin-bottom: 0;
+                    tr{
+                        border: 1px solid black;
+                    }
+                }
+            }
+            
         }
         .product__price {
             margin: .5rem 0;
@@ -1144,6 +1179,7 @@ ul.product-details__bonus {
                 }
             }
         }
+        
     }
 }
 
@@ -1745,13 +1781,6 @@ footer a {
         width:250px !important;
         margin: 0 auto;
     }
-    .field-icon {
-        float: right;
-        margin-top: -30px;
-        position: relative;
-        left: -1rem;
-        z-index: 2;
-      }
         
     /* Mobile */
     @media screen and (max-width:500px){
@@ -1789,6 +1818,14 @@ footer a {
     }
 }
 
+.field-icon {
+    float: right;
+    margin-top: -30px;
+    position: relative;
+    left: -1rem;
+    z-index: 2;
+}
+
 /* 13. HomeSection
 /*=================================================================================*/
 
@@ -1806,6 +1843,14 @@ footer a {
 }
 
 .bannerIphone{
+    .bannerIphone--img{
+        background-image: url('../img/iphoneWallPaper.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        height: 482px; 
+    }
     .bannerIphone--text{
         display: flex;
         justify-content: center;
@@ -1836,7 +1881,7 @@ footer a {
             }
         }
     } 
-    @media only screen and (max-width: 812px){
+    @media only screen and (max-width: 972px){
         // display: block; 
         display: flexbox;
         flex-wrap: wrap;
@@ -1850,12 +1895,13 @@ footer a {
         }
         .bannerIphone--img{
             max-width: 100%;
-            height: 100%;
+            max-height: 337px;
+            flex: auto;
         }  
     }
 }
 
-.bannerSamsung{
+.bannerSamsung{ 
     .bannerSamsung--img{
         // height: 100%; 
         background-image: url('https://images.unsplash.com/photo-1611282104291-6bd45ca8bf93?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
@@ -1863,7 +1909,7 @@ footer a {
         background-size: cover;
         background-position: center;
         width: 100%;
-        height: 482px; 
+        min-height: 482px; 
     }
     .bannerSamsung--text{
         transition-duration: 0.5s;
@@ -1906,11 +1952,14 @@ footer a {
         justify-content: flex-start;
         clear: both;
         .bannerSamsung--text{
-            width: 100%;
+            max-width: 100%;
+            padding-top: 10%;
+            padding-bottom: 10%;
         }
         .bannerSamsung--img{
-            width: 100%;
-            max-height: 337px;
+            max-width: 100%;
+            height: 337px;
+            flex: auto;
         }
     }
 }

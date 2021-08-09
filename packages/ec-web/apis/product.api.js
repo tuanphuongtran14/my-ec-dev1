@@ -21,7 +21,7 @@ class ProductApi {
         `;
         const variables = {
             limit: limit || 10,
-            slug
+            slug:slug||'realme-c15'
         };
         return callApi.query(query, variables, options);
     }

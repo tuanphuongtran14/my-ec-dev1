@@ -22,12 +22,12 @@ module.exports = {
             screenSize,
             brand,
         } = await this.findProductBySlug(slug);
-
+        
         const filter = {
             _id: { $nin: [new ObjectID(_id)] },
             $or: [
                 {
-                    brand: brand._id,
+                    'brand.name': brand.name,
                 },
                 {
                     finalPrice: {
@@ -53,7 +53,9 @@ module.exports = {
             ],
         };
 
-        return await findProductsByAggregation(filter, limit, skip, sort);
+        return await findProductsByAggregation(filter, limit, skip, sort, {
+            useParseFilter: false
+        });
     },
 
     async findProductBySlug(slug) {
@@ -114,9 +116,7 @@ function parseFilterForAggregation(filter) {
             $gte: minBatteryCapacity ? Number(minBatteryCapacity) : undefined,
             $lte: maxBatteryCapacity ? Number(maxBatteryCapacity) : undefined,
         },
-        brand: {
-            name: brand,
-        },
+        'brand.name': brand,
     };
 
     return removeUndefinedFieldsFromObj(result);
@@ -194,12 +194,22 @@ function removeVietnameseTones(str) {
     return str;
 }
 
-async function findProductsByAggregation(filter, limit, skip, sort) {
+async function findProductsByAggregation(filter, limit, skip, sort, options) {
     // Split name to process later
     const name = filter ? filter.name : undefined;
     name && delete filter.name;
+
+    // Default useParseFilter is true
+    !options && (options = {
+        useParseFilter: true
+    });
+
+    const {
+        useParseFilter
+    } = options;
     
-    filter = parseFilterForAggregation(filter);
+    useParseFilter && (filter = parseFilterForAggregation(filter));
+    console.log(filter);
     sort = parseSortForAggregation(sort);
 
     let products = await strapi.query("product").model.aggregate([
