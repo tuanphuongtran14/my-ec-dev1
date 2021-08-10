@@ -42,29 +42,13 @@ export default function Customer() {
                 default:
                     orders[i].status="Status"
               }
-              orders[i].addressLine1 = orders[i].addressLine1 + orders[i].district + orders[i].city
+              orders[i].addressLine1 = orders[i].addressLine1 + " " + orders[i].district + " " + orders[i].city
               orders[i].finalAmount =  orders[i].finalAmount.toLocaleString("DE-de");
         }
         console.log(orders);
-
         setUserInfo(user);
         setUserOrder(orders);
     }, []);
-
-    //const [userInfo, setUserInfo] = useState({});
-    //const [userOrder, setUserOrder] = useState([]);
-    //useEffect(async () => {
-    //    const {
-    //        data: { me: user },
-    //    } = await userApi.me();
-    //    const {
-    //        data: { orders },
-    //    } = await userApi.getUserOrders();
-
-    //    setUserInfo(user);
-    //    setUserOrder(orders);
-    //}, []);
-
 
     const Address = (props) => (
         <div>
@@ -316,7 +300,7 @@ export default function Customer() {
                                             type="text"
                                             className="form-control col-sm-10"
                                             id="name"
-                                            placeholder={userInfo.name}
+                                            defaultValue={userInfo.name}
                                         />
                                     </div>
                                     <div className="form-group row account-form-edit container">
@@ -330,7 +314,7 @@ export default function Customer() {
                                             type="text"
                                             className="form-control col-sm-10"
                                             id="phone"
-                                            placeholder={userInfo.phone}
+                                            defaultValue={userInfo.phone}
                                         />
                                     </div>
                                     <div className="form-group row account-form-edit container">
@@ -344,7 +328,7 @@ export default function Customer() {
                                             type="email"
                                             className="form-control col-sm-10"
                                             id="email"
-                                            placeholder={userInfo.email}
+                                            defaultValue={userInfo.email}
                                         />
                                     </div>
                                     {/*<div className="form-group account-form-edit row">

@@ -52,7 +52,6 @@ export default function OrderDetail({ order }) {
              <div class="row order-detail__item">
                 <div class="col-sm-2 col-info col-info--product">
                     <img class="order-detail__img" src={process.env.NEXT_PUBLIC_API_URL + item.product.thumbnail.url} />
-                    {/*<span class="order-detail__info">{item.product.name}</span>*/}
                 </div>
                 <div class="col-sm-2 col-info">
                     <p class="order-detail__info">{item.product.name}</p>
@@ -72,6 +71,25 @@ export default function OrderDetail({ order }) {
             </div>
         )
     })
+    
+    const itemMoble = order.items.map(item => {
+        return (
+            <div class="order-detail__moble-item">
+                <div class="od-detail__moble-1">
+                    <div class="od-moble__img">
+                        <img class="order-detail__img" src={process.env.NEXT_PUBLIC_API_URL + item.product.thumbnail.url} />
+                    </div>
+                    <div class="od-moble__info od-moble__info--item">
+                        <p><b>Sản phẩm</b> <span>{item.product.name}</span></p>
+                        <p><b>Giá</b> <span> {item.unitPrice.toLocaleString("DE-de")} ₫</span></p>
+                        <p><b>Màu sắc</b> <span>{item.color}</span></p>
+                        <p><b>Số lượng</b> <span>{item.qty}</span></p>
+                        <p><b>Tạm tính</b> <span>{item.totalPrice.toLocaleString("DE-de")} ₫</span></p>
+                    </div>
+                </div>
+            </div>
+        )
+    })
 
     const OrderDetail = () => (
         <div>
@@ -85,7 +103,7 @@ export default function OrderDetail({ order }) {
             <div class="container-fluid" style={{ backgroundColor: "#f0f0f0" }}>
                 <div class="container py-4">
                     <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 on-big-screen">
                             <div>
                                 <h2 class="bill-detail__title">Chi tiết đơn hàng #{order.orderId}</h2>
                             </div>
@@ -132,6 +150,22 @@ export default function OrderDetail({ order }) {
                                         <p>0 đ</p>
                                         <p> {order.finalAmount.toLocaleString("DE-de")} ₫</p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container order-detail__moble">
+                            <div class="container main-title__moble">
+                                <div class="row">
+                                <h1>Chi tiết đơn hàng #3534534534</h1>
+                                </div>
+                            </div>
+                            <div class="row order-detail__moble-content">
+                                {itemMoble}
+                                <div class="od-moble-2 od-moble__info">
+                                    <p><b>Tạm tính</b> <span>{order.finalAmount.toLocaleString("DE-de")} ₫</span></p>
+                                    <p><b>Phí vận chuyển</b> <span> 0 đ</span></p>
+                                    <p><b>Tạm tính</b> <span>{order.finalAmount.toLocaleString("DE-de")} ₫</span></p>
                                 </div>
                             </div>
                         </div>
