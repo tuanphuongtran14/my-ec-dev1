@@ -34,7 +34,6 @@ const infoUser = () => {
                 });
             })
             .catch(function(err){
-                alert("Co loi roi");
             });
         })
     })

@@ -22,7 +22,6 @@ const TinhThanh = () =>
         });
     })
     .catch(function(err){
-        alert("Co loi roi");
     });
 
     fetch("https://provinces.open-api.vn/api/d/")
@@ -44,7 +43,6 @@ const TinhThanh = () =>
         });
     })
     .catch(function(err){
-        alert("Co loi roi");
     });
 
 
