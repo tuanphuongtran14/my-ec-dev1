@@ -1,30 +1,28 @@
 import React from 'react'
+import Link from 'next/link'
 
 const Footer = () => {
     return (
-        <div className="footer mt-auto"> 
+        <div className="footer mt-auto">
             <div className="container text-white text-left text-md-left pt-5">
                 <div className="row">
                     <div className="col-md-3 mx-auto mb-4 px-3">
                         <h6 className="footer__title text-uppercase font-weight-bold">THÔNG TIN HỖ TRỢ</h6>
                         <ul className="menu menu--vertical">
                             <li>
-                                <a className="text-white" href="/" >Chính sách bảo hành</a>
+                                <Link href="/gioi-thieu">
+                                    <a className="text-white">Về chúng tôi</a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white" href="/chinh-sach-bao-hanh-iphone-ipad/" title="Chính sách bảo hành iPhone - iPad">Chính sách bảo hành iPhone - iPad</a>
+                                <Link href="/tin-tuc">
+                                    <a className="text-white">Tin tức</a>
+                                </Link>
                             </li>
                             <li>
-                                <a className="text-white" href="chinh-sach-doi-tra-hang/" title="Chính sách đổi trả hàng">Bảo hành Xiaomi chính hãng</a>
-                            </li>
-                            <li>
-                                <a className="text-white" href="/chinh-sach-mua-hang-online/" title="Chính sách mua hàng Online">Chính sách mua hàng Online</a>
-                            </li>
-                            <li>
-                                <a className="text-white" href="/mua-hang-tra-gop" title="Mua hàng trả góp">Mua hàng trả góp</a>
-                            </li>
-                            <li>
-                                <a className="text-white" href="/chinh-sach-bao-mat-thong-tin-khach-hang/" title="Mua hàng trả góp">Chính sách bảo mật thông tin khách hàng</a>
+                                <Link href="/dich-vu">
+                                    <a className="text-white">Dịch vụ</a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -47,26 +45,51 @@ const Footer = () => {
                         </ul>
                     </div>
                     <div className="col-md-3 mx-auto mb-4 px-3">
-                        <h6 className="footer__title text-uppercase font-weight-bold">KHU VỰC MIỀN BẮC</h6>
+                        <h6 className="footer__title text-uppercase font-weight-bold">Các chi nhánh</h6>
                         <ul className="menu menu--vertical">
                             <li className="text-white">111 Trần Đăng Ninh, Cầu Giấy, Hà Nội</li>
                             <li className="text-white">446 Xã Đàn, Đống Đa, Hà Nội</li>
                             <li className="text-white">118 Thái hà, Đống Đa, Hà Nội</li>
-                            <li className="text-white">312 Nguyễn Trãi, P.Trung Văn, Q.Nam Từ Liêm, Hà Nội</li>
-                            <li className="text-white">418 Lạch Tray, Ngô Quyền, Hải Phòng</li>
-                            <li className="text-white">380 Trần Phú, Ba Đình, TP.Thanh Hóa</li>
-                        </ul> 
+                        </ul>
                     </div>
                     <div className="col-md-3 mx-auto mb-4 px-3">
-                        <h6 className="footer__title text-uppercase font-weight-bold">KHU VỰC MIỀN NAM</h6>
-                        <ul className="menu menu--vertical">
-                            <li className="text-white">111 Trần Đăng Ninh, Cầu Giấy, Hà Nội</li>
-                            <li className="text-white">446 Xã Đàn, Đống Đa, Hà Nội</li>
-                            <li className="text-white">118 Thái hà, Đống Đa, Hà Nội</li>
-                            <li className="text-white">312 Nguyễn Trãi, P.Trung Văn, Q.Nam Từ Liêm, Hà Nội</li>
-                            <li className="text-white">418 Lạch Tray, Ngô Quyền, Hải Phòng</li>
-                            <li className="text-white">380 Trần Phú, Ba Đình, TP.Thanh Hóa</li>
-                        </ul> 
+                        <h6 className="footer__title text-uppercase font-weight-bold">Đăng ký để nhận tin mới nhất</h6>
+                        <div className="input-group mb-3">
+                            <input type="text" className="form-control" placeholder="Email của bạn" aria-label="Recipient's username" aria-describedby="button-addon2" />
+                            <div className="input-group-append">
+                                <button className="btn btn-outline-secondary" type="button" id="button-addon2">Đăng ký</button>
+                            </div>
+                        </div>
+                        <h6 className="footer__title text-uppercase font-weight-bold">Hỗ trợ thanh toán VNPAY</h6>
+                        <div className="row d-flex justify-content-between mb-3">
+                            <div className="col-3 d-inline-block" id="colors">
+                                <img
+                                    style={{ maxWidth: "3rem" }}
+                                    src="https://www.vnpayqr.vn/wp-content/uploads/2019/01/hd_03.png"
+                                    alt=""
+                                />
+                            </div>
+                            <div className="col-3 d-inline-block" id="colors">
+                                <img
+                                    style={{ maxWidth: "3rem" }}
+                                    src="https://www.vnpayqr.vn/wp-content/uploads/2019/01/hd_05.png"
+                                    alt=""
+                                />
+                            </div>
+                            <div className="col-3 d-inline-block" id="colors">
+                                <img
+                                    style={{ maxWidth: "3rem" }}
+                                    src="https://www.vnpayqr.vn/wp-content/uploads/2019/01/hd_07.png"
+                                    alt=""
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-12 d-flex justify-content-center mb-3">
+                        <i className="fab fa-instagram mr-3"></i>
+                        <i className="fab fa-facebook-f mr-3"></i>
+                        <i className="fab fa-google mr-3"></i>
+                        <i className="fab fa-pinterest-p"></i>
                     </div>
                 </div>
             </div>
