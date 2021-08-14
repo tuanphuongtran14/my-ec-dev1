@@ -508,6 +508,7 @@ export default function Customer() {
                 </Head>
                 <Header />
                 <Customer />
+                <ToastContainer />
                 <Footer />
             </div>
         </div>

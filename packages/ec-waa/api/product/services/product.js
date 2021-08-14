@@ -209,7 +209,6 @@ async function findProductsByAggregation(filter, limit, skip, sort, options) {
     } = options;
     
     useParseFilter && (filter = parseFilterForAggregation(filter));
-    console.log(filter);
     sort = parseSortForAggregation(sort);
 
     let products = await strapi.query("product").model.aggregate([
