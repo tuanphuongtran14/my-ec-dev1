@@ -5,11 +5,11 @@ import Footer from "../../components/Footer/Footer"
 import Queries from "../../components/Checkout/ItemList";
 import InfoUser from "../../components/Checkout/infoUser";
 import { useRouter } from "next/router";
-import { useAuth } from "../../helpers/auth";
+import withIronSession from "../../helpers/customWithIronSession";
 import React, { useEffect, useState } from "react";
 import EmptyCart from "../chua-co-don-hang/index"
 
-export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+export const getServerSideProps = withIronSession(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
     if (!jwt) {
         res.writeHead(302, {

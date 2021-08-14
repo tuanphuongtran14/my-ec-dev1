@@ -7,6 +7,7 @@ import About from "./About/About"
 import RatingStars from "./RatingStars/RatingStars";
 import CartItem from "./CartItem/CartItem";
 import Product from './Category/product';
+import Pagination from "./Wishlist/pagination";
 
 export {
     Header,
@@ -17,5 +18,6 @@ export {
     CartItem,
     Banner,
     About,
-    Product
+    Product,
+    Pagination
 };

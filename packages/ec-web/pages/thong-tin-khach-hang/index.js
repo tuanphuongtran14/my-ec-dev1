@@ -6,10 +6,27 @@ import { signOut } from "../../helpers/auth";
 import { useRouter } from "next/router";
 import Link from "next/link"
 import { ToastContainer, toast } from 'react-toastify';
+import withIronSession from '../../helpers/customWithIronSession';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function Customer() {
+export const getServerSideProps = withIronSession(async ({ req, res, params }) => {
+    const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
+    if (!jwt) {
+        res.writeHead(302, {
+            Location: "/",
+        });
+        res.end();
+    }
+    return {
+        props: {
+            isSignedIn: jwt
+        },
+    };
+});
+
+
+export default function Customer({isSignedIn}) {
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({});
     const [userOrder, setUserOrder] = useState([]);
@@ -52,7 +69,7 @@ export default function Customer() {
 
     const Address = (props) => (
         <div>
-            <label for="address">{props.address}</label>
+            <label htmlFor="address">{props.address}</label>
             <input
                 className="input-address__radio"
                 type="radio"
@@ -157,16 +174,17 @@ export default function Customer() {
             const changedPassword = await handleChangePassword();
 
             // If new passwords is not match, handleChangePassword will notify and return an string
-            if (typeof changedPassword === 'string')
-                return;
-
-            const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
-            notify();
+            if (typeof changedPassword !== 'string') {
+                const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
+                notify();
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirmed-password').value = '';
+            }
         }
 
         btn.removeAttribute("disabled");
-        btn.innerHTML = "Cập nhật"
-        router.push("/thong-tin-khach-hang");
+        btn.innerHTML = "Cập nhật";
     };
 
     useEffect(() => {
@@ -205,6 +223,11 @@ export default function Customer() {
             });
         }
         customerToggle();
+    });
+
+    useEffect(() => {
+        if(!isSignedIn) 
+            router.push('/');
     });
 
     const Customer = () => (
@@ -277,7 +300,7 @@ export default function Customer() {
                                 <form className="account-detail__form">
                                     <div className="form-group row account-form-edit container">
                                         <label
-                                            for="name"
+                                            htmlFor="name"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Tên người dùng
@@ -292,7 +315,7 @@ export default function Customer() {
                                     </div>
                                     <div className="form-group row account-form-edit container">
                                         <label
-                                            for="name"
+                                            htmlFor="name"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Họ tên
@@ -307,7 +330,7 @@ export default function Customer() {
                                     </div>
                                     <div className="form-group row account-form-edit container">
                                         <label
-                                            for="phone"
+                                            htmlFor="phone"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Số điện thoại
@@ -322,7 +345,7 @@ export default function Customer() {
                                     </div>
                                     <div className="form-group row account-form-edit container">
                                         <label
-                                            for="email"
+                                            htmlFor="email"
                                             className="col-sm-2  col-form-label"
                                         >
                                             Email
@@ -347,7 +370,7 @@ export default function Customer() {
                                                 />
                                                 <label
                                                     className="form-check-label"
-                                                    for="change-password"
+                                                    htmlFor="change-password"
                                                 >
                                                     Thay đổi mật khẩu
                                                 </label>
@@ -359,7 +382,7 @@ export default function Customer() {
                                         id="change-password__show"
                                     >
                                         <label
-                                            for="current-password"
+                                            htmlFor="current-password"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Mật khẩu hiện tại
@@ -386,7 +409,7 @@ export default function Customer() {
                                             ></span>
                                         </div>
                                         <label
-                                            for="new-password"
+                                            htmlFor="new-password"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Mật khẩu mới
@@ -413,7 +436,7 @@ export default function Customer() {
                                             ></span>
                                         </div>
                                         <label
-                                            for="confirmed-password"
+                                            htmlFor="confirmed-password"
                                             className="col-sm-2 col-form-label"
                                         >
                                             Xác nhận mật khẩu mới

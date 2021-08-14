@@ -105,20 +105,43 @@ export default function CartPage() {
         !errors && setNewCart(cart);
     }
 
-    const clickPay = () =>{
+    const clickPay = async e =>{
+        const btn = e.target;
         const selectedItemLength = localStorage.getItem('selectedItemLength');
-            if (selectedItemLength < 1)
-                toast.info(`Hiện bạn chưa chọn sản phẩm nào để mua `, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-              });  
-            else 
-              route.push('/thong-tin-giao-hang');
+
+        btn.setAttribute("disabled", true);
+        btn.innerHTML = `
+            <span class="spinner-border spinner-border-sm"></span>
+        `;
+
+        await fetchCart();
+
+        if(someOutOfStock)
+            toast.warn(`Số lượng sản phẩm trong kho không đủ để thực hiện đơn hàng`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        else if (selectedItemLength < 1)
+            toast.warn(`Hiện bạn chưa chọn sản phẩm nào để mua`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });  
+        else 
+            route.push('/thong-tin-giao-hang');
+
+        
+        btn.removeAttribute("disabled");
+        btn.innerHTML = "Thanh toán";
   };
   
     return (
@@ -268,8 +291,7 @@ export default function CartPage() {
                                 <a
                                     className="text-white btn btn--buy-now btn-block" onClick = {clickPay}
                                 >
-                                    {" "}
-                                    Thanh toán{" "}
+                                    Thanh toán
                                 </a>
                                
                                 <Link href="/"> 

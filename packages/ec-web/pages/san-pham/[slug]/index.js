@@ -2,16 +2,14 @@ import Head from "next/head";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { Header, Footer, Modal, Review, RatingStars, Product } from "../../../components";
-import { useAuth } from "../../../helpers/auth";
+import withIronSession from "../../../helpers/customWithIronSession";
 import axios from "axios";
 import Flickity from "react-flickity-component";
 import { productApi, reviewApi } from "../../../apis";
 import { graphqlClient, gql } from "../../../helpers/apollo-client";
 import { useRouter } from "next/router";
-// import $ from "jquery";
 
-
-export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+export const getServerSideProps = withIronSession(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
 
     const { data: {

@@ -1,17 +1,15 @@
 import React from "react";
 import Head from "next/head";
 import { graphqlClient, gql } from "../../helpers/apollo-client";
-import { useAuth } from "../../helpers/auth";
-import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
-import Pagination from "../../components/Wishlist/pagination";
+import withIronSession from "../../helpers/customWithIronSession";
+import { Header, Footer, Pagination } from "../../components";
 import { useState } from "react";
 import Modal from "../../components/Modal/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 
-export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+export const getServerSideProps = withIronSession(async ({ req, res, params }) => {
   const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
   const user = req.session.get("user");
   const isSignedIn = user ? true : false;
