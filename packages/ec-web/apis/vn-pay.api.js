@@ -3,23 +3,7 @@ import dateFormat from "dateformat";
 import querystring from "qs";
 import sha256 from "sha256";
 class vnPay{
-    // sortObject(o) {
-    //     var sorted = {},
-    //         key, a = [];
-    
-    //     for (key in o) {
-    //         if (o.hasOwnProperty(key)) {
-    //             a.push(key);
-    //         }
-    //     }
-    
-    //     a.sort();
-    
-    //     for (key = 0; key < a.length; key++) {
-    //         sorted[a[key]] = o[a[key]];
-    //     }
-    //     return sorted;
-    // }
+
     GerUrl(amount,bankCode,orderInfo,orderType){
     
     var ipAddr = "127.0.0.1";
@@ -77,9 +61,5 @@ class vnPay{
 
     return vnpUrl;
     }
-
-    
-    
-
 }
 export default new vnPay();
