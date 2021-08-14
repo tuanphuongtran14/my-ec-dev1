@@ -22,28 +22,28 @@ export default function Customer() {
         } = await userApi.getUserOrders();
         console.log(orders);
 
-        for(var i=0;i<orders.length;i++){
-            switch(orders[i].status) {
+        for (var i = 0; i < orders.length; i++) {
+            switch (orders[i].status) {
                 case "Pending":
-                    orders[i].status="Đang sử lý"
+                    orders[i].status = "Đang sử lý"
                     break;
                 case "Confirmed":
-                    orders[i].status="Đã xác nhận đơn"
-                  break;
+                    orders[i].status = "Đã xác nhận đơn"
+                    break;
                 case "Delivery":
-                    orders[i].status="Đang giao"
-                  break;
+                    orders[i].status = "Đang giao"
+                    break;
                 case "Delivered":
-                    orders[i].status="Đã giao"
-                  break;
+                    orders[i].status = "Đã giao"
+                    break;
                 case "Cancelled":
-                    orders[i].status="Đã hủy"
-                  break;
+                    orders[i].status = "Đã hủy"
+                    break;
                 default:
-                    orders[i].status="Status"
-              }
-              orders[i].addressLine1 = orders[i].addressLine1 + " " + orders[i].district + " " + orders[i].city
-              orders[i].finalAmount =  orders[i].finalAmount.toLocaleString("DE-de");
+                    orders[i].status = "Status"
+            }
+            orders[i].addressLine1 = orders[i].addressLine1 + " " + orders[i].district + " " + orders[i].city
+            orders[i].finalAmount = orders[i].finalAmount.toLocaleString("DE-de");
         }
         console.log(orders);
         setUserInfo(user);
@@ -69,7 +69,7 @@ export default function Customer() {
     const OrderProduct = (props) => (
         <tr className="control-show__order">
             <td>
-                <Link href="/order-detail/[id]" as ={`/order-detail/${props.id}`} className="text-dark">
+                <Link href="/order-detail/[id]" as={`/order-detail/${props.id}`} className="text-dark">
                     {props.maDonHang}
                 </Link>
             </td>
@@ -78,9 +78,9 @@ export default function Customer() {
             <td className="order-moble">{props.trangThaiDonHang}</td>
         </tr>
     );
-     // Handle sign out from user
-     const handleSignOut = async () => {
-        if(await signOut()) {
+    // Handle sign out from user
+    const handleSignOut = async () => {
+        if (await signOut()) {
             router.push("/");
             localStorage.clear();
         }
@@ -96,77 +96,78 @@ export default function Customer() {
                 trangThaiDonHang={order.status}
             />
         ));
-        const notifyNotMatchPwd = () => toast.warn('Mật khẩu bạn nhập không khớp nhau', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    
-        const notifyChangePwdFailure  = () => toast.error('Có lỗi xảy ra trong quá trình thay đổi mật khẩu', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    
-        const notifyChangePwdSuccessfully = () => toast.success('Thay đổi mật khẩu mới thành công', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    
-        const handleChangePassword = async e => {
-            const currentPwd = document.getElementById('current-password').value;
-            const newPwd = document.getElementById('new-password').value;
-            const confirmedPwd = document.getElementById('confirmed-password').value;
-    
-            if(newPwd !== confirmedPwd)
-                return notifyNotMatchPwd();
-    
-            const { 
-                data, 
-                errors 
-            } = await userApi.changePassword(currentPwd, newPwd, confirmedPwd);
-            
-            return !errors ? data.changePassword : false;
-        };
-    
-        const handleSubmitUpdateProfile = async e => {
-            e.preventDefault();
-            const btn = e.target;
-            const wantToChangePwd = document.getElementById('change-password').checked;
-    
-            btn.setAttribute("disabled", true);
-            btn.innerHTML = `
+    const notifyNotMatchPwd = () => toast.warn('Mật khẩu bạn nhập không khớp nhau', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+    const notifyChangePwdFailure = () => toast.error('Có lỗi xảy ra trong quá trình thay đổi mật khẩu', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+    const notifyChangePwdSuccessfully = () => toast.success('Thay đổi mật khẩu mới thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+    const handleChangePassword = async e => {
+        const currentPwd = document.getElementById('current-password').value;
+        const newPwd = document.getElementById('new-password').value;
+        const confirmedPwd = document.getElementById('confirmed-password').value;
+
+        if (newPwd !== confirmedPwd)
+            return notifyNotMatchPwd();
+
+        const {
+            data,
+            errors
+        } = await userApi.changePassword(currentPwd, newPwd, confirmedPwd);
+
+        return !errors ? data.changePassword : false;
+    };
+
+    const handleSubmitUpdateProfile = async e => {
+        e.preventDefault();
+        const btn = e.target;
+        const wantToChangePwd = document.getElementById('change-password').checked;
+
+        btn.setAttribute("disabled", true);
+        btn.innerHTML = `
                 <span class="spinner-border spinner-border-sm"></span>
                 Đang gửi... 
             `;
-    
-            if(wantToChangePwd) {
-                const changedPassword = await handleChangePassword();
-                
-                // If new passwords is not match, handleChangePassword will notify and return an string
-                if(typeof changedPassword === 'string')
-                    return;
-    
-                const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
-                notify();
-            }
-    
-            btn.removeAttribute("disabled");
-            btn.innerHTML = "Cập nhật"
-        };
+
+        if (wantToChangePwd) {
+            const changedPassword = await handleChangePassword();
+
+            // If new passwords is not match, handleChangePassword will notify and return an string
+            if (typeof changedPassword === 'string')
+                return;
+
+            const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
+            notify();
+        }
+
+        btn.removeAttribute("disabled");
+        btn.innerHTML = "Cập nhật"
+        router.push("/thong-tin-khach-hang");
+    };
 
     useEffect(() => {
         function customerToggle() {
@@ -251,7 +252,7 @@ export default function Customer() {
                                             <span>Quản lý đơn hàng</span>
                                         </a>
                                     </li>
-                                    <li className="list-group-item list-group-item__edit"  onClick={handleSignOut}>
+                                    <li className="list-group-item list-group-item__edit" onClick={handleSignOut}>
                                         <a className="account-list-info wish-list-event">
                                             <i
                                                 className="fas account-list-info__icon fa-sign-out-alt"
@@ -301,6 +302,7 @@ export default function Customer() {
                                             className="form-control col-sm-10"
                                             id="name"
                                             defaultValue={userInfo.name}
+                                            disabled
                                         />
                                     </div>
                                     <div className="form-group row account-form-edit container">
@@ -315,6 +317,7 @@ export default function Customer() {
                                             className="form-control col-sm-10"
                                             id="phone"
                                             defaultValue={userInfo.phone}
+                                            disabled
                                         />
                                     </div>
                                     <div className="form-group row account-form-edit container">
@@ -329,27 +332,9 @@ export default function Customer() {
                                             className="form-control col-sm-10"
                                             id="email"
                                             defaultValue={userInfo.email}
+                                            disabled
                                         />
                                     </div>
-                                    {/*<div className="form-group account-form-edit row">
-                                  <label for="address" className="col-sm-2 col-form-label">Địa chỉ của bạn</label>
-                                  <div className="col-sm-10">
-                                    <Address 
-                                      address='Đội 8 thôn 3 xã Tiên Mỹ huyện Tiên Phước tỉnh Quảng Nam'
-                                    />
-                                    <Address 
-                                      address='Đội 6 thôn 9 xã Tiên Mỹ huyện Tiên Phước tỉnh Quảng Nam'
-                                    />
-                                    <Address 
-                                      address='Đội 4 thôn 7 xã Tiên Mỹ huyện Tiên Phước tỉnh Quảng Nam'
-                                    />
-                                    <br></br>
-                                  </div>
-                                </div>
-                                <div className="form-group account-form-edit row">
-                                    <label for="add-address" className="col-sm-2 col-form-label">Thêm địa chỉ</label>
-                                    <input type="text" className="form-control" id="add-address" placeholder="Nhập vào chi tiết địa chỉ của bạn"/>
-                                </div>*/}
                                     <div className="form-group row">
                                         <div className="col-sm-2"></div>
                                         <div className="col-sm-10">
@@ -384,18 +369,18 @@ export default function Customer() {
                                                 type="password"
                                                 className="form-control w-100"
                                                 id="current-password"
-                                                placeholder="Nhập mật khẩu cũ"
+                                                placeholder="Nhập mật khẩu hiện tại"
                                             />
-                                            <span 
-                                                toggle="#current-password" 
+                                            <span
+                                                toggle="#current-password"
                                                 className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
                                                 onClick={e => {
                                                     $(e.target).toggleClass("fa-eye fa-eye-slash");
                                                     var input = $($(e.target).attr("toggle"));
                                                     if (input.attr("type") == "password") {
-                                                    input.attr("type", "text");
+                                                        input.attr("type", "text");
                                                     } else {
-                                                    input.attr("type", "password");
+                                                        input.attr("type", "password");
                                                     }
                                                 }}
                                             ></span>
@@ -411,18 +396,18 @@ export default function Customer() {
                                                 type="password"
                                                 className="form-control w-100"
                                                 id="new-password"
-                                                placeholder="Nhập mật khẩu cũ"
+                                                placeholder="Nhập mật khẩu mới"
                                             />
-                                            <span 
-                                                toggle="#new-password" 
+                                            <span
+                                                toggle="#new-password"
                                                 className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
                                                 onClick={e => {
                                                     $(e.target).toggleClass("fa-eye fa-eye-slash");
                                                     var input = $($(e.target).attr("toggle"));
                                                     if (input.attr("type") == "password") {
-                                                    input.attr("type", "text");
+                                                        input.attr("type", "text");
                                                     } else {
-                                                    input.attr("type", "password");
+                                                        input.attr("type", "password");
                                                     }
                                                 }}
                                             ></span>
@@ -438,32 +423,29 @@ export default function Customer() {
                                                 type="password"
                                                 className="form-control w-100"
                                                 id="confirmed-password"
-                                                placeholder="Nhập mật khẩu cũ"
+                                                placeholder="Nhập lại mật khẩu mới"
                                             />
-                                            <span 
-                                                toggle="#confirmed-password" 
+                                            <span
+                                                toggle="#confirmed-password"
                                                 className="fas fa-fw fa-eye fa-sm text-secondary field-icon toggle-password"
                                                 onClick={e => {
                                                     $(e.target).toggleClass("fa-eye fa-eye-slash");
                                                     var input = $($(e.target).attr("toggle"));
                                                     if (input.attr("type") == "password") {
-                                                    input.attr("type", "text");
+                                                        input.attr("type", "text");
                                                     } else {
-                                                    input.attr("type", "password");
+                                                        input.attr("type", "password");
                                                     }
                                                 }}
                                             ></span>
                                         </div>
-                                    </div>
-                                    <div className="form-group row">
-                                        <div className="col-sm-2"></div>
-                                        <div className="col-sm-10">
+                                        <div className="form-group w-100 d-flex justify-content-center">
                                             <button
                                                 type="submit"
                                                 className="btn btn-primary"
                                                 onClick={handleSubmitUpdateProfile}
                                             >
-                                                Cập nhập
+                                                Cập nhật
                                             </button>
                                         </div>
                                     </div>

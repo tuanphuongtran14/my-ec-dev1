@@ -27,8 +27,9 @@ export default function DropdownUser() {
     // Handle sign out 
     const handleSignOut = async () => {
         if(await signOut()) {
-            router.reload();
+            // router.reload();
             localStorage.clear();
+            router.push("/dang-nhap");
         }
     }
 
