@@ -12,7 +12,7 @@ export const getServerSideProps = withIronSession(async ({ req, res, params }) =
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
     if (!jwt) {
         res.writeHead(302, {
-            Location: "/",
+            Location: "/dang-nhap",
         });
         res.end();
     }
