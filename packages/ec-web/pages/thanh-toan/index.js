@@ -4,18 +4,16 @@ import Banner from "../../components/Banner/Banner";
 import Footer from "../../components/Footer/Footer";
 import Head from "next/head";
 import ItemList from "../../components/Checkout/ItemList";
-import Link from "next/link";
-import { useAuth } from "../../helpers/auth";
+import withIronSession  from "../../helpers/customWithIronSession";
 import { useRouter } from "next/router";
 import EmptyCart from "../chua-co-don-hang/index";
 import { orderApi } from "../../apis";
-import VNPay from "node-vnpay";
 import { vnPay } from "../../apis";
-export const getServerSideProps = useAuth(async ({ req, res, params }) => {
+export const getServerSideProps = withIronSession(async ({ req, res, params }) => {
     const jwt = req.session.get("user") ? req.session.get("user").jwt : null;
     if (!jwt) {
         res.writeHead(302, {
-            Location: "/",
+            Location: "/dang-nhap",
         });
         res.end();
     }

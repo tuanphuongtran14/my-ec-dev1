@@ -186,19 +186,19 @@ export default function Header() {
                             name="name"
                             id="search"
                             className="search-input container "
-                            placeholder="Search"
+                            placeholder="Nhập tên sản phẩm"
                             style={{ width: "100%" }}
                         />
                         <button type="submit" className="btn btn--searchGo" id="search-go"
                         >
                             <div className="searchGo_text">
-                                Go
+                            <i className="fas fa-search"></i>
                             </div>
                         </button>
                         <button type="submit" className="btn btn--search" id="search-advanced">
                             <Link href="/tim-kiem-chi-tiet">
                                 <div className="searchGo_text">
-                                    Advanced
+                                    Chi tiết
                                 </div>
                             </Link>
                         </button>
