@@ -74,11 +74,10 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
         }
         async function getProductRelated() {
             const { data: { productRelated } } = await productApi.getForHome(JSON.parse(slugPr));
-            console.log(productRelated)
             if (productRelated.length === 0) {
                 setDisplay(false)
             }
-            setProductRelated(productRelated)
+            setProductRelated([...productRelated,...productHotSale])
         }
         getProductRelated()
     }, [])
@@ -263,7 +262,7 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                         </div>
                         <div className="box-body">
                             <Flickity
-                                className={'product-list border-0'} // default ''
+                                className={'product-list border-0 overflowAuto'} // default ''
                                 elementType={'div'} // default 'div'
                                 options={flickityOptions} // takes flickity options {}
                                 disableImagesLoaded={false} // default false
@@ -279,7 +278,8 @@ export default function Home({ productHotSale, productsBestSell, productsBestNew
                             </Flickity>
                         </div>
                     </div>
-                </div></div>
+                </div>
+            </div>
         )
     }
 

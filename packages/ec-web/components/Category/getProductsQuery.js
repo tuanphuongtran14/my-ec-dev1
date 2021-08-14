@@ -20,7 +20,12 @@ export default function query() {
                 brand{
                     name,
                     slug
-                },
+                }
+                screenSize
+                screenPanel
+                screenResolution
+                cpu
+                gpu
                 updatedAt
             }
             productsBestSell: searchProducts(sort:["total_sold:desc"],

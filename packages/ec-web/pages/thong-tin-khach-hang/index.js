@@ -2,10 +2,15 @@ import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { Header, Footer } from "../../components";
 import { userApi } from "../../apis";
+import { signOut } from "../../helpers/auth";
+import { useRouter } from "next/router";
+import Link from "next/link"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 export default function Customer() {
+    const router = useRouter();
     const [userInfo, setUserInfo] = useState({});
     const [userOrder, setUserOrder] = useState([]);
     useEffect(async () => {
@@ -15,7 +20,32 @@ export default function Customer() {
         const {
             data: { orders },
         } = await userApi.getUserOrders();
+        console.log(orders);
 
+        for(var i=0;i<orders.length;i++){
+            switch(orders[i].status) {
+                case "Pending":
+                    orders[i].status="Đang sử lý"
+                    break;
+                case "Confirmed":
+                    orders[i].status="Đã xác nhận đơn"
+                  break;
+                case "Delivery":
+                    orders[i].status="Đang giao"
+                  break;
+                case "Delivered":
+                    orders[i].status="Đã giao"
+                  break;
+                case "Cancelled":
+                    orders[i].status="Đã hủy"
+                  break;
+                default:
+                    orders[i].status="Status"
+              }
+              orders[i].addressLine1 = orders[i].addressLine1 + " " + orders[i].district + " " + orders[i].city
+              orders[i].finalAmount =  orders[i].finalAmount.toLocaleString("DE-de");
+        }
+        console.log(orders);
         setUserInfo(user);
         setUserOrder(orders);
     }, []);
@@ -39,95 +69,104 @@ export default function Customer() {
     const OrderProduct = (props) => (
         <tr className="control-show__order">
             <td>
-                <a href="">{props.maDonHang}</a>
+                <Link href="/order-detail/[id]" as ={`/order-detail/${props.id}`} className="text-dark">
+                    {props.maDonHang}
+                </Link>
             </td>
             <td>{props.diaChiGiaoHang}</td>
             <td className="order-moble">{props.giaSanPham} ₫</td>
             <td className="order-moble">{props.trangThaiDonHang}</td>
         </tr>
     );
+     // Handle sign out from user
+     const handleSignOut = async () => {
+        if(await signOut()) {
+            router.push("/");
+            localStorage.clear();
+        }
+    }
 
     const Order = () =>
         userOrder.map((order) => (
             <OrderProduct
+                id={order.id}
                 maDonHang={order.orderCode}
                 diaChiGiaoHang={order.addressLine1}
                 giaSanPham={order.finalAmount}
                 trangThaiDonHang={order.status}
             />
         ));
-
-    const notifyNotMatchPwd = () => toast.warn('Mật khẩu bạn nhập không khớp nhau', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
-
-    const notifyChangePwdFailure  = () => toast.error('Có lỗi xảy ra trong quá trình thay đổi mật khẩu', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
-
-    const notifyChangePwdSuccessfully = () => toast.success('Thay đổi mật khẩu mới thành công', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
-
-    const handleChangePassword = async e => {
-        const currentPwd = document.getElementById('current-password').value;
-        const newPwd = document.getElementById('new-password').value;
-        const confirmedPwd = document.getElementById('confirmed-password').value;
-
-        if(newPwd !== confirmedPwd)
-            return notifyNotMatchPwd();
-
-        const { 
-            data, 
-            errors 
-        } = await userApi.changePassword(currentPwd, newPwd, confirmedPwd);
-        
-        return !errors ? data.changePassword : false;
-    };
-
-    const handleSubmitUpdateProfile = async e => {
-        e.preventDefault();
-        const btn = e.target;
-        const wantToChangePwd = document.getElementById('change-password').checked;
-
-        btn.setAttribute("disabled", true);
-        btn.innerHTML = `
-            <span class="spinner-border spinner-border-sm"></span>
-            Đang gửi... 
-        `;
-
-        if(wantToChangePwd) {
-            const changedPassword = await handleChangePassword();
+        const notifyNotMatchPwd = () => toast.warn('Mật khẩu bạn nhập không khớp nhau', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    
+        const notifyChangePwdFailure  = () => toast.error('Có lỗi xảy ra trong quá trình thay đổi mật khẩu', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    
+        const notifyChangePwdSuccessfully = () => toast.success('Thay đổi mật khẩu mới thành công', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    
+        const handleChangePassword = async e => {
+            const currentPwd = document.getElementById('current-password').value;
+            const newPwd = document.getElementById('new-password').value;
+            const confirmedPwd = document.getElementById('confirmed-password').value;
+    
+            if(newPwd !== confirmedPwd)
+                return notifyNotMatchPwd();
+    
+            const { 
+                data, 
+                errors 
+            } = await userApi.changePassword(currentPwd, newPwd, confirmedPwd);
             
-            // If new passwords is not match, handleChangePassword will notify and return an string
-            if(typeof changedPassword === 'string')
-                return;
-
-            const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
-            notify();
-        }
-
-        btn.removeAttribute("disabled");
-        btn.innerHTML = "Cập nhật"
-    };
+            return !errors ? data.changePassword : false;
+        };
+    
+        const handleSubmitUpdateProfile = async e => {
+            e.preventDefault();
+            const btn = e.target;
+            const wantToChangePwd = document.getElementById('change-password').checked;
+    
+            btn.setAttribute("disabled", true);
+            btn.innerHTML = `
+                <span class="spinner-border spinner-border-sm"></span>
+                Đang gửi... 
+            `;
+    
+            if(wantToChangePwd) {
+                const changedPassword = await handleChangePassword();
+                
+                // If new passwords is not match, handleChangePassword will notify and return an string
+                if(typeof changedPassword === 'string')
+                    return;
+    
+                const notify = changedPassword ? notifyChangePwdSuccessfully : notifyChangePwdFailure;
+                notify();
+            }
+    
+            btn.removeAttribute("disabled");
+            btn.innerHTML = "Cập nhật"
+        };
 
     useEffect(() => {
         function customerToggle() {
@@ -183,8 +222,8 @@ export default function Customer() {
                                 <div className="account">
                                     <img
                                         className="account__img"
-                                        src="https://www.nicepng.com/png/full/136-1366211_group-of-10-guys-login-user-icon-png.png"
-                                        alt=""
+                                        src="./img/avatar-user.png"
+                                        alt="avatar-user"
                                     />
                                     <div className="account__info">
                                         Tài khoản của
@@ -212,12 +251,12 @@ export default function Customer() {
                                             <span>Quản lý đơn hàng</span>
                                         </a>
                                     </li>
-                                    <li className="list-group-item list-group-item__edit">
-                                        <a
-                                            href=""
-                                            className="account-list-info wish-list-event"
-                                        >
-                                            <i className="fas account-list-info__icon fa-sign-out-alt"></i>
+                                    <li className="list-group-item list-group-item__edit"  onClick={handleSignOut}>
+                                        <a className="account-list-info wish-list-event">
+                                            <i
+                                                className="fas account-list-info__icon fa-sign-out-alt"
+                                                aria-hidden="true"
+                                            />
                                             <span>Đăng xuất</span>
                                         </a>
                                     </li>
@@ -242,15 +281,6 @@ export default function Customer() {
                                         >
                                             Tên người dùng
                                         </label>
-                                        {/*<div className="col-sm-10">
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="name"
-                        value={userInfo.username}
-                        disabled
-                      />
-                    </div>*/}
                                         <input
                                             type="text"
                                             className="form-control col-sm-10"
@@ -270,7 +300,7 @@ export default function Customer() {
                                             type="text"
                                             className="form-control col-sm-10"
                                             id="name"
-                                            placeholder={userInfo.name}
+                                            defaultValue={userInfo.name}
                                         />
                                     </div>
                                     <div className="form-group row account-form-edit container">
@@ -284,7 +314,7 @@ export default function Customer() {
                                             type="text"
                                             className="form-control col-sm-10"
                                             id="phone"
-                                            placeholder={userInfo.phone}
+                                            defaultValue={userInfo.phone}
                                         />
                                     </div>
                                     <div className="form-group row account-form-edit container">
@@ -298,7 +328,7 @@ export default function Customer() {
                                             type="email"
                                             className="form-control col-sm-10"
                                             id="email"
-                                            placeholder={userInfo.email}
+                                            defaultValue={userInfo.email}
                                         />
                                     </div>
                                     {/*<div className="form-group account-form-edit row">
@@ -496,10 +526,8 @@ export default function Customer() {
                 </Head>
                 <Header />
                 <Customer />
-                <ToastContainer />
                 <Footer />
             </div>
-            <script src="./js/customer-info.js"></script>
         </div>
     );
 }
