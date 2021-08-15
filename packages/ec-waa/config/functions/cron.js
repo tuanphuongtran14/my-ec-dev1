@@ -12,7 +12,6 @@
 
 module.exports = {
     /**
-        * Simple example.
         * Every monday at 0am.
     */
     '0 0 0 * * 1': async () => {
