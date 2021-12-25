@@ -80,40 +80,19 @@ export default function Login() {
         if (data) router.push("/thanh-toan/thanh-cong");
         console.log(data);
     };
-    const onSubmit = async () => {
+    const onSubmit = () => {
         const name = sessionStorage.getItem("name");
         const phone = sessionStorage.getItem("phone");
         const mail = sessionStorage.getItem("mail");
         const address1 = sessionStorage.getItem("address1");
         const address2 = sessionStorage.getItem("address2");
         const address3 = sessionStorage.getItem("address3");
-        await orderApi.checkout(name, phone, mail, address3, address2, address1, "COD");
+        orderApi.checkout(name, phone, mail, address3, address2, address1, "VnPay");
         const orderDescription = document.getElementById("orderDescription").value;
         const amount = parseInt(document.getElementById("amount").value);
         const bankCode = document.getElementById("bankCode").value;
         const transactionRef = "110001";
-        // let vnPay = new VNPay({
-        //     secretKey: 'ODJLXOCEWMFIEJXHJNMZUVFFVRDDXLOT',
-        //     returnUrl: 'http://localhost:3000/thanh-toan',
-        //     merchantCode: '1SNJ89L8',
-        //     hashAlgorithm: 'sha256'
-        // });
-        // alert(amount+1);
-        // // require pay 10000 VND.
-        // // let payURL =  await vnPay.genPayURL({
-        // //     transactionRef: transactionRef,
-        // //     orderInfo: orderDescription,
-        // //     orderType: '110001',
-        // //     amount: amount,
-        // //     bankCode: bankCode
-        // // });
-        // let payURL = await vnPay.genQueryURL({
-        //     transactionRef: 'PT20200520103101_007',
-        //     orderInfo: 'Thanh toan hoa don dich vu',
-        //     orderType: '100001',
-        //     amount: 100000,
-        //     bankCode: 'NCB'
-        // })
+        
 
         const payUrl = vnPay.GerUrl(
             amount,

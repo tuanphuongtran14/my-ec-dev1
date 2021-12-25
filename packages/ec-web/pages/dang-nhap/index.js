@@ -159,8 +159,8 @@ export default function Login() {
         else {
             setRegisterMessage(
                 displayMessage(
-                    "Có lỗi trong quá trình đăng ký tài khoản, vui lòng thử lại sau",
-                    "danger"
+                    "Tạo tài khoản thành công, vui lòng xác nhận tài khoản trước khi đăng nhập",
+                    "success"
                 )
             );
         }
@@ -212,8 +212,8 @@ export default function Login() {
         if(await userApi.resendConfirmedEmail(fpEmail))
             return setLoginMessage(
                 displayMessage(
-                    "Thành công, vui lòng kiểm tra email của bạn",
-                    "success"
+                    "Có lỗi xảy ra với hệ thống, vui lòng thử lại sau ít phút",
+                "danger"
                 )
             );
 

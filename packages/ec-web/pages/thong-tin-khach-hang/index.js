@@ -42,7 +42,7 @@ export default function Customer({isSignedIn}) {
         for (var i = 0; i < orders.length; i++) {
             switch (orders[i].status) {
                 case "Pending":
-                    orders[i].status = "Đang sử lý"
+                    orders[i].status = "Đang xử lý"
                     break;
                 case "Confirmed":
                     orders[i].status = "Đã xác nhận đơn"
